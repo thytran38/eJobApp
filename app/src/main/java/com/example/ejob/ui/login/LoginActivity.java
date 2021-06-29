@@ -1,4 +1,4 @@
-package com.example.ejob;
+package com.example.ejob.ui.login;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,10 +10,11 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.ejob.accounts.AdminActivity;
-import com.example.ejob.accounts.EmployerActivity;
-import com.example.ejob.accounts.Register;
-import com.example.ejob.accounts.UserActivity;
+import com.example.ejob.R;
+import com.example.ejob.ui.admin.AdminActivity;
+import com.example.ejob.ui.employer.EmployerActivity;
+import com.example.ejob.ui.register.Register;
+import com.example.ejob.ui.user.UserActivity;
 import com.example.ejob.ui.main.MainFragment;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.AuthResult;

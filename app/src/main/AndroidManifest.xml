@@ -9,17 +9,17 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.EJob">
-        <activity android:name=".accounts.UserActivity"></activity>
-        <activity android:name=".accounts.EmployerActivity" />
-        <activity android:name=".accounts.AdminActivity" />
-        <activity android:name=".LoginActivity">
+        <activity android:name=".ui.user.UserActivity"></activity>
+        <activity android:name=".ui.employer.EmployerActivity" />
+        <activity android:name=".ui.admin.AdminActivity" />
+        <activity android:name=".ui.login.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".accounts.Register">
+        <activity android:name=".ui.register.Register">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

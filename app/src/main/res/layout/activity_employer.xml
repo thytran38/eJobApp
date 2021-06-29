@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".accounts.EmployerActivity">
+    tools:context=".ui.employer.EmployerActivity">
 
     <Button
         android:id="@+id/btnLogout_employer"

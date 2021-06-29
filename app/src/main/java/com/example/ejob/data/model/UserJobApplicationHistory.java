@@ -1,4 +1,4 @@
-package com.example.ejob.model;
+package com.example.ejob.data.model;
 
 public class UserJobApplicationHistory {
 }

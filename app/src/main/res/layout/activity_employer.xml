@@ -13,9 +13,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -25,7 +23,7 @@
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rcJoblist"
                     android:layout_width="match_parent"
-                    android:layout_height="500dp"
+                    android:layout_height="300dp"
                     tools:layout_editor_absoluteX="0dp"
                     tools:layout_editor_absoluteY="151dp">
 
@@ -48,8 +46,6 @@
                     tools:layout_editor_absoluteY="663dp" />
 
             </LinearLayout>
-        </ScrollView>
-
     </LinearLayout>
 
 </androidx.constraintlayout.motion.widget.MotionLayout>

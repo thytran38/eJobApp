@@ -21,6 +21,8 @@ public class EmployerActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_employer);
 
+//        jobRecyclerView.setAdapter(adapter);
+
         logout = findViewById(R.id.btnLogout_employer);
         newJob = findViewById(R.id.btnAddjob);
         jobRecyclerView = findViewById(R.id.rcJoblist);

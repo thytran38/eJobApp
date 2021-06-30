@@ -1,4 +1,4 @@
-package com.example.ejob.data.model;
+package com.example.ejob.ui.job;
 
 public class JobPosting {
     String jobId;
@@ -9,11 +9,13 @@ public class JobPosting {
     String employerName;
     String jobDeadline;
     String jobDateCreated;
+    String imageUrl;
     int jobSkills;
     int countView;
     int countLike;
     boolean jobStatus;
     int updateHistory;
+
     int numberApplied;
 
     public JobPosting() {
@@ -139,5 +141,21 @@ public class JobPosting {
 
     public void setUpdateHistory(int updateHistory) {
         this.updateHistory = updateHistory;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    public int getNumberApplied() {
+        return numberApplied;
+    }
+
+    public void setNumberApplied(int numberApplied) {
+        this.numberApplied = numberApplied;
     }
 }

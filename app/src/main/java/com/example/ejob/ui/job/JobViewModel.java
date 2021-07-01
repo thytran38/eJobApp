@@ -29,6 +29,10 @@ public class JobViewModel extends ViewModel {
     private MutableLiveData<List<JobPosting>> mListJobLivedata;
     private List<JobPosting> mListJob;
 
+    public MutableLiveData<List<JobPosting>> getmListJobLivedata() {
+        return mListJobLivedata;
+    }
+
     public JobViewModel(){
         mListJobLivedata = new MutableLiveData<>();
         initData();
@@ -38,18 +42,19 @@ public class JobViewModel extends ViewModel {
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseFirestore = FirebaseFirestore.getInstance();
         firebaseUser = firebaseAuth.getCurrentUser();
-
+        String uid = firebaseUser.getUid().toString();
         mListJob = new ArrayList<>();
+        mListJob = getJobFromFirestore(uid);
+        mListJobLivedata.setValue(mListJob);
 
 
     }
 
     private ArrayList<JobPosting> getJobFromFirestore(String uid){
         ArrayList<JobPosting> jobPostingArrayList = new ArrayList<>();
-        FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
         String employername;
         DocumentSnapshot snapshot;
-        DocumentReference df = firebaseFirestore.collection("Users").document(firebaseUser.getUid());
+        DocumentReference df = firebaseFirestore.collection("Users").document(uid);
 
         firebaseFirestore.collection("Jobs")
                 .document("Business")
@@ -69,6 +74,9 @@ public class JobViewModel extends ViewModel {
                                 jobPosting.setSalary(document.get("jobSalary").toString());
                                 jobPosting.setJobDeadline(document.get("jobOod").toString());
                                 jobPostingArrayList.add(jobPosting);
+                                Log.d("TAG", document.getId() + " => " + jobPosting.getJobLocation());
+                                Log.d("TAG", document.getId() + " => " + jobPosting.getJobDeadline());
+
                             }
                         }
                     }

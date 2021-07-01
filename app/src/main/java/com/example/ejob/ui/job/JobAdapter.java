@@ -39,6 +39,7 @@ public class JobAdapter extends RecyclerView.Adapter<JobAdapter.JobViewHolder>{
         holder.employerName.setText(jobPosting.getEmployerName());
         holder.jobPosition.setText(jobPosting.getJobTitle());
         holder.jobLocation.setText(jobPosting.getJobLocation());
+        holder.tvDaysago.setText(jobPosting.getJobDeadline());
 
     }
 
@@ -66,10 +67,8 @@ public class JobAdapter extends RecyclerView.Adapter<JobAdapter.JobViewHolder>{
             employerAvatar = itemView.findViewById(R.id.job_avatar);
             jobPosition = itemView.findViewById(R.id.tvJobPosition);
             employerName = itemView.findViewById(R.id.tvEmployer);
+            jobLocation = itemView.findViewById(R.id.tvJobLocation);
             tvDaysago = itemView.findViewById(R.id.tvDaysAgo);
-
-
-
 
         }
     }

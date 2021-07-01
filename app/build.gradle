@@ -44,7 +44,9 @@ dependencies {
     // LiveData
     implementation "androidx.lifecycle:lifecycle-livedata:2.2.0"
     // RecyclerView
-    implementation "androix.recyclerview:recyclerview:1.1.0"
+    implementation 'androidx.recyclerview:recyclerview:1.1.0'
+    implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
+
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 

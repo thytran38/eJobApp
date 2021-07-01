@@ -7,10 +7,8 @@
     android:padding="12dp">
 
 <!--    <data>-->
-
 <!--        <variable-->
-<!--            name="item"-->
-<!--            type="com.example.ejob.model.JobPosting" />-->
+<!--            android:name="job" android:type="com.example.ejob.ui.job.JobPosting" />-->
 
 <!--    </data>-->
 
@@ -33,7 +31,7 @@
             android:id="@+id/tvJobPosition"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Software Engineer"
+            android:text="@{job.jobTitle}"
             android:textColor="@android:color/background_dark"
             android:textSize="14sp"
             android:textStyle="bold" />
@@ -48,17 +46,23 @@
                 android:id="@+id/tvEmployer"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Tiki"
+                android:text="11111"
+                
                 android:textColor="@android:color/background_dark"
-                android:textSize="12sp" />
+                android:textSize="13sp" />
+            <!--                android:text="@{job.employerName}"-->
+
 
             <TextView
                 android:id="@+id/tvDaysAgo"
-                android:layout_width="fill_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="right"
-                android:text="30/06/2021"
+                android:layout_weight="0"
+                android:gravity="center"
+                android:textColor="@android:color/background_dark"
+                android:text="35353"
                 android:textSize="12sp" />
+            <!--                android:text="@{job.jobDeadline}"-->
 
         </LinearLayout>
 
@@ -68,7 +72,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="3dp"
-            android:text="Hochiminh"
+            android:text="@{job.jobLocation}"
             android:textColor="@android:color/background_dark"
             android:textSize="10sp" />
 

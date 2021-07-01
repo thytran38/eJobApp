@@ -1,5 +1,7 @@
 package com.example.ejob.data.model;
 
+import com.example.ejob.ui.job.JobPosting;
+
 import java.util.List;
 
 public class JobPostHistory {

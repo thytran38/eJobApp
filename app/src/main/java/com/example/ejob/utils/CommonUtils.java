@@ -36,6 +36,26 @@ public final class CommonUtils {
         return valid;
     }
 
+    public static CharSequence getTitlefromUser(int position){
+        String str1 = "Home";
+        String str2 = "Favorite";
+        String str3 = "Profile";
+
+        switch(position){
+            case 0:
+                return str1;
+
+            case 1:
+                return str2;
+
+            case 2:
+                return str3;
+
+            default:
+                return str1;
+        }
+    }
+
     public static ProgressDialog showLoadingDialog(Context context){
         ProgressDialog progressDialog = new ProgressDialog(context);
         progressDialog.show();

@@ -38,7 +38,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_gravity="center_horizontal"
             android:orientation="horizontal">
 
@@ -46,26 +46,20 @@
                 android:id="@+id/tvEmployer"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="11111"
-                
+                android:text="@{job.employerName}"
                 android:textColor="@android:color/background_dark"
                 android:textSize="13sp" />
-            <!--                android:text="@{job.employerName}"-->
-
 
             <TextView
                 android:id="@+id/tvDaysAgo"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="0"
-                android:gravity="center"
+                android:gravity="right"
+                android:text="@{job.jobDeadline}"
                 android:textColor="@android:color/background_dark"
-                android:text="35353"
                 android:textSize="12sp" />
-            <!--                android:text="@{job.jobDeadline}"-->
 
         </LinearLayout>
-
 
         <TextView
             android:id="@+id/tvJobLocation"

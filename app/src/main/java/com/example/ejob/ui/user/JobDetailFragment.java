@@ -12,10 +12,10 @@ import com.example.ejob.R;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link UserHomeFragment#newInstance} factory method to
+ * Use the {@link JobDetailFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class UserHomeFragment extends Fragment {
+public class JobDetailFragment extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -26,7 +26,7 @@ public class UserHomeFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public UserHomeFragment() {
+    public JobDetailFragment() {
         // Required empty public constructor
     }
 
@@ -36,11 +36,11 @@ public class UserHomeFragment extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment UserHomeFragment.
+     * @return A new instance of fragment JobDetailFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static UserHomeFragment newInstance(String param1, String param2) {
-        UserHomeFragment fragment = new UserHomeFragment();
+    public static JobDetailFragment newInstance(String param1, String param2) {
+        JobDetailFragment fragment = new JobDetailFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -55,15 +55,12 @@ public class UserHomeFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-
-
-
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_user_home, container, false);
+        return inflater.inflate(R.layout.fragment_job_detail, container, false);
     }
 }

@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.ejob.R;
 import com.example.ejob.ui.admin.AdminActivity;
 import com.example.ejob.ui.employer.EmployerActivity;
+import com.example.ejob.ui.passwordrecover.ForgetPassActivity;
 import com.example.ejob.ui.register.Register;
 import com.example.ejob.ui.user.UserActivity;
 import com.example.ejob.ui.main.MainFragment;
@@ -23,9 +24,9 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity implements LoginNavigator {
     EditText emailText, passwordText;
-    Button login, register;
+    Button login, register, forget;
     FirebaseAuth fAuth;
     FirebaseFirestore fStore;
     boolean valid = true;
@@ -42,6 +43,7 @@ public class LoginActivity extends AppCompatActivity {
         passwordText = findViewById(R.id.etPassword);
         login = findViewById(R.id.btLogin);
         register = findViewById(R.id.btRegis);
+        forget = findViewById(R.id.btnForget);
 
         register.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -74,6 +76,15 @@ public class LoginActivity extends AppCompatActivity {
 
             }
         });
+
+        forget.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getApplicationContext(), ForgetPassActivity.class));
+            }
+        });
+
+
 
     }
 
@@ -116,12 +127,30 @@ public class LoginActivity extends AppCompatActivity {
         }
         return valid;
     }
-//
-//    @Override
-//    protected void onStart() {
-//        super.onStart();
-//        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
-//            startActivity(new Intent(getApplicationContext(), MainActivity.class));
-//        }
-//    }
+
+    @Override
+    public void handleError(Throwable throwable) {
+
+    }
+
+    @Override
+    public void login() {
+
+    }
+
+    @Override
+    public void openAdminActivity() {
+
+    }
+
+    @Override
+    public void openEmployerActivity() {
+
+    }
+
+    @Override
+    public void openUserActivity() {
+
+    }
+
 }

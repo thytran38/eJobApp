@@ -6,9 +6,7 @@
     android:layout_height="match_parent"
 
     android:gravity="center"
-    android:background="@color/gray_dark_DarkMode"
-
-    tools:context="com.example.myfirstapp.luckybankonlinesystem.LoginActivity">
+    tools:context="com.example.ejob.ui.login.LoginActivity">
 
     <ScrollView
         android:layout_width="match_parent"

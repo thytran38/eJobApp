@@ -1,4 +1,4 @@
-package com.example.ejob.ui.job;
+package com.example.ejob.ui.employer.job;
 
 public class JobPosting {
     String jobId;

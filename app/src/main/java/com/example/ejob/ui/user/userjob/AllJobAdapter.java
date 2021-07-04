@@ -1,4 +1,4 @@
-package com.example.ejob.ui.job;
+package com.example.ejob.ui.user.userjob;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,28 +10,29 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.ejob.R;
-import com.example.ejob.utils.Date;
+import com.example.ejob.ui.employer.job.JobAdapter;
+import com.example.ejob.ui.employer.job.JobPosting;
 
 import java.util.List;
 
-public class JobAdapter extends RecyclerView.Adapter<JobAdapter.JobViewHolder>{
+public class AllJobAdapter extends RecyclerView.Adapter<AllJobAdapter.JobViewHolderForUser>{
 
-    public List<JobPosting> mJobList;
+    public List<com.example.ejob.ui.user.userjob.JobPostingforUser> mJobList;
 
-    public JobAdapter(List<JobPosting> mJobList) {
+    public AllJobAdapter(List<JobPostingforUser> mJobList) {
         this.mJobList = mJobList;
     }
-
     @NonNull
     @Override
-    public JobViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_job, parent, false);
-        return new JobViewHolder(view);
+    public AllJobAdapter.JobViewHolderForUser onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_job_for_user, parent, false);
+        return new AllJobAdapter.JobViewHolderForUser(view);
     }
 
+
     @Override
-    public void onBindViewHolder(@NonNull JobViewHolder holder, int position) {
-        JobPosting jobPosting = mJobList.get(position);
+    public void onBindViewHolder(@NonNull AllJobAdapter.JobViewHolderForUser holder, int position) {
+        JobPostingforUser jobPosting = mJobList.get(position);
         if(jobPosting == null){
             return;
         }
@@ -40,8 +41,8 @@ public class JobAdapter extends RecyclerView.Adapter<JobAdapter.JobViewHolder>{
         holder.jobPosition.setText(jobPosting.getJobTitle());
         holder.jobLocation.setText(jobPosting.getJobLocation());
         holder.tvDaysago.setText(jobPosting.getJobDeadline());
-
     }
+
 
     @Override
     public int getItemCount() {
@@ -51,17 +52,13 @@ public class JobAdapter extends RecyclerView.Adapter<JobAdapter.JobViewHolder>{
         return 0;
     }
 
-//    public Date getDateDifference(Long jobDateCreated){
-//        long diff =  - jobDateCreated;
-//    }
-
-    public class JobViewHolder extends RecyclerView.ViewHolder{
+    public class JobViewHolderForUser extends RecyclerView.ViewHolder{
 
         private ImageView employerAvatar;
         private TextView jobPosition, employerName, jobLocation, tvDaysago;
 
 
-        public JobViewHolder(@NonNull View itemView) {
+        public JobViewHolderForUser(@NonNull View itemView) {
             super(itemView);
 
             employerAvatar = itemView.findViewById(R.id.job_avatar);

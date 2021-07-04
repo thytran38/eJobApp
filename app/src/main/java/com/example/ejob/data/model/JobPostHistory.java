@@ -1,6 +1,6 @@
 package com.example.ejob.data.model;
 
-import com.example.ejob.ui.job.JobPosting;
+import com.example.ejob.ui.employer.job.JobPosting;
 
 import java.util.List;
 

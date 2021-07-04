@@ -1,4 +1,4 @@
-package com.example.ejob.ui.job;
+package com.example.ejob.ui.user.userjob;
 
 import android.util.Log;
 
@@ -6,8 +6,8 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.example.ejob.ui.employer.job.JobPosting;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -16,24 +16,24 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.firestore.Source;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class JobViewModel extends ViewModel {
+public class UserAllJobViewModel extends ViewModel {
+
     FirebaseAuth firebaseAuth;
     FirebaseFirestore firebaseFirestore;
     FirebaseUser firebaseUser;
 
-    private MutableLiveData<List<JobPosting>> mListJobLivedata;
-    private List<JobPosting> mListJob;
+    private MutableLiveData<List<com.example.ejob.ui.user.userjob.JobPostingforUser>> mListJobLivedata;
+    private List<com.example.ejob.ui.user.userjob.JobPostingforUser> mListJob;
 
-    public MutableLiveData<List<JobPosting>> getmListJobLivedata() {
+    public MutableLiveData<List<com.example.ejob.ui.user.userjob.JobPostingforUser>> getmListJobLivedata() {
         return mListJobLivedata;
     }
 
-    public JobViewModel(){
+    public UserAllJobViewModel(){
         mListJobLivedata = new MutableLiveData<>();
         initData();
     }
@@ -44,21 +44,21 @@ public class JobViewModel extends ViewModel {
         firebaseUser = firebaseAuth.getCurrentUser();
         String uid = firebaseUser.getUid().toString();
         mListJob = new ArrayList<>();
-        mListJob = getJobFromFirestore(uid);
+        mListJob = getJobFromFirestore();
         mListJobLivedata.setValue(mListJob);
 
 
     }
 
-    private ArrayList<JobPosting> getJobFromFirestore(String uid){
-        ArrayList<JobPosting> jobPostingArrayList = new ArrayList<>();
+    private ArrayList<com.example.ejob.ui.user.userjob.JobPostingforUser> getJobFromFirestore(){
+        ArrayList<JobPostingforUser> jobPostingArrayList = new ArrayList<>();
         String employername;
         DocumentSnapshot snapshot;
-        DocumentReference df = firebaseFirestore.collection("Users").document(uid);
+//        DocumentReference df = firebaseFirestore.collection("Users").document(uid);
 
         firebaseFirestore.collection("Jobs")
-                .document("Business")
-                .collection("/" + "Small Academy 3")
+                .document("IT")
+                .collection("Small Academy 3")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -66,7 +66,7 @@ public class JobViewModel extends ViewModel {
                         if(task.isSuccessful()){
                             for(QueryDocumentSnapshot document : task.getResult()){
                                 Log.d("TAG", document.getId() + " => " + document.getData());
-                                JobPosting jobPosting = new JobPosting();
+                                JobPostingforUser jobPosting = new JobPostingforUser();
                                 jobPosting.setEmployerName(document.get("jobEmployer").toString());
                                 jobPosting.setJobDescription(document.get("jobDescription").toString());
                                 jobPosting.setJobTitle(document.get("jobTitle").toString());

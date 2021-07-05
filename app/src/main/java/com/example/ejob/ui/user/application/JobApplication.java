@@ -1,4 +1,6 @@
-package com.example.ejob.data.model;
+package com.example.ejob.ui.user.application;
+
+import com.example.ejob.data.model.ApplicationStatus;
 
 public class JobApplication {
     String applicationId;

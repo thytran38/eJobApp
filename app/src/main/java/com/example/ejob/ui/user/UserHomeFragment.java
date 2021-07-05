@@ -11,9 +11,13 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LayoutAnimationController;
+import android.widget.Toast;
 
 import com.example.ejob.R;
 import com.example.ejob.ui.employer.job.JobAdapter;
@@ -83,17 +87,31 @@ public class UserHomeFragment extends Fragment {
         jobRecyclerView = (RecyclerView) view.findViewById(R.id.rcvJobUser);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(view.getContext());
         jobRecyclerView.setLayoutManager(linearLayoutManager);
-
+//        LayoutAnimationController layoutAnimationController = AnimationUtils.loadLayoutAnimation(this.getContext(), R.anim.down_to_up);
+//        jobRecyclerView.setLayoutAnimation(layoutAnimationController);
         userAllJobView = new ViewModelProvider(this).get(UserAllJobViewModel.class);
+
         userAllJobView.getmListJobLivedata().observe(getViewLifecycleOwner(), new Observer<List<JobPostingforUser>>() {
             @Override
             public void onChanged(List<JobPostingforUser> jobPostings) {
-                allJobAdapter = new AllJobAdapter(jobPostings);
+                allJobAdapter = new AllJobAdapter(jobPostings, new AllJobAdapter.ItemClickListener() {
+                    @Override
+                    public void onItemClick(JobPostingforUser jobPost) {
+                        Toast.makeText(UserHomeFragment.this.getContext(),jobPost.getJobTitle(),Toast.LENGTH_LONG).show();
+                        Log.d("TAG_UHFragment", jobPost.getJobTitle());
+                    }
+
+                });
                 jobRecyclerView.setAdapter(allJobAdapter);
+
             }
         });
 
 
+    }
+
+    private void showToast(String message){
+        Toast.makeText(UserHomeFragment.this.getContext(), message, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -102,6 +120,22 @@ public class UserHomeFragment extends Fragment {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_job_detail, container, false);
 
+
+    }
+
+    private void setAnimation(int animate, List<JobPostingforUser> jobPostings){
+        LayoutAnimationController layoutAnimationController = AnimationUtils.loadLayoutAnimation(this.getContext(), animate);
+        jobRecyclerView.setLayoutAnimation(layoutAnimationController);
+
+        allJobAdapter = new AllJobAdapter(jobPostings, new AllJobAdapter.ItemClickListener() {
+            @Override
+            public void onItemClick(JobPostingforUser jobPost) {
+                Toast.makeText(UserHomeFragment.this.getContext(),jobPost.getJobTitle(),Toast.LENGTH_LONG).show();
+                Log.d("TAG_UHFragment", jobPost.getJobTitle());
+            }
+
+        });
+        jobRecyclerView.setAdapter(allJobAdapter);
 
     }
 }

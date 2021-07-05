@@ -46,7 +46,13 @@ public class UserAllJobViewModel extends ViewModel {
         mListJob = new ArrayList<>();
         mListJob = getJobFromFirestore();
         mListJobLivedata.setValue(mListJob);
+    }
 
+    public void jobApplied(){
+        firebaseAuth = FirebaseAuth.getInstance();
+        firebaseFirestore = FirebaseFirestore.getInstance();
+        firebaseFirestore.collection("Users_Jobs")
+                .document(firebaseAuth.getCurrentUser().getUid());
 
     }
 
@@ -57,7 +63,7 @@ public class UserAllJobViewModel extends ViewModel {
 //        DocumentReference df = firebaseFirestore.collection("Users").document(uid);
 
         firebaseFirestore.collection("Jobs")
-                .document("IT")
+                .document("Business")
                 .collection("Small Academy 3")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -73,6 +79,7 @@ public class UserAllJobViewModel extends ViewModel {
                                 jobPosting.setJobLocation(document.get("jobLocation").toString());
                                 jobPosting.setSalary(document.get("jobSalary").toString());
                                 jobPosting.setJobDeadline(document.get("jobOod").toString());
+                                jobPosting.setJobDateCreated(document.get("jobDateCreated").toString());
                                 jobPostingArrayList.add(jobPosting);
                                 Log.d("TAG", document.getId() + " => " + jobPosting.getJobLocation());
                                 Log.d("TAG", document.getId() + " => " + jobPosting.getJobDeadline());

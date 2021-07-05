@@ -70,6 +70,7 @@ public class JobViewModel extends ViewModel {
                                 jobPosting.setJobTitle(document.get("jobTitle").toString());
                                 jobPosting.setJobLocation(document.get("jobLocation").toString());
                                 jobPosting.setSalary(document.get("jobSalary").toString());
+                                jobPosting.setJobDateCreated(document.get("jobDateCreated").toString());
                                 jobPosting.setJobDeadline(document.get("jobOod").toString());
                                 jobPostingArrayList.add(jobPosting);
                                 Log.d("TAG", document.getId() + " => " + jobPosting.getJobLocation());

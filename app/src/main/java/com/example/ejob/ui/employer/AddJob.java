@@ -1,14 +1,19 @@
 package com.example.ejob.ui.employer;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.DatePickerDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -25,6 +30,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -37,7 +43,11 @@ public class AddJob extends AppCompatActivity {
     FirebaseFirestore firebaseFirestore;
     FirebaseFirestore firebaseFirestore2;
     String employerFullname, jobType;
+    Calendar c;
+    int sYear, sMonth, sDay;
+    String timeCreated, timeDeadline;
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,7 +93,41 @@ public class AddJob extends AppCompatActivity {
             }
         });
 
+        oodDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                c = Calendar.getInstance();
+                Date date = Date.getInstance();
+                sYear = date.getYear();
+                sMonth = date.getMonth();
+                sDay = date.getDate();
+
+                DatePickerDialog _date = new DatePickerDialog(AddJob.this, dateSetListener, sYear, sMonth, sDay){
+
+                    @Override
+                    public void onDateChanged(@NonNull DatePicker view, int year, int month, int dayOfMonth) {
+                        super.onDateChanged(view, year, month, dayOfMonth);
+                        if(year < sYear)
+                            view.updateDate(sYear, sMonth, sDay);
+
+                        if(month < sMonth && year == sYear){
+                            view.updateDate(sYear, sMonth, sDay);
+                        }
+
+                        if(dayOfMonth < sDay && year == sYear && month == sMonth){
+                            view.updateDate(sYear, sMonth, sDay);
+                        }
+
+                    }
+                };
+
+                _date.show();
+            }
+        });
+
         jobDateCreated.setText(Date.getInstance().toString());
+        timeCreated = String.valueOf(Date.getEpochSecond());
+
 
         addJobButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -98,7 +142,6 @@ public class AddJob extends AppCompatActivity {
 //        CommonUtils.checkFields(jobDateCreated);
                 CommonUtils.checkFields(jobSkills);
 
-//firebaseUser.getUid().toString()
                 jobType = etJobType.getText().toString();
                 FirebaseUser firebaseUser = fAuth.getCurrentUser();
                 DocumentReference df2 = firebaseFirestore2.collection("Jobs")
@@ -111,9 +154,9 @@ public class AddJob extends AppCompatActivity {
                 jobInfo.put("jobLocation", jobLocation.getText().toString());
                 jobInfo.put("jobSalary", jobSalary.getText().toString());
                 jobInfo.put("jobEmployer", employerName.getText().toString());
-                jobInfo.put("jobOod", oodDate.getText().toString());
+                jobInfo.put("jobOod", timeDeadline);
                 jobInfo.put("jobSkills", jobSkills.getText().toString());
-                jobInfo.put("jobDateCreated", jobDateCreated.getText().toString());
+                jobInfo.put("jobDateCreated", timeCreated);
                 df2.set(jobInfo);
 
                 Toast.makeText(AddJob.this, "Job Created", Toast.LENGTH_SHORT).show();
@@ -130,4 +173,23 @@ public class AddJob extends AppCompatActivity {
 
 
     }
+
+    private DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
+        @Override
+        public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+            sYear = year;
+            sMonth = month;
+            sDay = dayOfMonth;
+            Date date2 = Date.getInstance(sDay, sMonth, sYear);
+
+            long des = Date.getEpochSecond(sDay, sMonth, sYear);
+            timeDeadline = String.valueOf(date2.getEpochSecond());
+            Log.d("TAG", timeDeadline);
+            oodDate.setText(Date.getInstance(sDay,sMonth,sYear).toString());
+
+        }
+    };
+
+
+
 }

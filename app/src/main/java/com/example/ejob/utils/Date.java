@@ -11,7 +11,7 @@ import java.util.TimeZone;
 
 public class Date {
     private static GregorianCalendar calendar;
-    private java.util.Date date;
+    private static java.util.Date date;
 
     private Date() {
         calendar = (GregorianCalendar) GregorianCalendar.getInstance(TimeZone.getTimeZone("ICT"));
@@ -82,13 +82,20 @@ public class Date {
             return 31 - (month % 2);
     }
 
+
     public static boolean isLeapYear(int year) {
         GregorianCalendar tempCalendar = (GregorianCalendar) GregorianCalendar.getInstance();
         return tempCalendar.isLeapYear(year);
     }
 
-    public long getEpochSecond() {
+    public static long getEpochSecond() {
         return date.getTime() / 1000;
+    }
+
+    public static long getEpochSecond(int day, int month, int year){
+        Date date2 = Date.getInstance(day, month, year);
+        long epoch = date2.getEpochSecond();
+        return epoch;
     }
 
     public int getDate() {

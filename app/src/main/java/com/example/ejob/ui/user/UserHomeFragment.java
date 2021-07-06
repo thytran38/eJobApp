@@ -97,6 +97,7 @@ public class UserHomeFragment extends Fragment {
                 allJobAdapter = new AllJobAdapter(jobPostings, new AllJobAdapter.ItemClickListener() {
                     @Override
                     public void onItemClick(JobPostingforUser jobPost) {
+                        JobDetailDialog jobDetailDialog = new JobDetailDialog();
                         Toast.makeText(UserHomeFragment.this.getContext(),jobPost.getJobTitle(),Toast.LENGTH_LONG).show();
                         Log.d("TAG_UHFragment", jobPost.getJobTitle());
                     }

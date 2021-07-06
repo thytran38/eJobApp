@@ -6,6 +6,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -45,6 +46,8 @@ public class UserHomeFragment extends Fragment {
     private UserAllJobViewModel userAllJobView;
     private AllJobAdapter allJobAdapter;
 
+    private ViewGroup viewgroupContainer;
+    private LayoutInflater layoutInflater;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -98,6 +101,9 @@ public class UserHomeFragment extends Fragment {
                     @Override
                     public void onItemClick(JobPostingforUser jobPost) {
                         JobDetailDialog jobDetailDialog = new JobDetailDialog();
+                        jobDetailDialog.show(getChildFragmentManager(),"New fragment");
+                        FragmentManager fragmentManager = getChildFragmentManager();
+                        layoutInflater.inflate(R.layout.fragment_view_job_detail,viewgroupContainer, false);
                         Toast.makeText(UserHomeFragment.this.getContext(),jobPost.getJobTitle(),Toast.LENGTH_LONG).show();
                         Log.d("TAG_UHFragment", jobPost.getJobTitle());
                     }
@@ -119,6 +125,8 @@ public class UserHomeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        viewgroupContainer = container;
+        layoutInflater = inflater;
         return inflater.inflate(R.layout.fragment_job_detail, container, false);
 
 

@@ -46,7 +46,7 @@ public class SplashscreenActivity extends AppCompatActivity {
         broadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                SplashscreenActivity.this.intent.putExtra(FetchingService.)
+//                SplashscreenActivity.this.intent.putExtra(FetchingService.)
                 if (intent.getAction().equals(FetchingService.INTENT_KEY + "." +
                         FetchingService.USER_INFO_KEY)){
                     ApplicantModel userInfo = intent.getExtras().getParcelable(FetchingService.USER_INFO_KEY);
@@ -66,6 +66,7 @@ public class SplashscreenActivity extends AppCompatActivity {
 
         }
     }
+
 
     @Override
     protected void onResume() {

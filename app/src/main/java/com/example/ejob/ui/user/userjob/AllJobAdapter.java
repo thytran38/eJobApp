@@ -93,13 +93,14 @@ public class AllJobAdapter extends RecyclerView.Adapter<AllJobAdapter.JobViewHol
 
     public class JobViewHolderForUser extends RecyclerView.ViewHolder{
 
-        private ImageView employerAvatar;
-        private TextView jobPosition, employerName, jobLocation, tvDaysago;
+        private ImageView employerAvatar, unheart;
+        private TextView jobPosition, employerName, jobLocation, tvDaysago, likesNumber;
 
 
         public JobViewHolderForUser(@NonNull View itemView) {
             super(itemView);
-
+            unheart = itemView.findViewById(R.id.btUnheart);
+            likesNumber = itemView.findViewById(R.id.tvLikes);
             employerAvatar = itemView.findViewById(R.id.photoPreview_user);
             jobPosition = itemView.findViewById(R.id.tvJobPosition_user);
             employerName = itemView.findViewById(R.id.tvEmployer_user);

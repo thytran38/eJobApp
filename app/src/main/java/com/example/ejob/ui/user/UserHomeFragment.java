@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.ejob.R;
@@ -47,6 +48,8 @@ public class UserHomeFragment extends Fragment {
 
     private ViewGroup viewgroupContainer;
     private LayoutInflater layoutInflater;
+
+    private ImageView unheart;
 
     private static JobPostingforUser jobPostingU;
 

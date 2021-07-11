@@ -137,9 +137,7 @@ public class AddJob extends AppCompatActivity {
                 CommonUtils.checkFields(jobDescription);
                 CommonUtils.checkFields(jobLocation);
                 CommonUtils.checkFields(jobSalary);
-//        CommonUtils.checkFields(employerName);
                 CommonUtils.checkFields(oodDate);
-//        CommonUtils.checkFields(jobDateCreated);
                 CommonUtils.checkFields(jobSkills);
 
                 jobType = etJobType.getText().toString();
@@ -158,7 +156,7 @@ public class AddJob extends AppCompatActivity {
                 jobInfo.put("jobDateCreated", timeCreated);
                 df2.set(jobInfo);
 
-                Toast.makeText(AddJob.this, "Job Created", Toast.LENGTH_SHORT).show();
+                Toast.makeText(AddJob.this, "Job Created", Toast.LENGTH_LONG).show();
                 startActivity(new Intent(getApplicationContext(),EmployerActivity.class));
                 finish();
 

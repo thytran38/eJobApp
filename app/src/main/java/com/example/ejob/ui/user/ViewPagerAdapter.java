@@ -39,21 +39,6 @@ public class ViewPagerAdapter extends FragmentStateAdapter {
         }
     }
 
-//    public CharSequence getTitleFromPosition(int position){
-//        String title;
-//        switch (position){
-//            case 0:
-//                title = "Home";
-//            case 1:
-//                title = "Favorite";
-//            case 2:
-//                title =  "Profile";
-//                break;
-//            default:
-//                throw new IllegalStateException("Unexpected value: " + position);
-//        }
-//        return title;
-//    }
 
     @Override
     public int getItemCount() {

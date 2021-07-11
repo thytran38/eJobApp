@@ -1,6 +1,7 @@
 
 package com.example.ejob.ui.user;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -21,9 +22,7 @@ import android.view.animation.LayoutAnimationController;
 import android.widget.Toast;
 
 import com.example.ejob.R;
-import com.example.ejob.ui.employer.job.JobAdapter;
 import com.example.ejob.ui.employer.job.JobPosting;
-import com.example.ejob.ui.employer.job.JobViewModel;
 import com.example.ejob.ui.user.userjob.AllJobAdapter;
 import com.example.ejob.ui.user.userjob.JobPostingforUser;
 import com.example.ejob.ui.user.userjob.UserAllJobViewModel;
@@ -48,6 +47,8 @@ public class UserHomeFragment extends Fragment {
 
     private ViewGroup viewgroupContainer;
     private LayoutInflater layoutInflater;
+
+    private static JobPostingforUser jobPostingU;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -90,20 +91,25 @@ public class UserHomeFragment extends Fragment {
         jobRecyclerView = (RecyclerView) view.findViewById(R.id.rcvJobUser);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(view.getContext());
         jobRecyclerView.setLayoutManager(linearLayoutManager);
-//        LayoutAnimationController layoutAnimationController = AnimationUtils.loadLayoutAnimation(this.getContext(), R.anim.down_to_up);
-//        jobRecyclerView.setLayoutAnimation(layoutAnimationController);
         userAllJobView = new ViewModelProvider(this).get(UserAllJobViewModel.class);
 
         userAllJobView.getmListJobLivedata().observe(getViewLifecycleOwner(), new Observer<List<JobPostingforUser>>() {
             @Override
             public void onChanged(List<JobPostingforUser> jobPostings) {
                 allJobAdapter = new AllJobAdapter(jobPostings, new AllJobAdapter.ItemClickListener() {
+
                     @Override
                     public void onItemClick(JobPostingforUser jobPost) {
-                        JobDetailDialog jobDetailDialog = new JobDetailDialog();
-                        jobDetailDialog.show(getChildFragmentManager(),"New fragment");
+
+
+//                        JobPostingforUser jobPostinParcel = new JobPostingforUser(jobTitle, jobEmployer, jobDatecreated);
+//                        Intent intent = new Intent(UserHomeFragment.this.getContext(), JobDetailDialog.class);
+//                        intent.putExtra("jobs", jobPostinParcel);
+//                        startActivity(intent);
+
+//                        jobDetailDialog.show(getChildFragmentManager(),"New fragment");
                         FragmentManager fragmentManager = getChildFragmentManager();
-                        layoutInflater.inflate(R.layout.fragment_view_job_detail,viewgroupContainer, false);
+                        layoutInflater.inflate(R.layout.fragment_application_job,viewgroupContainer, false);
                         Toast.makeText(UserHomeFragment.this.getContext(),jobPost.getJobTitle(),Toast.LENGTH_LONG).show();
                         Log.d("TAG_UHFragment", jobPost.getJobTitle());
                     }
@@ -128,8 +134,6 @@ public class UserHomeFragment extends Fragment {
         viewgroupContainer = container;
         layoutInflater = inflater;
         return inflater.inflate(R.layout.fragment_job_detail, container, false);
-
-
     }
 
     private void setAnimation(int animate, List<JobPostingforUser> jobPostings){
@@ -140,11 +144,18 @@ public class UserHomeFragment extends Fragment {
             @Override
             public void onItemClick(JobPostingforUser jobPost) {
                 Toast.makeText(UserHomeFragment.this.getContext(),jobPost.getJobTitle(),Toast.LENGTH_LONG).show();
-                Log.d("TAG_UHFragment", jobPost.getJobTitle());
+                Log.d("TAG_UserHomeFragment", jobPost.getJobTitle());
             }
-
         });
         jobRecyclerView.setAdapter(allJobAdapter);
-
     }
+
+    private static void setJobPostingForUser(JobPostingforUser job){
+        jobPostingU = job;
+    }
+
+    private JobPostingforUser getJobPostingForUser(){
+        return jobPostingU;
+    }
+
 }

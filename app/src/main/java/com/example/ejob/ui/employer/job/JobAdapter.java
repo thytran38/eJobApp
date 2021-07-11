@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -12,6 +13,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.ejob.R;
+import com.example.ejob.ui.user.userjob.AllJobAdapter;
+import com.example.ejob.ui.user.userjob.JobPostingforUser;
 import com.example.ejob.utils.Date;
 
 import java.util.List;
@@ -19,10 +22,14 @@ import java.util.List;
 public class JobAdapter extends RecyclerView.Adapter<JobAdapter.JobViewHolder>{
 
     public List<JobPosting> mJobList;
+    private ItemClickListener onItemClickListener;
 
-    public JobAdapter(List<JobPosting> mJobList) {
+
+    public JobAdapter(List<JobPosting> mJobList, ItemClickListener onItemClickListener1) {
         this.mJobList = mJobList;
+        this.onItemClickListener = onItemClickListener1;
     }
+
 
     @NonNull
     @Override
@@ -67,6 +74,9 @@ public class JobAdapter extends RecyclerView.Adapter<JobAdapter.JobViewHolder>{
         }catch(NumberFormatException e){
             Log.d("NBE", e.getMessage());
         }
+        holder.itemView.setOnClickListener(view -> {
+            onItemClickListener.onItemClick(mJobList.get(position));
+        });
 
 
     }
@@ -100,4 +110,9 @@ public class JobAdapter extends RecyclerView.Adapter<JobAdapter.JobViewHolder>{
 
         }
     }
+
+    public interface ItemClickListener{
+        void onItemClick(JobPosting jobPost);
+    }
+
 }

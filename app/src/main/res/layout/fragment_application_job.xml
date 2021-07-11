@@ -18,7 +18,7 @@
         <LinearLayout
             android:id="@+id/businessHeader"
             android:layout_width="match_parent"
-            android:layout_height="70dp"
+            android:layout_height="wrap_content"
             android:padding="10dp"
             android:layout_marginBottom="15dp"
             android:orientation="horizontal">
@@ -38,18 +38,21 @@
                 android:layout_gravity="center_vertical">
 
                 <TextView
+                    android:id="@+id/tvCompany"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:text="Company Name"
                     android:textSize="10sp"/>
 
                 <TextView
+                    android:id="@+id/tvPositionHiring"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:text="Job Position"
                     android:textSize="14sp"/>
 
                 <TextView
+                    android:id="@+id/tvJobDateCreated"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:text="JobID"
@@ -90,6 +93,7 @@
                     android:textSize="11sp"/>
 
                 <Button
+                    android:id="@+id/btnUploadCV"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Upload CV"/>
@@ -123,7 +127,7 @@
                     android:id="@+id/linear1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
+                    android:orientation="vertical"
                     android:layout_marginBottom="5dp"
                     android:layout_marginTop="5dp">
 
@@ -145,7 +149,7 @@
                     android:id="@+id/linear2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
+                    android:orientation="vertical"
                     android:layout_marginBottom="10dp"
                     android:layout_marginTop="5dp">
 
@@ -180,7 +184,7 @@
                     android:id="@+id/linear3"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
+                    android:orientation="vertical"
                     android:layout_marginBottom="10dp"
                     android:layout_marginTop="5dp">
 
@@ -202,7 +206,7 @@
                     android:id="@+id/linear4"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
+                    android:orientation="vertical"
                     android:layout_marginBottom="10dp"
                     android:layout_marginTop="5dp">
 
@@ -224,7 +228,7 @@
                     android:id="@+id/linear5"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
+                    android:orientation="vertical"
                     android:layout_marginBottom="10dp"
                     android:layout_marginTop="5dp">
 
@@ -250,6 +254,7 @@
                    android:layout_gravity="center_horizontal">
 
                    <Button
+                       android:id="@+id/btnSubmitApplication"
                        android:layout_width="fill_parent"
                        android:layout_height="wrap_content"
                        android:text="Submit"/>

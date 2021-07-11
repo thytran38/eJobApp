@@ -18,7 +18,16 @@
             android:layout_marginBottom="20dp"
             android:text="Profile fragment" />
 
+        <TextView
+            android:id="@+id/tvFilepath"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="file path"
+            android:layout_marginBottom="20dp"
+            />
+
         <Button
+            android:id="@+id/btnSelectFile"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Select File"/>

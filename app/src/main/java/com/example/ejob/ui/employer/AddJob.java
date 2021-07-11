@@ -145,8 +145,7 @@ public class AddJob extends AppCompatActivity {
                 jobType = etJobType.getText().toString();
                 FirebaseUser firebaseUser = fAuth.getCurrentUser();
                 DocumentReference df2 = firebaseFirestore2.collection("Jobs")
-                        .document(jobType)
-                        .collection("/" + employerName.getText().toString()).document();
+                        .document();
                 Map<String, Object> jobInfo = new HashMap<>();
                 jobInfo.put("jobType", jobType);
                 jobInfo.put("jobTitle", jobTitle.getText().toString());

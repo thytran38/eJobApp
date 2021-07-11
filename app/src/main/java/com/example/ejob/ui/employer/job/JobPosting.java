@@ -1,6 +1,9 @@
 package com.example.ejob.ui.employer.job;
 
-public class JobPosting {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class JobPosting implements Parcelable {
     String jobId;
     String jobTitle;
     String jobDescription;
@@ -38,6 +41,36 @@ public class JobPosting {
         this.updateHistory = updateHistory;
     }
 
+
+    protected JobPosting(Parcel in) {
+        jobId = in.readString();
+        jobTitle = in.readString();
+        jobDescription = in.readString();
+        jobLocation = in.readString();
+        salary = in.readString();
+        employerName = in.readString();
+        jobDeadline = in.readString();
+        jobDateCreated = in.readString();
+        imageUrl = in.readString();
+        jobSkills = in.readInt();
+        countView = in.readInt();
+        countLike = in.readInt();
+        jobStatus = in.readByte() != 0;
+        updateHistory = in.readInt();
+        numberApplied = in.readInt();
+    }
+
+    public static final Creator<JobPosting> CREATOR = new Creator<JobPosting>() {
+        @Override
+        public JobPosting createFromParcel(Parcel in) {
+            return new JobPosting(in);
+        }
+
+        @Override
+        public JobPosting[] newArray(int size) {
+            return new JobPosting[size];
+        }
+    };
 
     public String getJobId() {
         return jobId;
@@ -157,5 +190,29 @@ public class JobPosting {
 
     public void setNumberApplied(int numberApplied) {
         this.numberApplied = numberApplied;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(jobId);
+        dest.writeString(jobTitle);
+        dest.writeString(jobDescription);
+        dest.writeString(jobLocation);
+        dest.writeString(salary);
+        dest.writeString(employerName);
+        dest.writeString(jobDeadline);
+        dest.writeString(jobDateCreated);
+        dest.writeString(imageUrl);
+        dest.writeInt(jobSkills);
+        dest.writeInt(countView);
+        dest.writeInt(countLike);
+        dest.writeByte((byte) (jobStatus ? 1 : 0));
+        dest.writeInt(updateHistory);
+        dest.writeInt(numberApplied);
     }
 }

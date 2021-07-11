@@ -1,6 +1,9 @@
 package com.example.ejob.data.model;
 
-public class Employer {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class Employer implements Parcelable {
     String employerId;
     String employerName;
     Industry industry;
@@ -19,6 +22,24 @@ public class Employer {
         this.jobPostHistory = jobPostHistory;
     }
 
+
+    protected Employer(Parcel in) {
+        employerId = in.readString();
+        employerName = in.readString();
+        employerLocation = in.readString();
+    }
+
+    public static final Creator<Employer> CREATOR = new Creator<Employer>() {
+        @Override
+        public Employer createFromParcel(Parcel in) {
+            return new Employer(in);
+        }
+
+        @Override
+        public Employer[] newArray(int size) {
+            return new Employer[size];
+        }
+    };
 
     public String getEmployerId() {
         return employerId;
@@ -58,5 +79,17 @@ public class Employer {
 
     public void setJobPostHistory(JobPostHistory jobPostHistory) {
         this.jobPostHistory = jobPostHistory;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(employerId);
+        dest.writeString(employerName);
+        dest.writeString(employerLocation);
     }
 }

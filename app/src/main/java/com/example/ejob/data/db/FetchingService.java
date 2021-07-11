@@ -24,10 +24,32 @@ import java.util.Objects;
 public class FetchingService extends Service {
 
     public static final String INTENT_KEY = "Firestore.Data";
+
     public static final String USER_INFO_KEY = "UserInfo";
+    public static final String EMPLOYER_INFO_KEY = "EmployerInfo";
+    public static final String ADMIN_INFO_KEY = "AdminInfo";
 
     public static final String SEND_USER_UID_KEY = "USER_UID";
-    private static final String CHANNEL_ID = "ApplicationNewReviewChannel";
+    public static final String SEND_EMPLOYER_UID_KEY = "EMP_UID";
+    public static final String SEND_ADMIN_UID_KEY = "ADM_UID";
+
+
+    private static final String JOB_USERSIDE_KEY = "JobsUserSideTotal";
+    private static final String JOB_USERHISTORY_KEY = "JobsUserHistory";
+
+    private static final String JOB_EMPSIDE_KEY = "JobsEmpSideTotal";
+    private static final String JOB_EMPHISTORY_KEY = "JobsEmpHistory";
+
+    private static final String APPLICATION_HISTORY_KEY_USER = "ApplicationsApplied";
+    private static final String APPLICATION_HISTORY_KEY_EMPLOYER =  "ApplicationsFromUsers";
+
+    private static final String NEW_REVIEW_CHANNEL = "ApplicationNewReviewChannel";
+    private static final String NEW_APPROVAL_CHANNEL = "ApplicationApprovedChannel";
+
+    private static final String NEW_APPLIED_CHANNEL = "ApplicationAppliedChannel";
+    private static final String NEW_LIKE_CHANNEL = "LikeChannel";
+
+
     private static int accessLevelNumber;
 
     FirebaseAuth firebaseAuth;
@@ -48,28 +70,117 @@ public class FetchingService extends Service {
 
         final long currentTime = Date.getInstance().getEpochSecond();
 
-        new Thread(() ->{
+        accessLevel = checkUserAccessLevel(uid);
 
-            db.collection("Users")
-                    .document(uid)
-                    .addSnapshotListener(MetadataChanges.INCLUDE,(data,error) -> {
-                        if(error == null){
-                            if(data != null && data.exists()){
-                                Intent intentData = new Intent(INTENT_KEY + " . " + USER_INFO_KEY);
-
+        if(accessLevel == 2){
+            new Thread(() -> {
+                db.collection("Users")
+                        .document(uid)
+                        .addSnapshotListener(MetadataChanges.INCLUDE,(data, error) -> {
+                            if(error == null){
+                                if(data != null && data.exists()){
+                                    Intent intentData = new Intent(INTENT_KEY+ "." + USER_INFO_KEY);
+                                }
                             }
-                        }
+                        });
 
+                db.collection("Applications")
+                        .document(uid)
+                        .addSnapshotListener(MetadataChanges.INCLUDE, (data, error) ->{
+                           if(error == null ){
+                               if(data != null && data.exists()){
+                                    Intent intentData = new Intent(INTENT_KEY + "." + APPLICATION_HISTORY_KEY_USER);
+                               }
+                           }
+                        });
 
-            });
+                db.collection("Jobs")
+                        .getParent()
+                        .addSnapshotListener(MetadataChanges.INCLUDE, (data, error) ->{
+                           if(error == null){
+                               if(data != null && data.exists()){
+                                   Intent intentData = new Intent(INTENT_KEY+ "." + JOB_USERSIDE_KEY);
+                               }
+                           }
+                        });
 
+            }).start();
+        }else if(accessLevel == 3){
+            new Thread(() -> {
+                db.collection("Employers")
+                        .document(uid)
+                        .addSnapshotListener(MetadataChanges.INCLUDE,(data, error) -> {
+                            if(error == null){
+                                if(data != null && data.exists()){
+                                    Intent intentData = new Intent(INTENT_KEY+ "." + EMPLOYER_INFO_KEY);
+                                }
+                            }
+                        });
 
+                db.collection("Jobs")
+                        .getParent()
+                        .addSnapshotListener(MetadataChanges.INCLUDE, (data, error) ->{
+                            if(error == null){
+                                if(data != null && data.exists()){
+                                    Intent intentData = new Intent(INTENT_KEY+ "." + JOB_EMPSIDE_KEY);
+                                }
+                            }
+                        });
 
+                db.collection("Jobs/Applications"+uid)
+                        .getParent()
+                        .addSnapshotListener(MetadataChanges.INCLUDE, (data, error) ->{
+                           if(error == null){
+                               if(data != null && data.exists()){
+                                   Intent intentData = new Intent(INTENT_KEY+"."+APPLICATION_HISTORY_KEY_EMPLOYER);
+                               }
+                           }
+                        });
 
+                db.collection("Users")
+                        .getParent()
+                        .addSnapshotListener(MetadataChanges.INCLUDE,(data, error) -> {
+                            if(error == null){
+                                if(data != null && data.exists()){
+                                    Intent intentData = new Intent(INTENT_KEY+ "." + USER_INFO_KEY);
+                                }
+                            }
+                        });
+            }).start();
+        }else{
+            new Thread(() -> {
+                db.collection("Admin")
+                        .document(uid)
+                        .addSnapshotListener(MetadataChanges.INCLUDE,(data, error) -> {
+                            if(error == null){
+                                if(data != null && data.exists()){
+                                    Intent intentData = new Intent(INTENT_KEY+ "." + ADMIN_INFO_KEY);
+                                }
+                            }
+                        });
+                db.collection("Users")
+                        .getParent()
+                        .addSnapshotListener(MetadataChanges.INCLUDE,(data, error) -> {
+                            if(error == null){
+                                if(data != null && data.exists()){
+                                    Intent intentData = new Intent(INTENT_KEY+ "." + USER_INFO_KEY);
+                                }
+                            }
+                        });
 
-        });
+                db.collection("Employers")
+                        .document(uid)
+                        .addSnapshotListener(MetadataChanges.INCLUDE,(data, error) -> {
+                            if(error == null){
+                                if(data != null && data.exists()){
+                                    Intent intentData = new Intent(INTENT_KEY+ "." + EMPLOYER_INFO_KEY);
+                                }
+                            }
+                        });
 
+            }).start();
 
+        }
 
 
         return super.onStartCommand(intent, flags, startId);

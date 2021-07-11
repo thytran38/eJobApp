@@ -11,12 +11,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.example.ejob.ui.employer.job.JobAdapter;
 import com.example.ejob.ui.employer.job.JobPosting;
 import com.example.ejob.ui.employer.job.JobViewModel;
 import com.example.ejob.ui.login.LoginActivity;
 import com.example.ejob.R;
+import com.example.ejob.ui.user.UserHomeFragment;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.List;
@@ -56,9 +58,20 @@ public class EmployerActivity extends AppCompatActivity {
         jobViewModel.getmListJobLivedata().observe(this, new Observer<List<JobPosting>>() {
             @Override
             public void onChanged(List<JobPosting> jobPostings) {
-                jobAdapter = new JobAdapter(jobPostings);
+                jobAdapter = new JobAdapter(jobPostings, new JobAdapter.ItemClickListener() {
+                    @Override
+                    public void onItemClick(JobPosting jobPost) {
+                        Toast.makeText(getApplicationContext(),jobPost.getJobTitle(),Toast.LENGTH_LONG).show();
+
+                    }
+                });
+
                 jobRecyclerView.setAdapter(jobAdapter);
+
             }
+
+
+
         });
 
 

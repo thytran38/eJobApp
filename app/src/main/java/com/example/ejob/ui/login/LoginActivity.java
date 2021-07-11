@@ -8,6 +8,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.ejob.R;
@@ -17,12 +18,17 @@ import com.example.ejob.ui.passwordrecover.ForgetPassActivity;
 import com.example.ejob.ui.register.Register;
 import com.example.ejob.ui.user.UserActivity;
 import com.example.ejob.ui.main.MainFragment;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+
+import org.w3c.dom.Document;
 
 public class LoginActivity extends AppCompatActivity implements LoginNavigator {
     EditText emailText, passwordText;
@@ -30,6 +36,10 @@ public class LoginActivity extends AppCompatActivity implements LoginNavigator {
     FirebaseAuth fAuth;
     FirebaseFirestore fStore;
     boolean valid = true;
+    boolean locked = false;
+
+    private final String TAG = "LoginActivity_Log";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,16 +73,34 @@ public class LoginActivity extends AppCompatActivity implements LoginNavigator {
             public void onClick(View v) {
                 checkFields(emailText);
                 checkFields(passwordText);
+                if(checkFields(emailText) && checkFields(passwordText)){
+                    checkAccessAvailability(fAuth.getCurrentUser().getUid());
 
-                if (valid) {
-                    fAuth.signInWithEmailAndPassword(emailText.getText().toString(), passwordText.getText().toString()).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
-                        @Override
-                        public void onSuccess(AuthResult authResult) {
-                            Toast.makeText(LoginActivity.this, "Signed in successfully.", Toast.LENGTH_SHORT).show();
-                            checkUserAccessLevel(fAuth.getCurrentUser().getUid());
-                        }
-                    });
+                    if (valid) {
+                        fAuth.signInWithEmailAndPassword(emailText.getText().toString(), passwordText.getText().toString()).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
+                            @Override
+                            public void onSuccess(AuthResult authResult) {
+                                checkAccessAvailability(fAuth.getCurrentUser().getUid());
+
+                                if(locked==true){
+                                    startActivity(new Intent(getApplicationContext(), LockedActivity.class));
+
+                                }else{
+                                    Toast.makeText(LoginActivity.this, "Signed in successfully.", Toast.LENGTH_SHORT).show();
+                                    checkUserAccessLevel(fAuth.getCurrentUser().getUid());
+                                }
+
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Toast.makeText(LoginActivity.this, "Failed to sign in.", Toast.LENGTH_LONG).show();
+                            }
+                        });
+                    }
                 }
+
+
 
             }
         });
@@ -88,6 +116,27 @@ public class LoginActivity extends AppCompatActivity implements LoginNavigator {
 
     }
 
+    private void checkAccessAvailability(String uid){
+        DocumentReference df = fStore.collection("Blocked").document(uid);
+        df.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if(task.isSuccessful()){
+                    DocumentSnapshot doc = task.getResult();
+                    if(doc.exists()){
+                        locked =true;
+                        Log.d(TAG, "Document existed");
+                    }else{
+                        Log.d(TAG, "Document not existed");
+                    }
+                }else{
+                    Log.d(TAG, "Failed with: ", task.getException());
+                }
+            }
+        });
+
+    }
+
     private void checkUserAccessLevel(String uid) {
         DocumentReference df = fStore.collection("Users").document(uid);
 
@@ -99,20 +148,17 @@ public class LoginActivity extends AppCompatActivity implements LoginNavigator {
                 // Identify user access level
                 if (documentSnapshot.getString("isAdmin") != null) {
                     // User is Employer
-                    startActivity(new Intent(getApplicationContext(), AdminActivity.class));
-                    finish();
+                    openAdminActivity();
                 }
 
                 if (documentSnapshot.getString("isEmployer") != null) {
                     // User is Employer
-                    startActivity(new Intent(getApplicationContext(), EmployerActivity.class));
-                    finish();
+                    openEmployerActivity();
                 }
 
                 if (documentSnapshot.getString("isUser") != null) {
                     // User is Employer
-                    startActivity(new Intent(getApplicationContext(), UserActivity.class));
-                    finish();
+                    openUserActivity();
                 }
             }
         });
@@ -140,17 +186,20 @@ public class LoginActivity extends AppCompatActivity implements LoginNavigator {
 
     @Override
     public void openAdminActivity() {
-
+        startActivity(new Intent(getApplicationContext(), AdminActivity.class));
+        finish();
     }
 
     @Override
     public void openEmployerActivity() {
-
+        startActivity(new Intent(getApplicationContext(), EmployerActivity.class));
+        finish();
     }
 
     @Override
     public void openUserActivity() {
-
+        startActivity(new Intent(getApplicationContext(), UserActivity.class));
+        finish();
     }
 
 }

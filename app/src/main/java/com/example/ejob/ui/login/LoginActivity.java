@@ -70,6 +70,7 @@ public class LoginActivity extends AppCompatActivity implements LoginNavigator {
                         public void onSuccess(AuthResult authResult) {
                             Toast.makeText(LoginActivity.this, "Signed in successfully.", Toast.LENGTH_SHORT).show();
                             checkUserAccessLevel(fAuth.getCurrentUser().getUid());
+
                         }
                     });
                 }

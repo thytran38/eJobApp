@@ -35,14 +35,6 @@ public class UserActivity extends AppCompatActivity {
         new TabLayoutMediator(tabLayout, viewPager2,
                 (tab, position) -> tab.setText(CommonUtils.getTitlefromUser(position)))
                 .attach();
-//        logout = findViewById(R.id.btnLogoutUser);
-//        logout.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                FirebaseAuth.getInstance().signOut();
-//                startActivity(new Intent(getApplicationContext(), LoginActivity.class));
-//                finish();
-//            }
-//        });
+
     }
 }

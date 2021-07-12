@@ -1,4 +1,4 @@
-package com.example.ejob.ui.user;
+package com.example.ejob.ui.user.pdf;
 
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
@@ -15,6 +15,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
+import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -50,10 +51,14 @@ public class UploadPdf extends AppCompatActivity {
     FirebaseUser firebaseUser;
     StorageReference storageReference;
     DatabaseReference databaseReference;
-    private FloatingActionButton upload, browse;
+    private FloatingActionButton browse;
     private TextView fileTitle;
     private EditText cvName;
     private ImageView pdfImage;
+    private WebView webView;
+
+
+
     ActivityResultLauncher<Intent> someActivityResultLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             new ActivityResultCallback<ActivityResult>() {
@@ -94,6 +99,13 @@ public class UploadPdf extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     openSomeActivityForResult();
+                }
+            });
+
+            pdfImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
                 }
             });
 

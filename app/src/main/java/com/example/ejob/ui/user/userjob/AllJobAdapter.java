@@ -15,6 +15,12 @@ import com.example.ejob.R;
 import com.example.ejob.ui.employer.job.JobAdapter;
 import com.example.ejob.ui.employer.job.JobPosting;
 import com.example.ejob.utils.Date;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.List;
 
@@ -22,6 +28,11 @@ public class AllJobAdapter extends RecyclerView.Adapter<AllJobAdapter.JobViewHol
 
     public List<com.example.ejob.ui.user.userjob.JobPostingforUser> mJobList;
     private ItemClickListener itemClickListener;
+
+    private FirebaseAuth firebaseAuth;
+    private DatabaseReference likeReference;
+    Boolean testClick = false;
+
 
     public AllJobAdapter(List<JobPostingforUser> mJobList, ItemClickListener itemClickListener1) {
         this.mJobList = mJobList;
@@ -41,6 +52,8 @@ public class AllJobAdapter extends RecyclerView.Adapter<AllJobAdapter.JobViewHol
 
     @Override
     public void onBindViewHolder(@NonNull AllJobAdapter.JobViewHolderForUser holder, int position) {
+        firebaseAuth = firebaseAuth.getInstance();
+        String userID = firebaseAuth.getCurrentUser().getUid();
         JobPostingforUser jobPosting = mJobList.get(position);
         if(jobPosting == null){
             return;
@@ -77,6 +90,36 @@ public class AllJobAdapter extends RecyclerView.Adapter<AllJobAdapter.JobViewHol
             Log.d("NBE", e.getMessage());
         }
 
+        holder.getLikeStatus(jobPosting.getJobId(),userID);
+
+        holder.unheart.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    testClick = true;
+
+                    likeReference.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            if(testClick==true){
+
+                                if(snapshot.child(jobPosting.getJobId()).hasChild(userID)){
+                                    likeReference.child(jobPosting.getJobId()).removeValue();
+                                    testClick = false;
+                                }else{
+                                    likeReference.child(jobPosting.getJobId()).child(userID).setValue(true);
+                                    testClick=false;
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
+                }
+        });
+
         holder.itemView.setOnClickListener(view -> {
             itemClickListener.onItemClick(mJobList.get(position));
         });
@@ -109,7 +152,41 @@ public class AllJobAdapter extends RecyclerView.Adapter<AllJobAdapter.JobViewHol
 
         }
 
-        public void getLikeStatus(String postkey, String uid){
+        public void getLikeStatus(String postId, String uid){
+            likeReference =  FirebaseDatabase.getInstance().getReference("likes");
+            likeReference.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if(snapshot.child(postId).hasChild(uid)){
+                        int likeCount = (int) snapshot.child(postId).getChildrenCount();
+                        likesNumber.setText(likeCount+ " likes");
+
+                        unheart.setImageResource(R.drawable.heart);
+                    }
+                    else{
+                        int likeCount = (int) snapshot.child(postId).getChildrenCount();
+//                        if(likeCount == 0){
+//                            likesNumber.setText("Like this job");
+//                        }
+//                        else if(likeCount == 1 ){
+//                            likesNumber.setText(likeCount+ " like");
+//
+//                        }else if(likeCount >1){
+//                            likesNumber.setText(likeCount+ " likes");
+//                        }
+                        likesNumber.setText(likeCount+ " likes");
+
+                        unheart.setImageResource(R.drawable.unheart);
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+
+
 
         }
     }

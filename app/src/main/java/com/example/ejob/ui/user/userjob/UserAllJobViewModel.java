@@ -73,6 +73,8 @@ public class UserAllJobViewModel extends ViewModel {
                             for(QueryDocumentSnapshot document : task.getResult()){
                                 Log.d("TAG", document.getId() + " => " + document.getData());
                                 JobPostingforUser jobPosting = new JobPostingforUser();
+                                jobPosting.setJobId(document.getReference().getPath());
+                                Log.d("TAG", document.getReference().getPath());
                                 jobPosting.setEmployerName(document.get("jobEmployer").toString());
                                 jobPosting.setJobDescription(document.get("jobDescription").toString());
                                 jobPosting.setJobTitle(document.get("jobTitle").toString());

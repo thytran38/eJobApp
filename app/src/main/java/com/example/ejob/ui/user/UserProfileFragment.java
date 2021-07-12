@@ -2,10 +2,12 @@ package com.example.ejob.ui.user;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -22,6 +24,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -30,6 +33,7 @@ import com.example.ejob.R;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -37,7 +41,11 @@ import com.google.firebase.storage.UploadTask;
 import com.karumi.dexter.Dexter;
 
 import java.io.File;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.HashMap;
+
+import static android.app.Activity.RESULT_OK;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -56,14 +64,14 @@ public class UserProfileFragment extends Fragment {
     private String mParam2;
 
     private final int CHOOSE_PDF_FROM_DEVICE = 1001;
+    private Uri pdfUri;
 
     private View v;
-    private Button pdfBrowse;
+    private Button pdfBrowse, uploadButton;
     private TextView filepath;
     Uri pdfPath;
 
     FirebaseStorage firebaseStorage;
-    FirebaseFirestore firebaseFirestore;
     StorageReference storageReference;
     DatabaseReference databaseReference;
 
@@ -97,6 +105,10 @@ public class UserProfileFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
+        firebaseStorage = FirebaseStorage.getInstance();
+        storageReference = firebaseStorage.getReference();
+        databaseReference = FirebaseDatabase.getInstance().getReference("pdf");
     }
 
     @Override
@@ -109,13 +121,17 @@ public class UserProfileFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         this.v = view;
-        pdfBrowse = (Button) v.findViewById(R.id.btnSelectFile);
+        pdfBrowse = (Button) v.findViewById(R.id.btBrowse);
         filepath = (TextView) v.findViewById(R.id.tvFilepath);
 
+
         pdfBrowse.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP_MR1)
             @Override
             public void onClick(View v) {
-                openSomeActivityForResult();
+//                openSomeActivityForResult();
+                Intent intent = new Intent(getContext(), UploadPdf.class);
+                startActivity(intent);
             }
         });
     }
@@ -125,61 +141,86 @@ public class UserProfileFragment extends Fragment {
             new ActivityResultCallback<ActivityResult>() {
                 @Override
                 public void onActivityResult(ActivityResult result) {
-                    if (result.getResultCode() == Activity.RESULT_OK) {
+                    if (result.getResultCode() == RESULT_OK) {
                         // There are no request codes
                         if(result != null){
                             Intent data = result.getData();
                             Uri selectedFileURI = data.getData();
-                            pdfPath = selectedFileURI;
-                            File file = new File(String.valueOf(pdfPath));
-                            uploadFile(String.valueOf(pdfPath));
-                            filepath.setText(file.getPath());
+                            uploadFile(selectedFileURI);
+                            filepath.setText(selectedFileURI.getPath());
                         }
                     }
                 }
             });
 
-    private String getRealPathFromURI(Uri contentURI) {
-        String result;
-        Cursor cursor = getContext().getContentResolver().query(contentURI, null, null, null, null);
-        if (cursor == null) { // Source is Dropbox or other similar local file path
-            result = contentURI.getPath();
-        } else {
-            cursor.moveToFirst();
-            int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
-            result = cursor.getString(idx);
-            cursor.close();
-        }
-        return result;
+    private void pdfPickIntent() {
+
+        Intent intent = new Intent();
+        intent.setType("application/pdf");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent, "PDF select"), 1000);
+
     }
 
-    public void uploadFile(String filepath){
-        Uri file = Uri.fromFile(new File(filepath));
-        StorageReference pdfRef = storageReference.child("pdf/" + file.getLastPathSegment());
-        UploadTask uploadTask = pdfRef.putFile(file);
-
-        uploadTask.addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(UserProfileFragment.this.getContext(), "Upload Failed", Toast.LENGTH_LONG).show();
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode == RESULT_OK ){
+            if(requestCode == 1000){
+                pdfUri = data.getData();
             }
-        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+        }else{
+
+        }
+    }
+
+    //    private String getRealPathFromURI(Uri contentURI) {
+//        String result;
+//        Cursor cursor = getContext().getContentResolver().query(contentURI, null, null, null, null);
+//        if (cursor == null) { // Source is Dropbox or other similar local file path
+//            result = contentURI.getPath();
+//        } else {
+//            cursor.moveToFirst();
+//            int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
+//            result = cursor.getString(idx);
+//            cursor.close();
+//        }
+//        return result;
+//    }
+
+    private void uploadFile(Uri filepath){
+        final ProgressDialog progressDialog = new ProgressDialog(getContext());
+        progressDialog.setTitle("File loading..");
+        progressDialog.show();
+
+        storageReference.child("pdf/"+filepath.getLastPathSegment());
+        UploadTask uploadTask = storageReference.putFile(filepath);
+
+        uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                 Toast.makeText(UserProfileFragment.this.getContext(), "Successful Upload", Toast.LENGTH_LONG).show();
                 Log.d("TAG", taskSnapshot.getMetadata().getPath());
+                progressDialog.dismiss();
+            }
+        })
+                .addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(UserProfileFragment.this.getContext(), "Upload Failed", Toast.LENGTH_LONG).show();
+                progressDialog.dismiss();
             }
         });
 
     }
-
+//
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP_MR1)
     public void openSomeActivityForResult() {
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
         intent.addCategory(Intent.CATEGORY_OPENABLE);
         intent.setType("application/pdf");
         someActivityResultLauncher.launch(intent);
     }
-
 
 
 }

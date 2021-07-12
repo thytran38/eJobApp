@@ -56,6 +56,8 @@ public class UserAllJobViewModel extends ViewModel {
 
     }
 
+
+
     private ArrayList<com.example.ejob.ui.user.userjob.JobPostingforUser> getJobFromFirestore(){
         ArrayList<JobPostingforUser> jobPostingArrayList = new ArrayList<>();
         String employername;
@@ -63,8 +65,6 @@ public class UserAllJobViewModel extends ViewModel {
 //        DocumentReference df = firebaseFirestore.collection("Users").document(uid);
 
         firebaseFirestore.collection("Jobs")
-                .document("Business")
-                .collection("Small Academy 3")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -78,7 +78,11 @@ public class UserAllJobViewModel extends ViewModel {
                                 jobPosting.setJobTitle(document.get("jobTitle").toString());
                                 jobPosting.setJobLocation(document.get("jobLocation").toString());
                                 jobPosting.setSalary(document.get("jobSalary").toString());
-                                jobPosting.setJobDeadline(document.get("jobOod").toString());
+                                try{
+                                    jobPosting.setJobDeadline(document.get("jobOod").toString());
+                                }catch (NullPointerException npe){
+                                    npe.getMessage();
+                                }
                                 jobPosting.setJobDateCreated(document.get("jobDateCreated").toString());
                                 jobPostingArrayList.add(jobPosting);
                                 Log.d("TAG", document.getId() + " => " + jobPosting.getJobLocation());

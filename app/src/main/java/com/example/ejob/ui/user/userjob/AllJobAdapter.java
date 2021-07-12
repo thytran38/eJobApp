@@ -108,5 +108,9 @@ public class AllJobAdapter extends RecyclerView.Adapter<AllJobAdapter.JobViewHol
             tvDaysago = itemView.findViewById(R.id.tvDaysAgo_user);
 
         }
+
+        public void getLikeStatus(String postkey, String uid){
+
+        }
     }
 }

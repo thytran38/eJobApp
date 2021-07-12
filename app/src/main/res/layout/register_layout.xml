@@ -5,12 +5,20 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity" >
+    tools:context=".MainActivity"
+    android:padding="5dp">
 
     <LinearLayout
+        android:padding="10dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:paddingBottom="10dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Fullname"/>
 
         <EditText
             android:id="@+id/etFullname"
@@ -18,8 +26,12 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:inputType="textPersonName"
-            android:text="Name" />
+            android:text="" />
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Email"/>
         <EditText
             android:id="@+id/etEmail"
             android:layout_width="match_parent"
@@ -27,6 +39,10 @@
             android:ems="10"
             android:inputType="textEmailAddress" />
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Password"/>
         <EditText
             android:id="@+id/etPassword"
             android:layout_width="match_parent"
@@ -34,6 +50,10 @@
             android:ems="10"
             android:inputType="textPassword" />
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Phone"/>
         <EditText
             android:id="@+id/etPhone"
             android:layout_width="match_parent"
@@ -83,13 +103,13 @@
         </LinearLayout>
 
         <Button
-            android:id="@+id/btLogin"
+            android:id="@+id/btRegister"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Create Account" />
 
         <Button
-            android:id="@+id/btnRegister3"
+            android:id="@+id/btnLogin3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Login" />

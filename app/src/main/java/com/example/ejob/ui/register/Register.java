@@ -48,8 +48,8 @@ public class Register extends AppCompatActivity {
         email = findViewById(R.id.etEmail);
         password = findViewById(R.id.etPassword);
         phone = findViewById(R.id.etPhone);
-        registerButton = findViewById(R.id.btLogin);
-        loginButton = findViewById(R.id.btnRegister3);
+        registerButton = findViewById(R.id.btRegister);
+        loginButton = findViewById(R.id.btnLogin3);
         employerCheck = findViewById(R.id.radioEmployer);
         userCheck = findViewById(R.id.radioUser);
         radioGroup = findViewById(R.id.radioGroup);
@@ -85,7 +85,7 @@ public class Register extends AppCompatActivity {
                             }
                             df.set(userInfo);
 
-                            startActivity(new Intent(getApplicationContext(), MainActivity.class));
+//                            startActivity(new Intent(getApplicationContext(), MainActivity.class));
                             finish();
                         }
                     }).addOnFailureListener(new OnFailureListener() {

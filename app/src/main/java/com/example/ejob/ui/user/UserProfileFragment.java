@@ -41,6 +41,8 @@ import com.google.firebase.storage.UploadTask;
 import com.karumi.dexter.Dexter;
 
 import java.io.File;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.HashMap;
 
 import static android.app.Activity.RESULT_OK;
@@ -65,12 +67,11 @@ public class UserProfileFragment extends Fragment {
     private Uri pdfUri;
 
     private View v;
-    private Button pdfBrowse;
+    private Button pdfBrowse, uploadButton;
     private TextView filepath;
     Uri pdfPath;
 
     FirebaseStorage firebaseStorage;
-    FirebaseFirestore firebaseFirestore;
     StorageReference storageReference;
     DatabaseReference databaseReference;
 
@@ -105,8 +106,9 @@ public class UserProfileFragment extends Fragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
 
-        storageReference = FirebaseStorage.getInstance().getReference();
-        databaseReference = FirebaseDatabase.getInstance().getReference("pdfFiles");
+        firebaseStorage = FirebaseStorage.getInstance();
+        storageReference = firebaseStorage.getReference();
+        databaseReference = FirebaseDatabase.getInstance().getReference("pdf");
     }
 
     @Override
@@ -119,7 +121,7 @@ public class UserProfileFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         this.v = view;
-        pdfBrowse = (Button) v.findViewById(R.id.btnSelectFile);
+        pdfBrowse = (Button) v.findViewById(R.id.btBrowse);
         filepath = (TextView) v.findViewById(R.id.tvFilepath);
 
 
@@ -127,9 +129,9 @@ public class UserProfileFragment extends Fragment {
             @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP_MR1)
             @Override
             public void onClick(View v) {
-                openSomeActivityForResult();
-//                pdfPickIntent();
-
+//                openSomeActivityForResult();
+                Intent intent = new Intent(getContext(), UploadPdf.class);
+                startActivity(intent);
             }
         });
     }
@@ -145,7 +147,7 @@ public class UserProfileFragment extends Fragment {
                             Intent data = result.getData();
                             Uri selectedFileURI = data.getData();
                             uploadFile(selectedFileURI);
-                            filepath.setText(selectedFileURI.toString());
+                            filepath.setText(selectedFileURI.getPath());
                         }
                     }
                 }
@@ -217,7 +219,6 @@ public class UserProfileFragment extends Fragment {
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
         intent.addCategory(Intent.CATEGORY_OPENABLE);
         intent.setType("application/pdf");
-        startActivityForResult(Intent.createChooser(intent, "PDF file select"), 12);
         someActivityResultLauncher.launch(intent);
     }
 

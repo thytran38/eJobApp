@@ -15,14 +15,13 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
-            android:text="Profile fragment" />
-
+            android:layout_marginBottom="20dp"/>
         <TextView
             android:id="@+id/tvFilepath"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="file path"
+            android:gravity="center"
             android:layout_marginBottom="20dp"
             />
 
@@ -41,11 +40,6 @@
             <View
                 android:layout_width="30dp"
                 android:layout_height="30dp"/>
-            <Button
-                android:id="@+id/btUpload"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Pdf browse" />
         </LinearLayout>
     </LinearLayout>
 

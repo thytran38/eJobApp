@@ -20,6 +20,7 @@
         <activity android:name=".ui.employer.EmployerActivity" />
         <activity android:name=".ui.admin.AdminActivity" />
         <activity android:name=".ui.passwordrecover.ForgetPassActivity" />
+        <activity android:name=".ui.user.JobDetail"/>
 
         <service android:name=".data.db.FetchingService" />
 

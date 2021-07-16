@@ -74,8 +74,6 @@ public class LoginActivity extends AppCompatActivity implements LoginNavigator {
                 checkFields(emailText);
                 checkFields(passwordText);
                 if(checkFields(emailText) && checkFields(passwordText)){
-                    checkAccessAvailability(fAuth.getCurrentUser().getUid());
-
                     if (valid) {
                         fAuth.signInWithEmailAndPassword(emailText.getText().toString(), passwordText.getText().toString()).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                             @Override

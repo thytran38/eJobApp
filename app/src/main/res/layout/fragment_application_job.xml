@@ -55,8 +55,8 @@
                     android:id="@+id/tvJobDateCreated"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:text="JobID"
-                    android:textSize="10sp"/>
+                    android:text="dateCreated"
+                    android:textSize="10sp" />
 
             </LinearLayout>
 

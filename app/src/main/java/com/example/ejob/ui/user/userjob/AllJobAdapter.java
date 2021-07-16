@@ -1,5 +1,7 @@
 package com.example.ejob.ui.user.userjob;
 
+import android.content.Context;
+import android.content.Intent;
 import android.telecom.Call;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,6 +16,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.ejob.R;
 import com.example.ejob.ui.employer.job.JobAdapter;
 import com.example.ejob.ui.employer.job.JobPosting;
+import com.example.ejob.ui.user.JobDetail;
+import com.example.ejob.ui.user.JobDetailDialog;
 import com.example.ejob.utils.Date;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -28,6 +32,8 @@ public class AllJobAdapter extends RecyclerView.Adapter<AllJobAdapter.JobViewHol
 
     public List<com.example.ejob.ui.user.userjob.JobPostingforUser> mJobList;
     private ItemClickListener itemClickListener;
+
+    public Context context;
 
     private FirebaseAuth firebaseAuth;
     private DatabaseReference likeReference;
@@ -103,7 +109,7 @@ public class AllJobAdapter extends RecyclerView.Adapter<AllJobAdapter.JobViewHol
                             if(testClick==true){
 
                                 if(snapshot.child(jobPosting.getJobId()).hasChild(userID)){
-                                    likeReference.child(jobPosting.getJobId()).removeValue();
+                                    likeReference.child(jobPosting.getJobId()).child(userID).removeValue();
                                     testClick = false;
                                 }else{
                                     likeReference.child(jobPosting.getJobId()).child(userID).setValue(true);
@@ -120,9 +126,18 @@ public class AllJobAdapter extends RecyclerView.Adapter<AllJobAdapter.JobViewHol
                 }
         });
 
-        holder.itemView.setOnClickListener(view -> {
-            itemClickListener.onItemClick(mJobList.get(position));
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(v.getContext(), JobDetail.class);
+                intent.putExtra("employerName", mJobList.get(position).getEmployerName());
+                intent.putExtra("positionHiring", mJobList.get(position).getJobTitle());
+                intent.putExtra("dateCreated", mJobList.get(position).getJobDateCreated());
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                v.getContext().startActivity(intent);
+            }
         });
+
     }
 
 
@@ -159,22 +174,13 @@ public class AllJobAdapter extends RecyclerView.Adapter<AllJobAdapter.JobViewHol
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     if(snapshot.child(postId).hasChild(uid)){
                         int likeCount = (int) snapshot.child(postId).getChildrenCount();
-                        likesNumber.setText(likeCount+ " likes");
+                        likesNumber.setText(String.valueOf(likeCount));
 
                         unheart.setImageResource(R.drawable.heart);
                     }
                     else{
                         int likeCount = (int) snapshot.child(postId).getChildrenCount();
-//                        if(likeCount == 0){
-//                            likesNumber.setText("Like this job");
-//                        }
-//                        else if(likeCount == 1 ){
-//                            likesNumber.setText(likeCount+ " like");
-//
-//                        }else if(likeCount >1){
-//                            likesNumber.setText(likeCount+ " likes");
-//                        }
-                        likesNumber.setText(likeCount+ " likes");
+                        likesNumber.setText(String.valueOf(likeCount));
 
                         unheart.setImageResource(R.drawable.unheart);
                     }

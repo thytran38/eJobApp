@@ -37,22 +37,6 @@ public class JobDetailDialog extends DialogFragment {
 
     private View v;
 
-//    private final BroadcastReceiver receiver = new BroadcastReceiver() {
-//        @Override
-//        public void onReceive(Context context, Intent intent) {
-//            JobPostingforUser thisJobpost = getArguments().
-//
-//            this.employerName.setText(thisJobpost.getEmployerName());
-//            this.positionHiring.setText(thisJobpost.getJobTitle());
-//            try {
-//                Date dateCre = Date.getInstance(Long.parseLong(thisJobpost.getJobDateCreated()));
-//                this.dateCreated.setText(dateCre.toString());
-//            }catch (NumberFormatException nfe){
-//                nfe.getMessage();
-//
-//        }
-//    };
-
 
     public JobDetailDialog(Bundle thisbundle) {
         bundle = this.getArguments();

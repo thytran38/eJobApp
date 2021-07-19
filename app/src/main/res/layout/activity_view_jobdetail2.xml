@@ -12,19 +12,19 @@
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/appbar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
             android:background="@color/teal_900"
             app:elevation="0dp">
 
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
+                android:layout_height="match_parent"
                 android:theme="@style/Widget.AppCompat.Toolbar"
-                app:popupTheme="@style/Widget.AppCompat.Toolbar"
                 app:elevation="0dp"
                 app:layout_collapseMode="pin"
-                app:titleTextColor="@color/white"/>
+                app:popupTheme="@style/Widget.AppCompat.Toolbar"
+                app:titleTextColor="@color/white" />
 
         </com.google.android.material.appbar.AppBarLayout>
 
@@ -94,6 +94,7 @@
                         </com.google.android.material.card.MaterialCardView>
 
                         <TextView
+                            android:id="@+id/tvJobTitle"
                             android:text="Job title"
                             android:textColor="@color/text_gray"
                             android:textSize="18sp"
@@ -106,6 +107,7 @@
                             android:gravity="center_horizontal"/>
 
                         <TextView
+                            android:id="@+id/tvEmpname"
                             android:text="Employer name"
                             android:textColor="@color/text_gray"
                             android:textSize="14sp"

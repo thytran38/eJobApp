@@ -27,6 +27,7 @@ public class UserActivity extends AppCompatActivity {
     SwipeRefreshLayout swipeRefreshLayout;
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

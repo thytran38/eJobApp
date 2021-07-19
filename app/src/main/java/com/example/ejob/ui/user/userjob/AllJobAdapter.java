@@ -2,7 +2,6 @@ package com.example.ejob.ui.user.userjob;
 
 import android.content.Context;
 import android.content.Intent;
-import android.telecom.Call;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,10 +14,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.ejob.R;
-import com.example.ejob.ui.employer.job.JobAdapter;
-import com.example.ejob.ui.employer.job.JobPosting;
-import com.example.ejob.ui.user.JobDetail;
-import com.example.ejob.ui.user.JobDetailDialog;
 import com.example.ejob.ui.user.application.ViewJobDetail;
 import com.example.ejob.utils.Date;
 import com.facebook.shimmer.ShimmerFrameLayout;
@@ -141,6 +136,7 @@ public class AllJobAdapter extends RecyclerView.Adapter<AllJobAdapter.JobViewHol
 //            intent.putExtra("positionHiring", mJobList.get(position).getJobTitle());
 //            intent.putExtra("dateCreated", mJobList.get(position).getJobDateCreated());
 //            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.putExtra("myJobposting",jobPosting);
                 v.getContext().startActivity(intent);
             }
         });

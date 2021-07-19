@@ -12,7 +12,7 @@
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/appbar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="30dp"
             android:background="@color/teal_900"
             app:elevation="0dp">
 
@@ -62,8 +62,8 @@
                         android:orientation="vertical">
 
                         <com.google.android.material.card.MaterialCardView
-                            android:layout_width="100dp"
-                            android:layout_height="100dp"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
                             android:layout_marginTop="16sp"
                             android:layout_gravity="center_horizontal"
                             app:strokeWidth="0.5dp"
@@ -94,6 +94,7 @@
                         </com.google.android.material.card.MaterialCardView>
 
                         <TextView
+                            android:id="@+id/titleJob"
                             android:text="Job title"
                             android:textColor="@color/text_gray"
                             android:textSize="18sp"
@@ -106,6 +107,7 @@
                             android:gravity="center_horizontal"/>
 
                         <TextView
+                            android:id="@+id/nameEmp"
                             android:text="Employer name"
                             android:textColor="@color/text_gray"
                             android:textSize="14sp"
@@ -116,6 +118,7 @@
                             android:gravity="center_horizontal"/>
 
                         <TextView
+                            android:id="@+id/typeJob"
                             android:text="Job type"
                             android:textColor="@color/teal_700"
                             android:textSize="14sp"
@@ -312,7 +315,7 @@
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
                                             android:layout_marginStart="5dp"
-                                            android:text="Personal Social Media"
+                                            android:text="Applicant Email "
                                             android:textIsSelectable="true"/>
 
                                     </RelativeLayout>
@@ -321,7 +324,7 @@
                                         android:id="@+id/etFacebook"
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
-                                        android:text="Enter your Facebook link (optional)"
+                                        android:text="User Email"
                                         android:textSize="12sp"
                                         android:textColor="@color/grey_effective"/>
 
@@ -377,21 +380,23 @@
 
                                     <TextView
                                         android:id="@+id/letterlink"
-                                        android:text="CV link"
+                                        android:text="Cover letter file"
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
                                         android:textColor="@color/text_gray"
                                         android:textIsSelectable="true"/>
                                     <ImageView
+                                        android:id="@+id/letterAttach"
                                         android:clickable="true"
                                         android:layout_width="20dp"
                                         android:layout_height="20dp"
                                         android:layout_alignParentEnd="true"
 
-                                        android:src="@drawable/ic_baseline_attach_file_24"/>
+                                        android:src="@drawable/ic_baseline_attach_email_24"/>
                                 </RelativeLayout>
 
                                 <EditText
+                                    android:id="@+id/etCoverletter"
                                     android:layout_width="match_parent"
                                     android:layout_height="80dp"
                                     android:maxLines="10"
@@ -456,6 +461,7 @@
                                         android:textColor="@color/text_gray"
                                         android:textIsSelectable="true"/>
                                     <ImageView
+                                        android:id="@+id/cvAttach"
                                         android:clickable="true"
                                         android:layout_width="20dp"
                                         android:layout_height="20dp"

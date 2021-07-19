@@ -1,15 +1,21 @@
 package com.example.ejob.ui.user.application;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.example.ejob.data.model.ApplicationStatus;
 
-public class JobApplication {
+public class JobApplication implements Parcelable {
     String applicationId;
     String position;
     String selfDescription;
     String skills;
     String applicationDate;
     int view;
+    String cvitaeLink;
+    String coverletterLink;
     ApplicationStatus applicationStatus;
+
 
     public JobApplication() {
 
@@ -23,6 +29,47 @@ public class JobApplication {
         this.applicationDate = applicationDate;
         this.view = view;
         this.applicationStatus = applicationStatus;
+    }
+
+    protected JobApplication(Parcel in) {
+        applicationId = in.readString();
+        position = in.readString();
+        selfDescription = in.readString();
+        skills = in.readString();
+        applicationDate = in.readString();
+        view = in.readInt();
+    }
+
+    public static final Creator<JobApplication> CREATOR = new Creator<JobApplication>() {
+        @Override
+        public JobApplication createFromParcel(Parcel in) {
+            return new JobApplication(in);
+        }
+
+        @Override
+        public JobApplication[] newArray(int size) {
+            return new JobApplication[size];
+        }
+    };
+
+    public String getCvitaeLink() {
+        return cvitaeLink;
+    }
+
+    public void setCvitaeLink(String cvitaeLink) {
+        this.cvitaeLink = cvitaeLink;
+    }
+
+    public String getCoverletterLink() {
+        return coverletterLink;
+    }
+
+    public void setCoverletterLink(String coverletterLink) {
+        this.coverletterLink = coverletterLink;
+    }
+
+    public static Creator<JobApplication> getCREATOR() {
+        return CREATOR;
     }
 
     public String getApplicationId() {
@@ -79,5 +126,20 @@ public class JobApplication {
 
     public void setApplicationStatus(ApplicationStatus applicationStatus) {
         this.applicationStatus = applicationStatus;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(applicationId);
+        dest.writeString(position);
+        dest.writeString(selfDescription);
+        dest.writeString(skills);
+        dest.writeString(applicationDate);
+        dest.writeInt(view);
     }
 }

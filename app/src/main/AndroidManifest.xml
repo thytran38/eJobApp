@@ -13,14 +13,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.EJob">
-        <activity android:name=".ui.user.pdf.UploadPdf"></activity>
+        <activity android:name=".ui.user.application.ViewJobDetail"></activity>
+        <activity android:name=".ui.user.pdf.UploadPdf" />
         <activity android:name=".ui.login.LockedActivity" />
         <activity android:name=".ui.employer.AddJob" />
         <activity android:name=".ui.user.UserActivity" />
         <activity android:name=".ui.employer.EmployerActivity" />
         <activity android:name=".ui.admin.AdminActivity" />
         <activity android:name=".ui.passwordrecover.ForgetPassActivity" />
-        <activity android:name=".ui.user.JobDetail"/>
+        <activity android:name=".ui.user.JobDetail" />
 
         <service android:name=".data.db.FetchingService" />
 

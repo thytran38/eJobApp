@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -18,7 +19,10 @@ import com.example.ejob.ui.employer.job.JobAdapter;
 import com.example.ejob.ui.employer.job.JobPosting;
 import com.example.ejob.ui.user.JobDetail;
 import com.example.ejob.ui.user.JobDetailDialog;
+import com.example.ejob.ui.user.application.ViewJobDetail;
 import com.example.ejob.utils.Date;
+import com.facebook.shimmer.ShimmerFrameLayout;
+import com.google.android.material.card.MaterialCardView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -38,6 +42,7 @@ public class AllJobAdapter extends RecyclerView.Adapter<AllJobAdapter.JobViewHol
     private FirebaseAuth firebaseAuth;
     private DatabaseReference likeReference;
     Boolean testClick = false;
+    private ShimmerFrameLayout shimmerFrameLayout;
 
 
     public AllJobAdapter(List<JobPostingforUser> mJobList, ItemClickListener itemClickListener1) {
@@ -47,7 +52,7 @@ public class AllJobAdapter extends RecyclerView.Adapter<AllJobAdapter.JobViewHol
     @NonNull
     @Override
     public AllJobAdapter.JobViewHolderForUser onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_jobuser_cardview, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.job_item_new, parent, false);
         return new AllJobAdapter.JobViewHolderForUser(view);
     }
 
@@ -96,7 +101,7 @@ public class AllJobAdapter extends RecyclerView.Adapter<AllJobAdapter.JobViewHol
             Log.d("NBE", e.getMessage());
         }
 
-        holder.getLikeStatus(jobPosting.getJobId(),userID);
+        holder.getLikeStatus(holder, jobPosting.getJobId(),userID);
 
         holder.unheart.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -113,6 +118,7 @@ public class AllJobAdapter extends RecyclerView.Adapter<AllJobAdapter.JobViewHol
                                     testClick = false;
                                 }else{
                                     likeReference.child(jobPosting.getJobId()).child(userID).setValue(true);
+                                    Toast.makeText(holder.employerName.getContext(), "You liked this "+ holder.jobPosition.getText() +" job",Toast.LENGTH_LONG).show();
                                     testClick=false;
                                 }
                             }
@@ -126,17 +132,32 @@ public class AllJobAdapter extends RecyclerView.Adapter<AllJobAdapter.JobViewHol
                 }
         });
 
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
+        holder.employerAvatar.setOnClickListener(new View.OnClickListener(){
+
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(v.getContext(), JobDetail.class);
-                intent.putExtra("employerName", mJobList.get(position).getEmployerName());
-                intent.putExtra("positionHiring", mJobList.get(position).getJobTitle());
-                intent.putExtra("dateCreated", mJobList.get(position).getJobDateCreated());
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                Intent intent = new Intent(v.getContext(), ViewJobDetail.class);
+//            intent.putExtra("employerName", mJobList.get(position).getEmployerName());
+//            intent.putExtra("positionHiring", mJobList.get(position).getJobTitle());
+//            intent.putExtra("dateCreated", mJobList.get(position).getJobDateCreated());
+//            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 v.getContext().startActivity(intent);
             }
         });
+
+
+       holder.itemView.setOnClickListener(new View.OnClickListener(){
+
+           @Override
+           public void onClick(View v) {
+               Intent intent = new Intent(v.getContext(), ViewJobDetail.class);
+//            intent.putExtra("employerName", mJobList.get(position).getEmployerName());
+//            intent.putExtra("positionHiring", mJobList.get(position).getJobTitle());
+//            intent.putExtra("dateCreated", mJobList.get(position).getJobDateCreated());
+//            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+               v.getContext().startActivity(intent);
+           }
+       });
 
     }
 
@@ -153,21 +174,21 @@ public class AllJobAdapter extends RecyclerView.Adapter<AllJobAdapter.JobViewHol
 
         private ImageView employerAvatar, unheart;
         private TextView jobPosition, employerName, jobLocation, tvDaysago, likesNumber;
+        private MaterialCardView singleCardView;
 
 
         public JobViewHolderForUser(@NonNull View itemView) {
             super(itemView);
             unheart = itemView.findViewById(R.id.btUnheart);
             likesNumber = itemView.findViewById(R.id.tvLikes);
-            employerAvatar = itemView.findViewById(R.id.photoPreview_user);
-            jobPosition = itemView.findViewById(R.id.tvJobPosition_user);
-            employerName = itemView.findViewById(R.id.tvEmployer_user);
-            jobLocation = itemView.findViewById(R.id.tvJobLocation_user);
-            tvDaysago = itemView.findViewById(R.id.tvDaysAgo_user);
-
+            employerAvatar = itemView.findViewById(R.id.photoPreview);
+            jobPosition = itemView.findViewById(R.id.title);
+            employerName = itemView.findViewById(R.id.lamp);
+            jobLocation = itemView.findViewById(R.id.address);
+            tvDaysago = itemView.findViewById(R.id.dateCreated);
         }
 
-        public void getLikeStatus(String postId, String uid){
+        public void getLikeStatus(AllJobAdapter.JobViewHolderForUser holder, String postId, String uid){
             likeReference =  FirebaseDatabase.getInstance().getReference("likes");
             likeReference.addValueEventListener(new ValueEventListener() {
                 @Override

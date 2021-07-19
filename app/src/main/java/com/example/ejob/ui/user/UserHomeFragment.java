@@ -12,6 +12,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,7 +20,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.example.ejob.R;
@@ -48,8 +51,9 @@ public class UserHomeFragment extends Fragment {
 
     private ViewGroup viewgroupContainer;
     private LayoutInflater layoutInflater;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
-    private ImageView unheart;
+    View v;
 
     private static JobPostingforUser jobPostingU;
 
@@ -91,8 +95,12 @@ public class UserHomeFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        jobRecyclerView = (RecyclerView) view.findViewById(R.id.rcvJobUser);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(view.getContext());
+        this.v = view;
+        swipeRefreshLayout = (SwipeRefreshLayout) v.findViewById(R.id.swipeUserJob);
+
+
+        jobRecyclerView = (RecyclerView) v.findViewById(R.id.rcvJobUser);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(v.getContext());
         jobRecyclerView.setLayoutManager(linearLayoutManager);
         userAllJobView = new ViewModelProvider(this).get(UserAllJobViewModel.class);
 
@@ -104,13 +112,6 @@ public class UserHomeFragment extends Fragment {
                     @Override
                     public void onItemClick(JobPostingforUser jobPost) {
 
-
-//                        JobPostingforUser jobPostinParcel = new JobPostingforUser(jobTitle, jobEmployer, jobDatecreated);
-//                        Intent intent = new Intent(UserHomeFragment.this.getContext(), JobDetailDialog.class);
-//                        intent.putExtra("jobs", jobPostinParcel);
-//                        startActivity(intent);
-
-//                        jobDetailDialog.show(getChildFragmentManager(),"New fragment");
                         FragmentManager fragmentManager = getChildFragmentManager();
                         layoutInflater.inflate(R.layout.fragment_application_job,viewgroupContainer, false);
                         Toast.makeText(UserHomeFragment.this.getContext(),jobPost.getJobTitle(),Toast.LENGTH_LONG).show();
@@ -121,8 +122,17 @@ public class UserHomeFragment extends Fragment {
                 jobRecyclerView.setAdapter(allJobAdapter);
 
             }
+
+
         });
 
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                allJobAdapter.notifyDataSetChanged();
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        });
 
     }
 
@@ -134,6 +144,8 @@ public class UserHomeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+
+
         viewgroupContainer = container;
         layoutInflater = inflater;
         return inflater.inflate(R.layout.fragment_job_detail, container, false);

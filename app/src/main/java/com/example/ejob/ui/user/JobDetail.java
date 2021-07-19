@@ -21,14 +21,12 @@ public class JobDetail extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.fragment_application_job);
-        employerName = findViewById(R.id.tvCompany);
-        positionHiring = findViewById(R.id.tvPositionHiring);
-        dateCreated = findViewById(R.id.tvJobDateCreated);
+        setContentView(R.layout.activity_view_job_apply);
 
-        employerName.setText(String.valueOf(getIntent().getIntExtra("employerName", 1)));
-        positionHiring.setText(String.valueOf(getIntent().getIntExtra("positionHiring",0)));
-        dateCreated.setText(String.valueOf(getIntent().getIntExtra("dateCreated",0)));
+
+//        employerName.setText(String.valueOf(getIntent().getIntExtra("employerName", 1)));
+//        positionHiring.setText(String.valueOf(getIntent().getIntExtra("positionHiring",0)));
+//        dateCreated.setText(String.valueOf(getIntent().getIntExtra("dateCreated",0)));
 
 
     }

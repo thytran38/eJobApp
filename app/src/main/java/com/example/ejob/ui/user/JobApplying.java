@@ -1,5 +1,6 @@
 package com.example.ejob.ui.user;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -18,6 +19,7 @@ import com.example.ejob.R;
 import com.example.ejob.data.model.ApplicantModel;
 import com.example.ejob.data.model.ApplicationStatus;
 import com.example.ejob.ui.user.application.JobApplication;
+import com.example.ejob.ui.user.application.ViewJobDetail;
 import com.example.ejob.ui.user.userjob.JobPostingforUser;
 import com.example.ejob.utils.Date;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -45,11 +47,13 @@ public class JobApplying extends AppCompatActivity {
     JobPostingforUser jobPosting;
 
     FirebaseFirestore db;
-    FirebaseDatabase firebaseDatabase;
+    FirebaseDatabase fbDb;
     FirebaseAuth firebaseAuth;
     DocumentReference documentReference;
     StorageReference storageReference;
     Boolean cvExist;
+
+    String timeCreated;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -57,7 +61,7 @@ public class JobApplying extends AppCompatActivity {
         setContentView(R.layout.activity_view_job_apply);
 
         firebaseAuth = FirebaseAuth.getInstance();
-        firebaseDatabase = FirebaseDatabase.getInstance();
+        fbDb = FirebaseDatabase.getInstance();
         db = FirebaseFirestore.getInstance();
 
         mapping();
@@ -79,10 +83,11 @@ public class JobApplying extends AppCompatActivity {
         }else{
             getEtPhone.setText(firebaseAuth.getCurrentUser().getPhoneNumber());
         }
+        timeCreated = String.valueOf(Date.getEpochSecond());
 
         JobApplication jobApplication = new JobApplication();
         jobApplication.setPosition(positionHiring.getText().toString());
-        jobApplication.setApplicationDate(String.valueOf(Date.getEpochSecond()));
+        jobApplication.setApplicationDate(String.valueOf(timeCreated));
         jobApplication.setApplicationStatus(ApplicationStatus.PENDING);
         if(cletter.getText().equals("")){
             cletter.setText("Please Enter Coverletter");
@@ -94,21 +99,15 @@ public class JobApplying extends AppCompatActivity {
 
         ApplicantModel applicantModel = new ApplicantModel();
         applicantModel.setApplicantID(firebaseAuth.getCurrentUser().getUid());
-        if(!getEtFullname.getText().toString().isEmpty()){
-            applicantModel.setApplicantFullname(getEtFullname.getText().toString());
-        }
-        if(!getEtEmail.getText().toString().isEmpty()){
-            applicantModel.setApplicantEmail(getEtEmail.getText().toString());
-        }
-        if(!getEtPhone.getText().toString().isEmpty()){
-            applicantModel.setApplicantPhone(getEtPhone.getText().toString());
-        }
-        if(!getEtSchool.getText().toString().isEmpty()){
-            applicantModel.setApplicantUniversity(getEtSchool.getText().toString());
-        }
-        if(!getEtAddress.getText().toString().isEmpty()){
-            applicantModel.setApplicantAddress(getEtAddress.getText().toString());
-        }
+        getEtFullname.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(!getEtFullname.getText().toString().isEmpty()){
+                    applicantModel.setApplicantFullname(getEtFullname.getText().toString());
+                }
+
+            }
+        });
 
 
 
@@ -117,11 +116,18 @@ public class JobApplying extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                if(allFieldValidation()){
+                if((getEtFullname.getText().toString().equals("") && getEtPhone.getText().toString().equals("")
+                        && isEmailValid(getEtEmail.getText().toString()) && getEtAddress.getText().toString().equals("")
+                        && getEtSchool.getText().toString().equals(""))){
+                    Toast.makeText(JobApplying.this, "Can not leave blank", Toast.LENGTH_SHORT).show();
+                }
+                else{
                     submitEvent(jobApplication, applicantModel);
                     Toast.makeText(JobApplying.this, "Submit Application successfully!", Toast.LENGTH_SHORT).show();
                 }
-            }
+
+                }
+
         });
 
 
@@ -135,22 +141,10 @@ public class JobApplying extends AppCompatActivity {
     }
 
 
-    private boolean allFieldValidation() {
-        boolean validate = false;
-        if(!isEmailValid(getEtEmail.getText().toString())){
-            Toast.makeText(this, "Enter valid email", Toast.LENGTH_SHORT).show();
-        }
-        validate = !(getEtFullname.getText().toString().equals("") && getEtPhone.getText().toString().equals("")
-                && isEmailValid(getEtEmail.getText().toString()) && getEtAddress.getText().toString().equals("")
-                && getEtSchool.getText().toString().equals(""));
-
-        return validate;
-    }
-
-    private  submitEvent(JobApplication application, ApplicantModel applicant) {
+    private void submitEvent(JobApplication application, ApplicantModel applicant) {
 
         db.collection("Applications")
-                .document(jobPosting.getJobId())
+                .document(jobPosting.getJobId().replaceAll(".*/", ""))
                 .collection("pending")
                 .document(firebaseAuth.getCurrentUser().getUid())
                 .set(application)
@@ -158,6 +152,7 @@ public class JobApplying extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         Toast.makeText(JobApplying.this, "Applied successfully for this " + jobPosting.getJobTitle() + " job.", Toast.LENGTH_SHORT).show();
+                        finish();
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -166,6 +161,17 @@ public class JobApplying extends AppCompatActivity {
                         Toast.makeText(JobApplying.this, "Failed to apply. Please retry.", Toast.LENGTH_SHORT).show();
                     }
                 });
+
+        fbDb.getReference("userapplications")
+                .child(jobPosting.getJobId().replaceAll(".*/", ""))
+                .child(firebaseAuth.getCurrentUser().getUid())
+                .setValue(application);
+
+        fbDb.getReference("employerapplications")
+                .child(jobPosting.getEmployerName())
+                .child(jobPosting.getJobId().replaceAll(".*/", ""))
+                .child(firebaseAuth.getCurrentUser().getUid())
+                .setValue(application);
 
         db.collection("Applicants")
                 .document(firebaseAuth.getCurrentUser().getUid())
@@ -188,7 +194,7 @@ public class JobApplying extends AppCompatActivity {
         db.collection("JobAppliedHistory")
                 .document(firebaseAuth.getCurrentUser().getUid())
                 .collection("jobs")
-                .document(jobPosting.getJobId())
+                .document(jobPosting.getJobId().replaceAll(".*/", ""))
                 .set(application)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override

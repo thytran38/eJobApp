@@ -36,6 +36,7 @@ public class AllJobAdapter extends RecyclerView.Adapter<AllJobAdapter.JobViewHol
 
     private FirebaseAuth firebaseAuth;
     private DatabaseReference likeReference;
+    private DatabaseReference appliedReference;
     Boolean testClick = false;
     private ShimmerFrameLayout shimmerFrameLayout;
 
@@ -98,6 +99,7 @@ public class AllJobAdapter extends RecyclerView.Adapter<AllJobAdapter.JobViewHol
 
         holder.getLikeStatus(holder, jobPosting.getJobId(),userID);
 
+        holder.getAppliedNumber(jobPosting.getJobId());
         holder.unheart.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -169,7 +171,7 @@ public class AllJobAdapter extends RecyclerView.Adapter<AllJobAdapter.JobViewHol
     public class JobViewHolderForUser extends RecyclerView.ViewHolder{
 
         private ImageView employerAvatar, unheart;
-        private TextView jobPosition, employerName, jobLocation, tvDaysago, likesNumber;
+        private TextView jobPosition, employerName, jobLocation, tvDaysago, likesNumber, appliedNumber;
         private MaterialCardView singleCardView;
 
 
@@ -182,6 +184,8 @@ public class AllJobAdapter extends RecyclerView.Adapter<AllJobAdapter.JobViewHol
             employerName = itemView.findViewById(R.id.lamp);
             jobLocation = itemView.findViewById(R.id.address);
             tvDaysago = itemView.findViewById(R.id.dateCreated);
+            appliedNumber = itemView.findViewById(R.id.tvAppliedNum);
+
         }
 
         public void getLikeStatus(AllJobAdapter.JobViewHolderForUser holder, String postId, String uid){
@@ -208,9 +212,25 @@ public class AllJobAdapter extends RecyclerView.Adapter<AllJobAdapter.JobViewHol
 
                 }
             });
+        }
 
+        public void getAppliedNumber(String postId){
+            appliedReference =  FirebaseDatabase.getInstance().getReference("userapplications");
+            appliedReference.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if(snapshot.child(postId.replaceAll(".*/", "")).exists()){
+                        int appCount = (int) snapshot.child(postId.replaceAll(".*/", "")).getChildrenCount();
+                        appliedNumber.setText(String.valueOf(appCount));
 
+                    }
+                }
 
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
         }
     }
 }

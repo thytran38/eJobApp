@@ -58,16 +58,7 @@ public class AddJob extends AppCompatActivity {
         firebaseFirestore2 = FirebaseFirestore.getInstance();
 
 //        textInputLayout = findViewById(R.id.etType);
-        jobTitle = findViewById(R.id.etTitle);
-        jobDescription = findViewById(R.id.etDescription);
-        jobLocation = findViewById(R.id.etLocation);
-        jobSalary = findViewById(R.id.etSalary);
-        employerName = findViewById(R.id.etEmployername);
-        oodDate = findViewById(R.id.etTime);
-        jobDateCreated = findViewById(R.id.etDatecreated);
-        jobSkills = findViewById(R.id.etSkills);
-        addJobButton = findViewById(R.id.btnAdd);
-        etJobType = findViewById(R.id.etJobType);
+        mapping();
 
 
 //        tvIT = findViewById(R.id.tvIT);
@@ -133,13 +124,7 @@ public class AddJob extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                CommonUtils.checkFields(jobTitle);
-                CommonUtils.checkFields(jobDescription);
-                CommonUtils.checkFields(jobLocation);
-                CommonUtils.checkFields(jobSalary);
-                CommonUtils.checkFields(oodDate);
-                CommonUtils.checkFields(jobSkills);
-
+                validate();
                 jobType = etJobType.getText().toString();
                 FirebaseUser firebaseUser = fAuth.getCurrentUser();
                 DocumentReference df2 = firebaseFirestore2.collection("Jobs")
@@ -162,6 +147,28 @@ public class AddJob extends AppCompatActivity {
 
             }
         });
+    }
+
+    private void validate() {
+        CommonUtils.checkFields(jobTitle);
+        CommonUtils.checkFields(jobDescription);
+        CommonUtils.checkFields(jobLocation);
+        CommonUtils.checkFields(jobSalary);
+        CommonUtils.checkFields(oodDate);
+        CommonUtils.checkFields(jobSkills);
+    }
+
+    private void mapping() {
+        jobTitle = findViewById(R.id.etTitle);
+        jobDescription = findViewById(R.id.etDescription);
+        jobLocation = findViewById(R.id.etLocation);
+        jobSalary = findViewById(R.id.etSalary);
+        employerName = findViewById(R.id.etEmployername);
+        oodDate = findViewById(R.id.etTime);
+        jobDateCreated = findViewById(R.id.etDatecreated);
+        jobSkills = findViewById(R.id.etSkills);
+        addJobButton = findViewById(R.id.btnAdd);
+        etJobType = findViewById(R.id.etJobType);
     }
 
     @Override

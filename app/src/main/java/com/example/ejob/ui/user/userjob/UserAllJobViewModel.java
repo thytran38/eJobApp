@@ -48,15 +48,6 @@ public class UserAllJobViewModel extends ViewModel {
         mListJobLivedata.setValue(mListJob);
     }
 
-    public void jobApplied(){
-        firebaseAuth = FirebaseAuth.getInstance();
-        firebaseFirestore = FirebaseFirestore.getInstance();
-        firebaseFirestore.collection("Users_Jobs")
-                .document(firebaseAuth.getCurrentUser().getUid());
-
-    }
-
-
 
     private ArrayList<com.example.ejob.ui.user.userjob.JobPostingforUser> getJobFromFirestore(){
         ArrayList<JobPostingforUser> jobPostingArrayList = new ArrayList<>();

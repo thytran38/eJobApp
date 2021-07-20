@@ -118,6 +118,7 @@
                             android:gravity="center_horizontal"/>
 
                         <TextView
+                            android:id="@+id/typeJob"
                             android:text="Job type"
                             android:textColor="@color/teal_700"
                             android:textSize="14sp"
@@ -240,6 +241,7 @@
                                             app:tint="@color/text_gray"/>
 
                                         <TextView
+                                            android:id="@+id/tvCompanyName"
                                             android:layout_toEndOf="@id/iconCompany"
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
@@ -262,6 +264,7 @@
                                             app:tint="@color/text_gray"/>
 
                                         <TextView
+                                            android:id="@+id/tvLocationDetail"
                                             android:layout_toEndOf="@id/iconLocation"
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
@@ -284,6 +287,7 @@
                                             app:tint="@color/text_gray"/>
 
                                         <TextView
+                                            android:id="@+id/tvCompanyWeb"
                                             android:layout_toEndOf="@id/iconWebsite"
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
@@ -366,19 +370,24 @@
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
                     android:orientation="horizontal">
-                    <ImageView
-                        android:src="@drawable/ic_twotone_help_24"
-                        app:tint="@color/white"
-                        android:layout_width="21dp"
-                        android:layout_height="21dp"/>
+
                     <TextView
+                        android:id="@+id/tvApply"
                         android:text="Apply"
                         android:textColor="@color/white"
                         android:textStyle="bold"
-                        android:background="@drawable/button_green"
                         android:layout_marginStart="5dp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"/>
+
+                    <ImageView
+                        android:id="@+id/applyIcon"
+                        android:layout_width="14dp"
+                        android:layout_height="14dp"
+                        android:layout_marginStart="2dp"
+                        android:layout_marginTop="0dp"
+                        android:layout_gravity="center_vertical"
+                        android:src="@drawable/ic_baseline_work_outline_24"/>
                 </LinearLayout>
 
             </RelativeLayout>

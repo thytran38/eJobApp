@@ -233,7 +233,8 @@
                                         android:id="@+id/etInsitution"
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
-                                        android:text="Enter your institution name"
+                                        android:hint="Enter your institution name"
+                                        android:textColorHint="@color/light_gray"
                                         android:textSize="12sp"
                                         android:textColor="@color/grey_effective"/>
 
@@ -263,7 +264,7 @@
                                         android:id="@+id/etPersonalPhone"
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
-                                        android:hint="Enter your address"
+                                        android:hint="Enter your phone number"
                                         android:textColorHint="@color/light_gray"
                                         android:textSize="12sp"
                                         android:textColor="@color/grey_effective"/>
@@ -330,6 +331,7 @@
                                         android:hint="User Email"
                                         android:textColorHint="@color/light_gray"
                                         android:textSize="12sp"
+                                        android:editable="false"
                                         android:textColor="@color/grey_effective"/>
 
                                 </LinearLayout>

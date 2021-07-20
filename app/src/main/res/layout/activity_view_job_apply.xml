@@ -204,7 +204,8 @@
                                         android:id="@+id/etFullname"
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
-                                        android:text="Enter Full name"
+                                        android:hint="Enter Full name"
+                                        android:textColorHint="@color/light_gray"
                                         android:textSize="12sp"
                                         android:textColor="@color/grey_effective"/>
 
@@ -262,7 +263,8 @@
                                         android:id="@+id/etPersonalPhone"
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
-                                        android:text="Enter your address"
+                                        android:hint="Enter your address"
+                                        android:textColorHint="@color/light_gray"
                                         android:textSize="12sp"
                                         android:textColor="@color/grey_effective"/>
 
@@ -292,7 +294,8 @@
                                         android:id="@+id/etPersonalAddress"
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
-                                        android:text="Enter your address"
+                                        android:hint="Enter your address"
+                                        android:textColorHint="@color/light_gray"
                                         android:textSize="12sp"
                                         android:textColor="@color/grey_effective"/>
 
@@ -324,7 +327,8 @@
                                         android:id="@+id/etFacebook"
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
-                                        android:text="User Email"
+                                        android:hint="User Email"
+                                        android:textColorHint="@color/light_gray"
                                         android:textSize="12sp"
                                         android:textColor="@color/grey_effective"/>
 

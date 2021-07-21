@@ -165,6 +165,17 @@ public class UserHomeFragment extends Fragment {
         jobRecyclerView.setAdapter(allJobAdapter);
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                allJobAdapter.notifyDataSetChanged();
+            }
+        });
+    }
+
     private static void setJobPostingForUser(JobPostingforUser job){
         jobPostingU = job;
     }

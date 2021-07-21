@@ -7,17 +7,36 @@
     android:orientation="vertical"
     tools:context=".ui.user.UserActivity">
 
-    <com.google.android.material.tabs.TabLayout
-        android:id="@+id/tabLayout"
-        app:tabSelectedTextColor="@color/cardview_dark_background"
-        android:layout_width="match_parent"
-        android:layout_height="25dp">
-    </com.google.android.material.tabs.TabLayout>
-
-    <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/view_pager_user"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-    </androidx.viewpager2.widget.ViewPager2>
+
+        <FrameLayout
+            android:id="@+id/fragment_container"
+            android:layout_width="match_parent"
+            android:layout_height="fill_parent" />
+
+        <com.ismaeldivita.chipnavigation.ChipNavigationBar
+            android:id="@+id/menu"
+            android:background="@color/white_grey"
+            android:layout_alignBottom="@+id/fragment_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cnb_menuResource="@menu/bottom_menu"
+            app:cnb_orientationMode="horizontal"
+            app:cnb_addBottomInset="false"
+            app:cnb_addLeftInset="false"
+            app:cnb_addRightInset="false"
+            app:cnb_addTopInset="false"
+            app:cnb_unselectedColor="@color/navy_100"
+            app:cnb_badgeColor="@color/green_effective"
+            android:padding="4dp"
+            app:cnb_radius="20dp"
+            app:cnb_iconSize="18dp" />
+
+
+    </RelativeLayout>
+
+
 
 </LinearLayout>

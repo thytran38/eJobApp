@@ -151,20 +151,6 @@ public class UserHomeFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_job_detail, container, false);
     }
 
-    private void setAnimation(int animate, List<JobPostingforUser> jobPostings){
-        LayoutAnimationController layoutAnimationController = AnimationUtils.loadLayoutAnimation(this.getContext(), animate);
-        jobRecyclerView.setLayoutAnimation(layoutAnimationController);
-
-        allJobAdapter = new AllJobAdapter(jobPostings, new AllJobAdapter.ItemClickListener() {
-            @Override
-            public void onItemClick(JobPostingforUser jobPost) {
-                Toast.makeText(UserHomeFragment.this.getContext(),jobPost.getJobTitle(),Toast.LENGTH_LONG).show();
-                Log.d("TAG_UserHomeFragment", jobPost.getJobTitle());
-            }
-        });
-        jobRecyclerView.setAdapter(allJobAdapter);
-    }
-
     @Override
     public void onResume() {
         super.onResume();

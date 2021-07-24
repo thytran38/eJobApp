@@ -22,9 +22,7 @@ import com.ismaeldivita.chipnavigation.ChipNavigationBar;
 
 public class UserActivity extends AppCompatActivity implements ChipNavigationBar.OnItemSelectedListener {
     Button logout;
-    private TabLayout tabLayout;
-    private ViewPager2 viewPager2;
-    UserHomeFragment userHomeFragment;
+
     SwipeRefreshLayout swipeRefreshLayout;
     ChipNavigationBar chipNavigationBar;
 

@@ -109,16 +109,15 @@ public class EmployerActivity extends AppCompatActivity implements ChipNavigatio
         androidx.fragment.app.Fragment selectedFragment = null;
         switch (i) {
             case R.id.nav_main:
-                selectedFragment = new UserHomeFragment();
+                selectedFragment = new EmployerHome();
                 break;
-            case R.id.nav_applications:
-                selectedFragment = new ApplicationFragment();
-                break;
+
             case R.id.nav_saved:
-                selectedFragment = new UserFavoriteFragment();
+                selectedFragment = new EmployersApplications();
                 break;
+
             case R.id.nav_profile:
-                selectedFragment = new UserProfileFragment();
+                selectedFragment = new EmployerProfiles();
                 break;
 
         }

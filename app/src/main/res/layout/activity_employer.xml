@@ -1,58 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.motion.widget.MotionLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:layoutDescription="@xml/activity_employer_scene"
-    tools:context=".ui.employer.EmployerActivity">
+    android:orientation="vertical"
+    tools:context=".ui.user.UserActivity">
 
-    <LinearLayout
-        android:id="@+id/linearLayout3"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
+
+        <FrameLayout
+            android:id="@+id/fragment_container_employer"
+            android:layout_width="match_parent"
+            android:layout_height="fill_parent" />
+
+        <com.ismaeldivita.chipnavigation.ChipNavigationBar
+            android:id="@+id/menu2"
+            android:background="@color/white_grey"
+            android:layout_alignBottom="@+id/fragment_container_employer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cnb_menuResource="@menu/bottom_menu2"
+            app:cnb_orientationMode="horizontal"
+            app:cnb_addBottomInset="false"
+            app:cnb_addLeftInset="false"
+            app:cnb_addRightInset="false"
+            app:cnb_addTopInset="false"
+            app:cnb_unselectedColor="@color/navy_100"
+            app:cnb_badgeColor="@color/green_effective"
+            android:padding="4dp"
+            app:cnb_radius="20dp"
+            app:cnb_iconSize="18dp" />
+
+
+    </RelativeLayout>
 
 
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical" >
-
-                <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-                    android:id="@+id/swipeJoblist"
-                    android:layout_width="match_parent"
-                    android:layout_height="350dp">
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/rcJoblist"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        tools:layout_editor_absoluteX="0dp"
-                        tools:layout_editor_absoluteY="151dp">
-
-                    </androidx.recyclerview.widget.RecyclerView>
-
-                </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
-
-                <Button
-                    android:id="@+id/btnAddjob"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Add New Job"
-                    tools:layout_editor_absoluteX="128dp"
-                    tools:layout_editor_absoluteY="603dp" />
-
-                <Button
-                    android:id="@+id/btnLogout_employer"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Logout"
-                    tools:layout_editor_absoluteX="150dp"
-                    tools:layout_editor_absoluteY="663dp" />
-
-            </LinearLayout>
-    </LinearLayout>
-
-</androidx.constraintlayout.motion.widget.MotionLayout>
+</LinearLayout>

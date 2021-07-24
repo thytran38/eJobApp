@@ -2,8 +2,8 @@
     <!-- Base application theme. -->
     <style name="Theme.EJob" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/purple_200</item>
-        <item name="colorOnPrimary">@color/white_grey</item>
+        <item name="colorPrimary">@color/green_effective</item>
+        <item name="colorOnPrimary">@color/white</item>
 
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>

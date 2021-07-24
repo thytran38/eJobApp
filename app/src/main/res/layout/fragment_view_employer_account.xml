@@ -44,7 +44,7 @@
                         android:layout_gravity="center_vertical"
                         android:layout_marginStart="3dp"
                         android:layout_weight="1"
-                        android:background=""
+                        android:background="@color/white_grey"
                         android:hint="search for employer"
                         android:padding="2dp"
                         android:singleLine="true"
@@ -61,7 +61,7 @@
             </LinearLayout>
 
             <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-                android:id="@+id/swipeUserJob"
+                android:id="@+id/swipeEmployerList"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 

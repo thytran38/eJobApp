@@ -5,7 +5,6 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.DatePickerDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -18,7 +17,6 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.ejob.R;
-import com.example.ejob.ui.register.Register;
 import com.example.ejob.utils.CommonUtils;
 import com.example.ejob.utils.Date;
 import com.google.android.gms.tasks.OnFailureListener;

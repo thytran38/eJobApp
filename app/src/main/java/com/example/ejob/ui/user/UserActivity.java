@@ -35,18 +35,10 @@ public class UserActivity extends AppCompatActivity implements ChipNavigationBar
         setContentView(R.layout.activity_user);
         swipeRefreshLayout = findViewById(R.id.swipeJoblist);
 
-//        tabLayout = findViewById(R.id.tabLayout);
-//        viewPager2 = findViewById(R.id.view_pager_user);
         chipNavigationBar = findViewById(R.id.menu);
         chipNavigationBar.setMenuOrientation(ChipNavigationBar.MenuOrientation.HORIZONTAL);
         chipNavigationBar.setOnItemSelectedListener(this);
         chipNavigationBar.setItemSelected(R.id.nav_main, true);
-
-//        ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager(), getLifecycle());
-//        viewPager2.setAdapter(viewPagerAdapter);
-//        new TabLayoutMediator(tabLayout, viewPager2,
-//                (tab, position) -> tab.setText(CommonUtils.getTitlefromUser(position)))
-//                .attach();
 
     }
 

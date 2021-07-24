@@ -3,7 +3,6 @@ package com.example.ejob.ui.splash;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
@@ -14,11 +13,10 @@ import com.example.ejob.MainActivity;
 import com.example.ejob.R;
 import com.example.ejob.data.db.FetchingService;
 import com.example.ejob.data.model.ApplicantModel;
-import com.example.ejob.data.model.Employer;
+import com.example.ejob.ui.admin.employer_accounts.Employer;
 import com.example.ejob.ui.login.LoginActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.auth.User;
 
 public class SplashscreenActivity extends AppCompatActivity {
 

@@ -12,8 +12,8 @@
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/appbar"
             android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:background="@color/teal_900"
+            android:layout_height="10dp"
+            android:background="@color/green_effective"
             app:elevation="0dp">
 
             <androidx.appcompat.widget.Toolbar

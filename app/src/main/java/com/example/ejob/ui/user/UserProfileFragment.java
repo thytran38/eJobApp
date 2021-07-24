@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,6 +23,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 
+import com.bumptech.glide.Glide;
 import com.example.ejob.R;
 import com.example.ejob.ui.user.pdf.UploadPdf;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -59,6 +61,7 @@ public class UserProfileFragment extends Fragment {
     FirebaseStorage firebaseStorage;
     StorageReference storageReference;
     DatabaseReference databaseReference;
+    ImageView userAvatar;
 
     public UserProfileFragment() {
         // Required empty public constructor
@@ -91,6 +94,8 @@ public class UserProfileFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        userAvatar = (ImageView) v.findViewById(R.id.userAvatar);
+
 
         firebaseStorage = FirebaseStorage.getInstance();
         storageReference = firebaseStorage.getReference();

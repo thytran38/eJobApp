@@ -10,12 +10,13 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.util.Supplier;
 
 import com.example.ejob.R;
 import com.example.ejob.ui.admin.AdminActivity;
 import com.example.ejob.ui.employer.EmployerActivity;
 import com.example.ejob.ui.passwordrecover.ForgetPassActivity;
-import com.example.ejob.ui.register.Register;
+import com.example.ejob.ui.register.TransitRegister;
 import com.example.ejob.ui.user.UserActivity;
 import com.example.ejob.ui.main.MainFragment;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -28,7 +29,8 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import org.w3c.dom.Document;
+import java.util.Arrays;
+import java.util.stream.Stream;
 
 public class LoginActivity extends AppCompatActivity implements LoginNavigator {
     EditText emailText, passwordText;
@@ -58,7 +60,7 @@ public class LoginActivity extends AppCompatActivity implements LoginNavigator {
         register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(), Register.class));
+                startActivity(new Intent(getApplicationContext(), TransitRegister.class));
             }
         });
 
@@ -71,9 +73,10 @@ public class LoginActivity extends AppCompatActivity implements LoginNavigator {
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                checkFields(emailText);
-                checkFields(passwordText);
-                if(checkFields(emailText) && checkFields(passwordText)){
+                if(!(valEmail() && valEmail())){
+                    Toast.makeText(LoginActivity.this, "Email & Pass can not be blank", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                     if (valid) {
                         fAuth.signInWithEmailAndPassword(emailText.getText().toString(), passwordText.getText().toString()).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                             @Override
@@ -97,10 +100,6 @@ public class LoginActivity extends AppCompatActivity implements LoginNavigator {
                         });
                     }
                 }
-
-
-
-            }
         });
 
         forget.setOnClickListener(new View.OnClickListener() {
@@ -162,14 +161,66 @@ public class LoginActivity extends AppCompatActivity implements LoginNavigator {
         });
     }
 
-    public boolean checkFields(EditText textField) {
-        if (textField.getText().toString().isEmpty()) {
-            textField.setError("Error");
-            valid = false;
+    private boolean valEmail() {
+        String em = emailText.getText().toString().trim();
+        String emailCond = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
+        if (em.isEmpty()) {
+            emailText.setError("Please enter your Email");
+            return false;
+        } else if (!em.matches(emailCond)) {
+            emailText.setError("Invalid Email");
+            return false;
         } else {
-            valid = true;
+            emailText.setError(null);
+            return true;
         }
-        return valid;
+    }
+
+    private boolean valPass() {
+        String pass = passwordText.getText().toString().trim();
+        if (pass.isEmpty()) {
+            passwordText.setError("Please enter password");
+            return false;
+        } else if (pass.length() < 6) {
+            passwordText.setError("Password is too short!");
+            return false;
+        } else if (!containLowerCase(pass) || !containUpperCase(pass) || !containSpecialChar(pass) || toStream(pass).anyMatch(c -> c.equals(" "))) {
+            passwordText.setError("Password must contain at least 1 upper case, lower case, special character and don't contain \" \"");
+            return false;
+        }
+        passwordText.setError(null);
+        return true;
+    }
+
+    private static boolean containUpperCase(String str) {
+        for (char c : str.toCharArray())
+            if (Character.isUpperCase(c))
+                return true;
+        return false;
+    }
+
+    private static boolean containLowerCase(String str) {
+        for (char c : str.toCharArray())
+            if (Character.isLowerCase(c))
+                return true;
+        return false;
+    }
+
+    private static boolean containSpecialChar(String str) {
+        String specialChars = ",./!@#$%^&*()-_+=~[]\\|{}[]";
+        Supplier<Stream<String>> supplier = () -> toStream(str);
+        for (char c : specialChars.toCharArray())
+            if (supplier.get().anyMatch(item -> item.equals(String.valueOf(c))))
+                return true;
+        return false;
+    }
+
+    private static Stream<String> toStream(String text) {
+        String[] res = new String[text.length()];
+        for (int i = 0; i < text.length(); i++) {
+            res[i] = String.valueOf(text.charAt(i));
+        }
+        return Arrays.stream(res);
     }
 
     @Override

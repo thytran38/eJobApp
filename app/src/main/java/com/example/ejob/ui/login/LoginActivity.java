@@ -73,7 +73,7 @@ public class LoginActivity extends AppCompatActivity implements LoginNavigator {
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!(valEmail() && valEmail())){
+                if(!(valEmail() && valPass())){
                     Toast.makeText(LoginActivity.this, "Email & Pass can not be blank", Toast.LENGTH_SHORT).show();
                     return;
                 }

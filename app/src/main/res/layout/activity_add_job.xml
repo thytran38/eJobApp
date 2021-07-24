@@ -9,184 +9,422 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="2dp"
+        android:background="@color/white_grey">
 
-        <TextView
-            android:id="@+id/textView12"
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="ADD A NEW JOB" />
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:paddingVertical="9dp">
 
-        <TextView
-            android:id="@+id/textView11"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Job Type" />
+            <TextView
+                android:id="@+id/textView12"
+                android:layout_gravity="center_horizontal"
+                android:padding="10dp"
+                android:textStyle="bold"
+                android:textColor="@color/navy_100"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="ADD A NEW JOB" />
 
-        <EditText
-            android:id="@+id/etJobType"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="enter job type" />
 
-<!--        <com.google.android.material.textfield.TextInputLayout-->
-<!--            android:id="@+id/etType"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:ems="10"-->
-<!--            android:inputType="text"-->
-<!--            android:text="JobType" >-->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:layout_marginStart="14dp"
+                android:layout_marginEnd="14dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="20dp"
+                app:strokeWidth="0.5dp"
+                app:strokeColor="#f1f1f1"
+                app:cardElevation="0dp"
+                app:cardCornerRadius="10dp">
 
-<!--            <AutoCompleteTextView-->
-<!--                android:id="@+id/tvIT"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="match_parent"-->
-<!--                android:layout_weight="1"-->
-<!--                android:inputType="none"-->
-<!--                android:text="IT/Software"/>-->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:paddingVertical="10dp">
 
-<!--            <AutoCompleteTextView-->
-<!--                android:id="@+id/tvArt"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="match_parent"-->
-<!--                android:layout_weight="1"-->
-<!--                android:inputType="none"-->
-<!--                android:text="Art"/>-->
+                    <RelativeLayout
+                        android:layout_marginTop="13dp"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="10dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
 
-<!--            <AutoCompleteTextView-->
-<!--                android:id="@+id/tvBusiness"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="match_parent"-->
-<!--                android:layout_weight="1"-->
-<!--                android:inputType="none"-->
-<!--                android:text="Business"/>-->
+                        <ImageView
+                            android:id="@+id/fullname"
+                            android:layout_width="17dp"
+                            android:layout_height="17dp"
+                            android:src="@drawable/ic_baseline_person_outline_24"
+                            app:tint="@color/text_gray"/>
 
-<!--            <AutoCompleteTextView-->
-<!--                android:id="@+id/tvOther"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="match_parent"-->
-<!--                android:layout_weight="1"-->
-<!--                android:inputType="none"-->
-<!--                android:text="Other"/>-->
+                        <TextView
+                            android:layout_toEndOf="@id/fullname"
+                            android:id="@+id/tvSoluongcantuyen"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Number of Applicants"
+                            android:layout_marginStart="5dp"
+                            android:textStyle=""/>
 
-<!--        </com.google.android.material.textfield.TextInputLayout>-->
+                    </RelativeLayout>
 
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Job Title" />
+                    <EditText
+                        android:id="@+id/etNumApplicant"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:ems="10"
+                        android:textSize="13sp"
+                        android:padding="10dp"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="10dp"
+                        android:inputType="numberSigned"
+                        android:textStyle="bold"
+                        android:textColor="@color/navy_100"
+                        android:hint="3" />
 
-        <EditText
-            android:id="@+id/etTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="textPersonName"
-            android:text="job title" />
+<!--                    <RelativeLayout-->
+<!--                        android:layout_marginTop="13dp"-->
+<!--                        android:layout_marginStart="10dp"-->
+<!--                        android:layout_marginEnd="10dp"-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="wrap_content">-->
 
-        <TextView
-            android:id="@+id/textView2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Job Description" />
+<!--                        <ImageView-->
+<!--                            android:id="@+id/jobtype"-->
+<!--                            android:layout_width="17dp"-->
+<!--                            android:layout_height="17dp"-->
+<!--                            android:src="@drawable/ic_baseline_access_time_24"-->
+<!--                            app:tint="@color/text_gray"/>-->
 
-        <EditText
-            android:id="@+id/etDescription"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="textPersonName"
-            android:text="job description" />
+<!--                        <TextView-->
+<!--                            android:layout_toEndOf="@id/jobtype"-->
+<!--                            android:layout_width="match_parent"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:text="Job Type"-->
+<!--                            android:layout_marginStart="5dp"/>-->
 
-        <TextView
-            android:id="@+id/textView3"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="job Location" />
+<!--                    </RelativeLayout>-->
 
-        <EditText
-            android:id="@+id/etLocation"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="textPersonName"
-            android:text="job Location" />
+                    <com.google.android.material.textfield.TextInputLayout
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="10dp"
+                        app:boxCornerRadiusBottomEnd="13dp"
+                        app:boxCornerRadiusBottomStart="13dp"
+                        app:boxCornerRadiusTopEnd="13dp"
+                        app:boxCornerRadiusTopStart="13dp"
 
-        <TextView
-            android:id="@+id/textView4"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="salary" />
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:startIconDrawable="@drawable/ic_baseline_access_time_24"
+                        android:hint="Select Job Type">
 
-        <EditText
-            android:id="@+id/etSalary"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="textPersonName"
-            android:text="salary" />
+                        <AutoCompleteTextView
+                            android:id="@+id/autoComplete"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:enabled="false"
+                            android:inputType="none"
+                            android:layout_gravity="center_vertical"
+                            android:textColorHint="@color/text_gray"
+                            android:textSize="13sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/navy_100"
+                            android:background="@color/white" />
 
-        <TextView
-            android:id="@+id/textView5"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="employer name" />
+                    </com.google.android.material.textfield.TextInputLayout>
 
-        <EditText
-            android:id="@+id/etEmployername"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="textPersonName"
-            android:text="employer's name" />
+                    <RelativeLayout
+                        android:layout_marginTop="13dp"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="10dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/textView6"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="deadline" />
+                        <ImageView
+                            android:id="@+id/jobtype1"
+                            android:layout_width="17dp"
+                            android:layout_height="17dp"
+                            android:src="@drawable/ic_baseline_work_outline_24"
+                            app:tint="@color/text_gray"/>
 
-        <EditText
-            android:id="@+id/etTime"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="datetime" />
+                        <TextView
+                            android:layout_toEndOf="@id/jobtype1"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Job Title"
+                            android:layout_marginStart="5dp"/>
 
-        <TextView
-            android:id="@+id/textView7"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="date created" />
+                    </RelativeLayout>
 
-        <EditText
-            android:id="@+id/etDatecreated"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="textPersonName"
-            android:text="job date creation" />
+                    <EditText
+                        android:id="@+id/etTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:ems="10"
+                        android:padding="10dp"
+                        android:textSize="13sp"
+                        android:textColor="@color/navy_100"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="10dp"
+                        android:inputType="textPersonName"
+                        android:textStyle="bold"
+                        android:hint="Developer" />
 
-        <TextView
-            android:id="@+id/textView8"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="skills" />
+                    <RelativeLayout
+                        android:layout_marginTop="13dp"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="10dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
 
-        <EditText
-            android:id="@+id/etSkills"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="textPersonName"
-            android:text="list of skills" />
+                        <ImageView
+                            android:id="@+id/jobtype2"
+                            android:layout_width="17dp"
+                            android:layout_height="17dp"
+                            android:src="@drawable/ic_baseline_description_24"
+                            app:tint="@color/text_gray"/>
 
-        <Button
-            android:id="@+id/btnAdd"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Add Job" />
+                        <TextView
+                            android:layout_toEndOf="@id/jobtype2"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Job Description"
+                            android:layout_marginStart="5dp"/>
+
+                    </RelativeLayout>
+
+                    <EditText
+                        android:id="@+id/etDescription"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:ems="10"
+                        android:maxLines="10"
+                        android:padding="10dp"
+                        android:textSize="13sp"
+                        android:textColor="@color/navy_100"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="10dp"
+                        android:inputType="textPersonName"
+                        android:textStyle="bold"
+                        android:hint="This position requires coding." />
+
+                    <RelativeLayout
+                        android:layout_marginTop="13dp"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="10dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <ImageView
+                            android:id="@+id/jobtype4"
+                            android:layout_width="17dp"
+                            android:layout_height="17dp"
+                            android:src="@drawable/ic_baseline_location_on_24"
+                            app:tint="@color/text_gray"/>
+
+                        <TextView
+                            android:layout_toEndOf="@id/jobtype4"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Job Location"
+                            android:layout_marginStart="5dp"/>
+
+                    </RelativeLayout>
+
+                    <EditText
+                        android:id="@+id/etLocation"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:ems="10"
+                        android:padding="10dp"
+                        android:textSize="13sp"
+                        android:textColor="@color/navy_100"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="10dp"
+                        android:inputType="textPersonName"
+                        android:textStyle="bold"
+                        android:hint="Ho Chi Minh" />
+
+                    <RelativeLayout
+                        android:layout_marginTop="13dp"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="10dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <ImageView
+                            android:id="@+id/jobtype5"
+                            android:layout_width="17dp"
+                            android:layout_height="17dp"
+                            android:src="@drawable/ic_baseline_attach_money_24"
+                            app:tint="@color/text_gray"/>
+
+                        <TextView
+                            android:layout_toEndOf="@id/jobtype5"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Salary"
+                            android:layout_marginStart="5dp"/>
+
+                    </RelativeLayout>
+
+                    <EditText
+                        android:id="@+id/etSalary"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:ems="10"
+                        android:padding="10dp"
+                        android:textSize="13sp"
+                        android:textColor="@color/navy_100"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="10dp"
+                        android:inputType="textPersonName"
+                        android:textStyle="bold"
+                        android:hint="10000000" />
+
+                    <RelativeLayout
+                        android:layout_marginTop="13dp"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="10dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <ImageView
+                            android:id="@+id/jobtype6"
+                            android:layout_width="17dp"
+                            android:layout_height="17dp"
+                            android:src="@drawable/ic_baseline_business_24"
+                            app:tint="@color/text_gray"/>
+
+                        <TextView
+                            android:layout_toEndOf="@id/jobtype6"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Company Name"
+                            android:layout_marginStart="5dp"/>
+
+                    </RelativeLayout>
+
+                    <EditText
+                        android:id="@+id/etEmployername"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:ems="10"
+                        android:padding="10dp"
+                        android:textSize="13sp"
+                        android:textColor="@color/navy_100"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="10dp"
+                        android:inputType="textPersonName"
+                        android:textStyle="bold"
+                        android:hint="Company ABC" />
+
+                    <RelativeLayout
+                        android:layout_marginTop="20dp"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="10dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <ImageView
+                            android:id="@+id/jobtype7"
+                            android:layout_width="17dp"
+                            android:layout_height="17dp"
+                            android:src="@drawable/ic_baseline_calendar_today_24"
+                            app:tint="@color/text_gray"/>
+
+                        <TextView
+                            android:layout_toEndOf="@id/jobtype7"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Deadline"
+                            android:layout_marginStart="5dp"/>
+
+                    </RelativeLayout>
+
+                    <EditText
+                        android:id="@+id/etTime"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:ems="10"
+                        android:padding="10dp"
+                        android:textSize="13sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/navy_100"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="10dp"
+                        android:inputType="datetime"
+                        android:hint="Job Deadline"/>
+
+                    <RelativeLayout
+                        android:layout_marginTop="13dp"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="10dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <ImageView
+                            android:id="@+id/jobtype8"
+                            android:layout_width="17dp"
+                            android:layout_height="17dp"
+                            android:src="@drawable/ic_baseline_today_24"
+                            app:tint="@color/text_gray"/>
+
+                        <TextView
+                            android:layout_toEndOf="@id/jobtype8"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Posted Date"
+                            android:layout_marginStart="5dp"/>
+
+                    </RelativeLayout>
+
+                    <EditText
+                        android:id="@+id/etDatecreated"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:ems="10"
+                        android:textStyle="bold"
+                        android:padding="10dp"
+                        android:textSize="13sp"
+                        android:textColor="@color/navy_100"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="10dp"
+                        android:inputType="textPersonName"
+                        android:hint="24/07/2021" />
+
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+
+            <Button
+                android:id="@+id/btnAdd"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginStart="60dp"
+                android:layout_marginEnd="60dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/button_bg"
+                android:textAllCaps="false"
+                android:textStyle="bold"
+                android:text="Post this Job" />
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
 
     </LinearLayout>
 

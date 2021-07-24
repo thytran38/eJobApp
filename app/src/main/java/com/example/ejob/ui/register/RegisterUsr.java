@@ -71,7 +71,7 @@ public class RegisterUsr extends AppCompatActivity {
                 @Override
                 public void onActivityResult(Uri result) {
 
-                    if(result != null){
+                    if (result != null) {
                         avatar.setImageURI(result);
                         imgUri = result;
                     }
@@ -219,7 +219,7 @@ public class RegisterUsr extends AppCompatActivity {
         progressBar.setMessage("Uploading........");
         getContent.launch("image/*");
 
-        if(imgUri != null){
+        if (imgUri != null) {
             int imgRandomLink = new Random().nextInt(5000);
             imgLink = String.valueOf(imgRandomLink);
             StorageReference reference = fStorage.getInstance().getReference().child("images/" + imgRandomLink);
@@ -227,22 +227,19 @@ public class RegisterUsr extends AppCompatActivity {
                     .addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                            if(task.isSuccessful()){
+                            if (task.isSuccessful()) {
                                 progressBar.dismiss();
                                 task.getResult().getMetadata().getReference().getDownloadUrl();
                                 Toast.makeText(RegisterUsr.this, task.getResult().toString(), Toast.LENGTH_SHORT).show();
 
-                            }else{
+                            } else {
                                 progressBar.dismiss();
                                 Toast.makeText(RegisterUsr.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                             }
 
                         }
                     });
-
         }
-
-
     }
 
     private void registerEvent() {

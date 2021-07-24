@@ -20,7 +20,7 @@
                 android:layout_height="fill_parent"
                 android:orientation="vertical"
                 android:paddingVertical="20dp"
-                android:paddingHorizontal="10dp">
+                android:paddingHorizontal="8dp">
 
                 <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
                     android:id="@+id/swipeJoblist"
@@ -38,14 +38,26 @@
 
                 </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-                <com.google.android.material.floatingactionbutton.FloatingActionButton
-                    android:id="@+id/btnAddjob"
-                    android:pointerIcon="arrow"
-                    android:layout_width="wrap_content"
+                <androidx.coordinatorlayout.widget.CoordinatorLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_alignBottom="@+id/swipeJoblist"
-                    android:text="Add New Job"
-                     />
+                    android:layout_alignBottom="@id/swipeJoblist"
+                    android:padding="20dp"
+                    app:layout_constraintBottom_toBottomOf="parent">
+
+                    <com.google.android.material.floatingactionbutton.FloatingActionButton
+                        android:id="@+id/btnAddjob"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom|right"
+                        android:layout_marginBottom="32dp"
+                        android:background="@color/green_effective"
+                        android:pointerIcon="arrow"
+                        android:src="@android:drawable/ic_input_add"
+                        android:text="Add New Job"
+                        app:backgroundTint="@color/green_effective" />
+
+                </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
             </RelativeLayout>
     </LinearLayout>

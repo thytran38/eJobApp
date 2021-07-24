@@ -4,6 +4,7 @@
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/green_effective</item>
         <item name="colorOnPrimary">@color/white</item>
+        <item name="colorPrimaryDark">@color/navy_100</item>
 
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>

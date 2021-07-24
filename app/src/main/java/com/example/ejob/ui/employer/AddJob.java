@@ -4,9 +4,12 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
 import android.app.DatePickerDialog;
 import android.app.FragmentManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -53,6 +56,8 @@ public class AddJob extends AppCompatActivity {
     String timeCreated, timeDeadline;
     private AutoCompleteTextView autoCompleteTextView;
     private RecruiteType[] option;
+    private Context addJobContext;
+
 
     private TextWatcher addjobTextwatcher = new TextWatcher() {
         @Override
@@ -68,7 +73,7 @@ public class AddJob extends AppCompatActivity {
                     && valLoca()
                     && valSalary();
 
-            if(allval){
+            if (allval) {
                 addJobButton.setBackground(getDrawable(R.drawable.button_bg));
             }
             addJobButton.setEnabled(allval);
@@ -76,6 +81,21 @@ public class AddJob extends AppCompatActivity {
 
         @Override
         public void afterTextChanged(Editable s) {
+
+        }
+    };
+    private DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
+        @Override
+        public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+            sYear = year;
+            sMonth = month;
+            sDay = dayOfMonth;
+            Date date2 = Date.getInstance(sDay, sMonth, sYear);
+
+            long des = Date.getEpochSecond(sDay, sMonth, sYear);
+            timeDeadline = String.valueOf(date2.getEpochSecond());
+            Log.d("TAG", timeDeadline);
+            oodDate.setText(Date.getInstance(sDay, sMonth, sYear).toString());
 
         }
     };
@@ -146,28 +166,12 @@ public class AddJob extends AppCompatActivity {
         }
     }
 
-
-    private DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
-        @Override
-        public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-            sYear = year;
-            sMonth = month;
-            sDay = dayOfMonth;
-            Date date2 = Date.getInstance(sDay, sMonth, sYear);
-
-            long des = Date.getEpochSecond(sDay, sMonth, sYear);
-            timeDeadline = String.valueOf(date2.getEpochSecond());
-            Log.d("TAG", timeDeadline);
-            oodDate.setText(Date.getInstance(sDay, sMonth, sYear).toString());
-
-        }
-    };
-
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_job);
+        addJobContext = this;
         mapping();
         initActivity();
         setJobTypeAdapter();
@@ -215,39 +219,66 @@ public class AddJob extends AppCompatActivity {
         timeCreated = String.valueOf(Date.getEpochSecond());
 
 
-
         addJobButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 validate();
-                jobTypeStr = jobType.getText().toString();
-                FirebaseUser firebaseUser = fAuth.getCurrentUser();
-                DocumentReference df2 = firebaseFirestore2.collection("Jobs")
-                        .document();
-                Map<String, Object> jobInfo = new HashMap<>();
-                jobInfo.put("jobType", jobType.getEditableText().toString());
-                jobInfo.put("numberNeed", numberApplicant.getText().toString());
-                jobInfo.put("jobTitle", jobTitle.getText().toString());
-                jobInfo.put("jobDescription", jobDescription.getText().toString());
-                jobInfo.put("jobLocation", jobLocation.getText().toString());
-                jobInfo.put("jobSalary", jobSalary.getText().toString());
-                jobInfo.put("jobEmployer", employerName.getText().toString());
-                jobInfo.put("isAvailable", "1");
-                jobInfo.put("jobOod", timeDeadline);
-                jobInfo.put("jobDateCreated", timeCreated);
-                df2.set(jobInfo);
+                Context context;
+                AlertDialog.Builder builder = new AlertDialog.Builder(addJobContext);
+                builder.setTitle("Job Posting alert");
+                builder.setMessage("You cannot edit the Job Description & Salary after posting. \nAre you sure you want to continue?");
+                DialogInterface.OnClickListener dialogListener = new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (which) {
+                            case DialogInterface.BUTTON_POSITIVE:
+                                //postJob();
+                                Toast.makeText(AddJob.this, "Job Created", Toast.LENGTH_LONG).show();
+                                startActivity(new Intent(addJobContext, EmployerActivity.class));
+                                break;
 
-                Toast.makeText(AddJob.this, "Job Created", Toast.LENGTH_LONG).show();
-                startActivity(new Intent(getApplicationContext(), EmployerActivity.class));
-                finish();
+                            case DialogInterface.BUTTON_NEGATIVE:
+                                // User clicked the No button
+                                break;
+                        }
+                    }
+                };
+
+                builder.setPositiveButton("Yes", dialogListener);
+                builder.setNegativeButton("No", dialogListener);
+                AlertDialog alert = builder.create();
+                alert.show();
+
+
+
 
             }
         });
     }
 
+    private void postJob() {
+        jobTypeStr = jobType.getText().toString();
+        FirebaseUser firebaseUser = fAuth.getCurrentUser();
+        DocumentReference df2 = firebaseFirestore2.collection("Jobs")
+                .document();
+        Map<String, Object> jobInfo = new HashMap<>();
+        jobInfo.put("employerID", firebaseUser.getUid().toString());
+        jobInfo.put("jobType", jobType.getEditableText().toString());
+        jobInfo.put("numberNeed", numberApplicant.getText().toString());
+        jobInfo.put("jobTitle", jobTitle.getText().toString());
+        jobInfo.put("jobDescription", jobDescription.getText().toString());
+        jobInfo.put("jobLocation", jobLocation.getText().toString());
+        jobInfo.put("jobSalary", jobSalary.getText().toString());
+        jobInfo.put("jobEmployer", employerName.getText().toString());
+        jobInfo.put("isAvailable", "1");
+        jobInfo.put("jobOod", timeDeadline);
+        jobInfo.put("jobDateCreated", timeCreated);
+        df2.set(jobInfo);
+    }
+
     private void setJobTypeAdapter() {
-        option = new RecruiteType[]{RecruiteType.FULLTIME, RecruiteType.PARTTIME, RecruiteType.ONETIME } ;
+        option = new RecruiteType[]{RecruiteType.FULLTIME, RecruiteType.PARTTIME, RecruiteType.ONETIME};
         ArrayAdapter arrayAdapter = new ArrayAdapter<RecruiteType>(this, R.layout.jobtype_option, option);
         jobType.setText(arrayAdapter.getItem(0).toString(), false);
 
@@ -312,8 +343,8 @@ public class AddJob extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-
-        getFragmentManager().popBackStackImmediate();
+        startActivity(new Intent(addJobContext, EmployerActivity.class));
+//        getFragmentManager().popBackStackImmediate();
 
     }
 

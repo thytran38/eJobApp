@@ -1,6 +1,8 @@
 package com.example.ejob.ui.login;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -19,12 +21,14 @@ import com.example.ejob.ui.passwordrecover.ForgetPassActivity;
 import com.example.ejob.ui.register.TransitRegister;
 import com.example.ejob.ui.user.UserActivity;
 import com.example.ejob.ui.main.MainFragment;
+import com.example.ejob.utils.SessionManager;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -33,15 +37,46 @@ import java.util.Arrays;
 import java.util.stream.Stream;
 
 public class LoginActivity extends AppCompatActivity implements LoginNavigator {
+    private final String TAG = "LoginActivity_Log";
     EditText emailText, passwordText;
     Button login, register, forget;
     FirebaseAuth fAuth;
     FirebaseFirestore fStore;
     boolean valid = true;
     boolean locked = false;
+    SharedPreferences sharedPreferences1, sharedPreferences2, sharedPreferences3;
+    Role role;
 
-    private final String TAG = "LoginActivity_Log";
+    private static boolean containUpperCase(String str) {
+        for (char c : str.toCharArray())
+            if (Character.isUpperCase(c))
+                return true;
+        return false;
+    }
 
+    private static boolean containLowerCase(String str) {
+        for (char c : str.toCharArray())
+            if (Character.isLowerCase(c))
+                return true;
+        return false;
+    }
+
+    private static boolean containSpecialChar(String str) {
+        String specialChars = ",./!@#$%^&*()-_+=~[]\\|{}[]";
+        Supplier<Stream<String>> supplier = () -> toStream(str);
+        for (char c : specialChars.toCharArray())
+            if (supplier.get().anyMatch(item -> item.equals(String.valueOf(c))))
+                return true;
+        return false;
+    }
+
+    private static Stream<String> toStream(String text) {
+        String[] res = new String[text.length()];
+        for (int i = 0; i < text.length(); i++) {
+            res[i] = String.valueOf(text.charAt(i));
+        }
+        return Arrays.stream(res);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,33 +108,33 @@ public class LoginActivity extends AppCompatActivity implements LoginNavigator {
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!(valEmail() && valPass())){
+                if (!(valEmail() && valPass())) {
                     Toast.makeText(LoginActivity.this, "Email & Pass can not be blank", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                    if (valid) {
-                        fAuth.signInWithEmailAndPassword(emailText.getText().toString(), passwordText.getText().toString()).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
-                            @Override
-                            public void onSuccess(AuthResult authResult) {
-                                checkAccessAvailability(fAuth.getCurrentUser().getUid());
+                if (valid) {
+                    fAuth.signInWithEmailAndPassword(emailText.getText().toString().trim(), passwordText.getText().toString().trim()).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
+                        @Override
+                        public void onSuccess(AuthResult authResult) {
+                            checkAccessAvailability(fAuth.getCurrentUser().getUid());
 
-                                if(locked==true){
-                                    startActivity(new Intent(getApplicationContext(), LockedActivity.class));
+                            if (locked == true) {
+                                startActivity(new Intent(getApplicationContext(), LockedActivity.class));
+                            } else {
 
-                                }else{
-                                    Toast.makeText(LoginActivity.this, "Signed in successfully.", Toast.LENGTH_SHORT).show();
-                                    checkUserAccessLevel(fAuth.getCurrentUser().getUid());
-                                }
-
+                                Toast.makeText(LoginActivity.this, "Signed in successfully.", Toast.LENGTH_SHORT).show();
+                                saveData(emailText.getText().toString().trim(), fAuth.getCurrentUser());
                             }
-                        }).addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Toast.makeText(LoginActivity.this, "Failed to sign in.", Toast.LENGTH_LONG).show();
-                            }
-                        });
-                    }
+
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(LoginActivity.this, "Failed to sign in.", Toast.LENGTH_LONG).show();
+                        }
+                    });
                 }
+            }
         });
 
         forget.setOnClickListener(new View.OnClickListener() {
@@ -108,25 +143,38 @@ public class LoginActivity extends AppCompatActivity implements LoginNavigator {
                 startActivity(new Intent(getApplicationContext(), ForgetPassActivity.class));
             }
         });
-
-
-
     }
 
-    private void checkAccessAvailability(String uid){
+    @Override
+    protected void onStart() {
+        super.onStart();
+        SessionManager sessionManager = new SessionManager(LoginActivity.this);
+    }
+
+    void saveData(String email, FirebaseUser user){
+        SharedPreferences sharedPreferences=getSharedPreferences("logindata",MODE_PRIVATE);
+        SharedPreferences.Editor editor=sharedPreferences.edit();
+        editor.putBoolean("logincounter",true);
+        editor.putString("useremail",email);
+        editor.apply();
+        checkUserAccessLevel(user.getUid());
+    }
+
+
+    private void checkAccessAvailability(String uid) {
         DocumentReference df = fStore.collection("Blocked").document(uid);
         df.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if(task.isSuccessful()){
+                if (task.isSuccessful()) {
                     DocumentSnapshot doc = task.getResult();
-                    if(doc.exists()){
-                        locked =true;
+                    if (doc.exists()) {
+                        locked = true;
                         Log.d(TAG, "Document existed");
-                    }else{
+                    } else {
                         Log.d(TAG, "Document not existed");
                     }
-                }else{
+                } else {
                     Log.d(TAG, "Failed with: ", task.getException());
                 }
             }
@@ -145,16 +193,19 @@ public class LoginActivity extends AppCompatActivity implements LoginNavigator {
                 // Identify user access level
                 if (documentSnapshot.getString("isAdmin") != null) {
                     // User is Employer
+                    role = Role.Admin;
                     openAdminActivity();
                 }
 
                 if (documentSnapshot.getString("isEmployer") != null) {
                     // User is Employer
+                    role = Role.Employer;
                     openEmployerActivity();
                 }
 
                 if (documentSnapshot.getString("isUser") != null) {
-                    // User is Employer
+                    // User is User
+                    role = Role.User;
                     openUserActivity();
                 }
             }
@@ -192,37 +243,6 @@ public class LoginActivity extends AppCompatActivity implements LoginNavigator {
         return true;
     }
 
-    private static boolean containUpperCase(String str) {
-        for (char c : str.toCharArray())
-            if (Character.isUpperCase(c))
-                return true;
-        return false;
-    }
-
-    private static boolean containLowerCase(String str) {
-        for (char c : str.toCharArray())
-            if (Character.isLowerCase(c))
-                return true;
-        return false;
-    }
-
-    private static boolean containSpecialChar(String str) {
-        String specialChars = ",./!@#$%^&*()-_+=~[]\\|{}[]";
-        Supplier<Stream<String>> supplier = () -> toStream(str);
-        for (char c : specialChars.toCharArray())
-            if (supplier.get().anyMatch(item -> item.equals(String.valueOf(c))))
-                return true;
-        return false;
-    }
-
-    private static Stream<String> toStream(String text) {
-        String[] res = new String[text.length()];
-        for (int i = 0; i < text.length(); i++) {
-            res[i] = String.valueOf(text.charAt(i));
-        }
-        return Arrays.stream(res);
-    }
-
     @Override
     public void handleError(Throwable throwable) {
 
@@ -241,6 +261,7 @@ public class LoginActivity extends AppCompatActivity implements LoginNavigator {
 
     @Override
     public void openEmployerActivity() {
+        sharedPreferences2 = getSharedPreferences("LoginEmployer", Context.MODE_PRIVATE);
         startActivity(new Intent(getApplicationContext(), EmployerActivity.class));
         finish();
     }

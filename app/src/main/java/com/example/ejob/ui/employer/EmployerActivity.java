@@ -61,6 +61,11 @@ public class EmployerActivity extends AppCompatActivity implements ChipNavigatio
                 selectedFragment = new EmployerProfile();
                 break;
 
+            default:
+                chipNavigationBar.setItemSelected(R.id.nav_employer_main, true);
+                selectedFragment = new EmployerHome();
+                break;
+
         }
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container_employer, selectedFragment).commit();
     }

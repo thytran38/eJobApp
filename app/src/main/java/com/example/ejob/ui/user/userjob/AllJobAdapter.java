@@ -30,6 +30,7 @@ import java.util.List;
 public class AllJobAdapter extends RecyclerView.Adapter<AllJobAdapter.JobViewHolderForUser>{
 
     public List<com.example.ejob.ui.user.userjob.JobPostingforUser> mJobList;
+    public JobPostingforUser jobPosting;
     private ItemClickListener itemClickListener;
 
     public Context context;
@@ -61,7 +62,7 @@ public class AllJobAdapter extends RecyclerView.Adapter<AllJobAdapter.JobViewHol
     public void onBindViewHolder(@NonNull AllJobAdapter.JobViewHolderForUser holder, int position) {
         firebaseAuth = firebaseAuth.getInstance();
         String userID = firebaseAuth.getCurrentUser().getUid();
-        JobPostingforUser jobPosting = mJobList.get(position);
+        jobPosting = mJobList.get(position);
         if(jobPosting == null){
             return;
         }
@@ -69,6 +70,8 @@ public class AllJobAdapter extends RecyclerView.Adapter<AllJobAdapter.JobViewHol
         holder.employerName.setText(jobPosting.getEmployerName());
         holder.jobPosition.setText(jobPosting.getJobTitle());
         holder.jobLocation.setText(jobPosting.getJobLocation());
+        holder.jobtype.setText(jobPosting.getJobType());
+
 
         Date datecurrent = Date.getInstance();
         long dateCurrent = datecurrent.getEpochSecond();
@@ -171,7 +174,7 @@ public class AllJobAdapter extends RecyclerView.Adapter<AllJobAdapter.JobViewHol
     public class JobViewHolderForUser extends RecyclerView.ViewHolder{
 
         private ImageView employerAvatar, unheart;
-        private TextView jobPosition, employerName, jobLocation, tvDaysago, likesNumber, appliedNumber;
+        private TextView jobPosition, employerName, jobLocation, tvDaysago, likesNumber, appliedNumber, jobtype;
         private MaterialCardView singleCardView;
 
 
@@ -184,6 +187,7 @@ public class AllJobAdapter extends RecyclerView.Adapter<AllJobAdapter.JobViewHol
             employerName = itemView.findViewById(R.id.lamp);
             jobLocation = itemView.findViewById(R.id.address);
             tvDaysago = itemView.findViewById(R.id.dateCreated);
+            jobtype = itemView.findViewById(R.id.tvJobType111);
             appliedNumber = itemView.findViewById(R.id.tvAppliedNum);
 
         }
@@ -215,12 +219,13 @@ public class AllJobAdapter extends RecyclerView.Adapter<AllJobAdapter.JobViewHol
         }
 
         public void getAppliedNumber(String postId){
-            appliedReference =  FirebaseDatabase.getInstance().getReference("userapplications");
+            appliedReference =  FirebaseDatabase.getInstance()
+                    .getReference("userapplications");
             appliedReference.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    if(snapshot.child(postId.replaceAll(".*/", "")).exists()){
-                        int appCount = (int) snapshot.child(postId.replaceAll(".*/", "")).getChildrenCount();
+                    if(snapshot.child(postId).exists()){
+                        int appCount = (int) snapshot.child(postId).getChildrenCount();
                         appliedNumber.setText(String.valueOf(appCount));
 
                     }

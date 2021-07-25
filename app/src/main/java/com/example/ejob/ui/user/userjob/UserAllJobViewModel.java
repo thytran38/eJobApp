@@ -64,13 +64,22 @@ public class UserAllJobViewModel extends ViewModel {
                             for(QueryDocumentSnapshot document : task.getResult()){
                                 Log.d("TAG", document.getId() + " => " + document.getData());
                                 JobPostingforUser jobPosting = new JobPostingforUser();
-                                jobPosting.setJobId(document.getReference().getPath());
+                                 jobPosting.setJobId(document.getReference().getPath());
                                 Log.d("TAG", document.getReference().getPath());
-                                jobPosting.setEmployerName(document.get("jobEmployer").toString());
-                                jobPosting.setJobDescription(document.get("jobDescription").toString());
-                                jobPosting.setJobTitle(document.get("jobTitle").toString());
-                                jobPosting.setJobLocation(document.get("jobLocation").toString());
-                                jobPosting.setSalary(document.get("jobSalary").toString());
+                                 jobPosting.setEmployerName(document.get("jobEmployer").toString());
+                                 jobPosting.setJobId(document.get("jobId").toString());
+                                 jobPosting.setJobStatus(document.get("isAvailable").toString());
+                                 jobPosting.setNumberneed(document.get("numberNeed").toString());
+                                 jobPosting.setEmployerFbID(document.get("empId").toString());
+                                 jobPosting.setJobDescription(document.get("jobDescription").toString());
+                                 jobPosting.setJobTitle(document.get("jobTitle").toString());
+                                 jobPosting.setJobLocation(document.get("jobLocation").toString());
+                                 jobPosting.setEmpEmail(document.get("employerEmail").toString());
+                                Log.d("TAG", document.get("employerEmail").toString());
+                                 jobPosting.setNumberneed(document.get("numberNeed").toString());
+                                Log.d("TAG", document.get("numberNeed").toString());
+                                jobPosting.setJobType(document.get("jobType").toString());
+                                 jobPosting.setSalary(document.get("jobSalary").toString());
                                 try{
                                     jobPosting.setJobDeadline(document.get("jobOod").toString());
                                 }catch (NullPointerException npe){

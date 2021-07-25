@@ -100,7 +100,10 @@ public class UserHomeFragment extends Fragment {
 
 
         jobRecyclerView = (RecyclerView) v.findViewById(R.id.rcvJobUser);
+
+
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(v.getContext());
+        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         jobRecyclerView.setLayoutManager(linearLayoutManager);
         userAllJobView = new ViewModelProvider(this).get(UserAllJobViewModel.class);
 

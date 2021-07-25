@@ -1,10 +1,6 @@
-package com.example.ejob.ui.user.application;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
+package com.example.ejob.ui.employer;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -12,13 +8,13 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.example.ejob.R;
 import com.example.ejob.ui.user.JobApplying;
-import com.example.ejob.ui.user.userjob.AllJobAdapter;
 import com.example.ejob.ui.user.userjob.JobPostingforUser;
 import com.facebook.shimmer.ShimmerFrameLayout;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -26,15 +22,11 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
-
-import java.util.logging.Logger;
 
 import static android.view.View.VISIBLE;
 
-public class ViewJobDetail extends AppCompatActivity {
+public class ViewJobDetail2 extends AppCompatActivity {
 
     private ShimmerFrameLayout container;
     private RelativeLayout buttonApply;
@@ -51,12 +43,10 @@ public class ViewJobDetail extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_view_jobdetail2);
+        setContentView(R.layout.activity_view_jobdetail_employer);
         mapping();
 
         initDb();
-
-
 
         jobPosting = getIntent().getExtras().getParcelable("myJobposting");
 
@@ -155,3 +145,4 @@ public class ViewJobDetail extends AppCompatActivity {
         }
     }
 }
+

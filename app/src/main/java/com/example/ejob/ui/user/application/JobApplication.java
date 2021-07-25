@@ -11,9 +11,7 @@ public class JobApplication implements Parcelable {
     String selfDescription;
     String skills;
     String applicationDate;
-    int view;
     String cvitaeLink;
-    String coverletterLink;
     ApplicationStatus applicationStatus;
 
 
@@ -27,7 +25,6 @@ public class JobApplication implements Parcelable {
         this.selfDescription = selfDescription;
         this.skills = skills;
         this.applicationDate = applicationDate;
-        this.view = view;
         this.applicationStatus = applicationStatus;
     }
 
@@ -37,7 +34,6 @@ public class JobApplication implements Parcelable {
         selfDescription = in.readString();
         skills = in.readString();
         applicationDate = in.readString();
-        view = in.readInt();
     }
 
     public static final Creator<JobApplication> CREATOR = new Creator<JobApplication>() {
@@ -58,14 +54,6 @@ public class JobApplication implements Parcelable {
 
     public void setCvitaeLink(String cvitaeLink) {
         this.cvitaeLink = cvitaeLink;
-    }
-
-    public String getCoverletterLink() {
-        return coverletterLink;
-    }
-
-    public void setCoverletterLink(String coverletterLink) {
-        this.coverletterLink = coverletterLink;
     }
 
     public static Creator<JobApplication> getCREATOR() {
@@ -112,13 +100,6 @@ public class JobApplication implements Parcelable {
         this.applicationDate = applicationDate;
     }
 
-    public int getView() {
-        return view;
-    }
-
-    public void setView(int view) {
-        this.view = view;
-    }
 
     public ApplicationStatus getApplicationStatus() {
         return applicationStatus;
@@ -140,6 +121,5 @@ public class JobApplication implements Parcelable {
         dest.writeString(selfDescription);
         dest.writeString(skills);
         dest.writeString(applicationDate);
-        dest.writeInt(view);
     }
 }

@@ -89,7 +89,6 @@ public class ApplicationFragment extends androidx.fragment.app.Fragment {
                         FragmentManager fragmentManager = getChildFragmentManager();
                         layoutInflater.inflate(R.layout.fragment_application_job,viewgroupContainer, false);
                         Toast.makeText(ApplicationFragment.this.getContext(),jobPost.getJobTitle(),Toast.LENGTH_LONG).show();
-                        Log.d("TAG_UHFragment", jobPost.getJobTitle());
                     }
 
                 });

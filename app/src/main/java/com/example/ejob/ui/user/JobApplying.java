@@ -1,8 +1,14 @@
 package com.example.ejob.ui.user;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.util.Pair;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -18,8 +24,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.ejob.R;
 import com.example.ejob.data.model.ApplicantModel;
 import com.example.ejob.data.model.ApplicationStatus;
+import com.example.ejob.ui.employer.AddJob;
+import com.example.ejob.ui.employer.EmployerActivity;
 import com.example.ejob.ui.user.application.JobApplication;
 import com.example.ejob.ui.user.application.ViewJobDetail;
+import com.example.ejob.ui.user.pdf.UploadPdf;
 import com.example.ejob.ui.user.userjob.JobPostingforUser;
 import com.example.ejob.utils.Date;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -31,123 +40,226 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.StorageReference;
 
+import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class JobApplying extends AppCompatActivity {
 
-    private EditText etPositionApplyfor, etFullname, etAddress1, etAddress2, etPhone, etEmail, etMessage;
-    private Button chooseFileCV, submitApplication;
-
     Bundle bundle;
-    private TextView employerName, positionHiring, jobtype, linkCv, linkCoverletter;
-    private EditText getEtFullname, getEtPhone, getEtAddress, getEtEmail, getEtSchool, cletter;
-    private RelativeLayout submit;
-    private ImageView imgCv, imgLt;
     JobPostingforUser jobPosting;
-
     FirebaseFirestore db;
     FirebaseDatabase fbDb;
     FirebaseAuth firebaseAuth;
     DocumentReference documentReference;
     StorageReference storageReference;
     Boolean cvExist;
-
     String timeCreated;
+    String jobId, employerId, jobStatus;
+    private TextView employerName, positionHiring, jobtype, linkCv, linkCoverletter;
+    private EditText getEtFullname, getEtPhone, getEtAddress, getEtEmail, getEtSchool, getEtDescription;
+    private RelativeLayout submit;
+    private ImageView upCv;
+    private Context jobApplyingContext;
+    JobApplication jobApplying;
+    ApplicantModel applyModel;
+    UploadPdf uploadPdf;
+
+
+    private TextWatcher jobApplyTextWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            if (valFullName() && valAddress() && valPhone() && valSchool() && valSelfDescription()) {
+                submit.setBackground(getDrawable(R.drawable.button_green));
+            }
+            submit.setEnabled(valFullName() && valAddress()
+                    && valPhone() && valSchool() && valSelfDescription());
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+
+        }
+    };
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_job_apply);
-
-        firebaseAuth = FirebaseAuth.getInstance();
-        fbDb = FirebaseDatabase.getInstance();
-        db = FirebaseFirestore.getInstance();
-
         mapping();
+        initFb();
+        jobApplyingContext = this;
 
         jobPosting = getIntent().getExtras().getParcelable("myJobposting");
 
-        if(firebaseAuth.getCurrentUser().getDisplayName() == null){
-            getEtFullname.setText("Enter Full Name");
-        }else{
-            getEtFullname.setText(firebaseAuth.getCurrentUser().getDisplayName());
-        }
-
+        jobId = jobPosting.getJobId();
+        employerId = jobPosting.getEmployerFbID();
+        jobStatus = jobPosting.getJobStatus();
         positionHiring.setText(jobPosting.getJobTitle());
         employerName.setText(jobPosting.getEmployerName());
-        jobtype.setText(jobPosting.getJobDeadline());
+        jobtype.setText(jobPosting.getJobType());
         getEtEmail.setText(firebaseAuth.getCurrentUser().getEmail());
-        if(firebaseAuth.getCurrentUser().getPhoneNumber()==null){
-            getEtPhone.setText("Enter Phone Number");
-        }else{
-            getEtPhone.setText(firebaseAuth.getCurrentUser().getPhoneNumber());
-        }
-        timeCreated = String.valueOf(Date.getEpochSecond());
 
-        JobApplication jobApplication = new JobApplication();
-        jobApplication.setPosition(positionHiring.getText().toString());
-        jobApplication.setApplicationDate(String.valueOf(timeCreated));
-        jobApplication.setApplicationStatus(ApplicationStatus.PENDING);
-        if(cletter.getText().equals("")){
-            cletter.setText("Please Enter Coverletter");
-        }
-        else {
-            jobApplication.setSelfDescription(cletter.getText().toString());
-        }
+        long date = Date.getEpochSecond();
+        timeCreated = String.valueOf(date);
 
 
-        ApplicantModel applicantModel = new ApplicantModel();
-        applicantModel.setApplicantID(firebaseAuth.getCurrentUser().getUid());
-        getEtFullname.setOnClickListener(new View.OnClickListener() {
+        upCv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!getEtFullname.getText().toString().isEmpty()){
-                    applicantModel.setApplicantFullname(getEtFullname.getText().toString());
-                }
+                uploadPdf = new UploadPdf();
+                uploadPdf.openSomeActivityForResult();
 
             }
         });
 
-
-
+        getEtFullname.addTextChangedListener(jobApplyTextWatcher);
+        getEtSchool.addTextChangedListener(jobApplyTextWatcher);
+        getEtAddress.addTextChangedListener(jobApplyTextWatcher);
+        getEtPhone.addTextChangedListener(jobApplyTextWatcher);
 
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                if((getEtFullname.getText().toString().equals("") && getEtPhone.getText().toString().equals("")
-                        && isEmailValid(getEtEmail.getText().toString()) && getEtAddress.getText().toString().equals("")
-                        && getEtSchool.getText().toString().equals(""))){
+                if (!(valFullName() && valAddress() && valPhone() && valSchool() && valSelfDescription())) {
                     Toast.makeText(JobApplying.this, "Can not leave blank", Toast.LENGTH_SHORT).show();
-                }
-                else{
-                    submitEvent(jobApplication, applicantModel);
-                    Toast.makeText(JobApplying.this, "Submit Application successfully!", Toast.LENGTH_SHORT).show();
-                }
+                } else {
+                    gatherData();
 
-                }
+                    AlertDialog.Builder builder = new AlertDialog.Builder(jobApplyingContext);
+                    builder.setTitle("Job Applying alert");
+                    builder.setMessage("You cannot edit the application after this submission. \nAre you sure you want to continue?");
+                    DialogInterface.OnClickListener dialogListener = new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            switch (which) {
+                                case DialogInterface.BUTTON_POSITIVE:
+                                    submitEvent(gatherData());
+                                    Toast.makeText(JobApplying.this, "Application Submitted!", Toast.LENGTH_LONG).show();
+                                    startActivity(new Intent(jobApplyingContext, UserActivity.class));
+                                    break;
 
+                                case DialogInterface.BUTTON_NEGATIVE:
+                                    dialog.dismiss();
+                                    break;
+                            }
+                        }
+                    };
+                    builder.setPositiveButton("Yes", dialogListener);
+                    builder.setNegativeButton("No", dialogListener);
+                    AlertDialog alert = builder.create();
+                    alert.show();
+                }
+            }
         });
-
-
     }
 
-    public static boolean isEmailValid(String email) {
-        String expression = "^[\\w\\.-]+@([\\w\\-]+\\.)+[A-Z]{2,4}$";
-        Pattern pattern = Pattern.compile(expression, Pattern.CASE_INSENSITIVE);
-        Matcher matcher = pattern.matcher(email);
-        return matcher.matches();
+    private Pair<JobApplication, ApplicantModel> gatherData() {
+        ApplicantModel applicantModel = new ApplicantModel();
+        applicantModel.setApplicantID(firebaseAuth.getCurrentUser().getUid());
+        applicantModel.setApplicantUniversity(getEtSchool.getText().toString());
+        applicantModel.setApplicantFullname(getEtFullname.getText().toString());
+        applicantModel.setApplicantEmail(getEtEmail.getText().toString());
+        applicantModel.setApplicantPhone(getEtPhone.getText().toString());
+
+        JobApplication jobApplication = new JobApplication();
+//        int orderNumber = new Random().
+        jobApplication.setApplicationId(jobPosting.getJobId() +"/"+ applicantModel.getApplicantID());
+        jobApplication.setCvitaeLink(linkCoverletter.getText().toString());
+        jobApplication.setSelfDescription(getEtDescription.getText().toString());
+        jobApplication.setPosition(positionHiring.getText().toString());
+        jobApplication.setApplicationDate(String.valueOf(timeCreated));
+        jobApplication.setApplicationStatus(ApplicationStatus.PENDING);
+        // Add self description
+        // jobApplication.setSelfDescription();
+
+
+
+
+        return new Pair<JobApplication, ApplicantModel>(jobApplication, applicantModel);
+    }
+
+    private void initFb() {
+        firebaseAuth = FirebaseAuth.getInstance();
+        fbDb = FirebaseDatabase.getInstance();
+        db = FirebaseFirestore.getInstance();
+        submit.setEnabled(false);
+        submit.setBackground(getDrawable(R.drawable.button_grayout));
+    }
+
+    private boolean valFullName() {
+        String name = getEtFullname.getText().toString();
+        if (name.isEmpty()) {
+            getEtFullname.setError("Please enter your name");
+            return false;
+        } else {
+            getEtFullname.setError(null);
+            return true;
+        }
+    }
+
+    private boolean valPhone() {
+        String name = getEtPhone.getText().toString();
+        if (name.isEmpty()) {
+            getEtPhone.setError("Please enter your phone number");
+            return false;
+        } else {
+            getEtPhone.setError(null);
+            return true;
+        }
+    }
+
+    private boolean valAddress() {
+        String name = getEtAddress.getText().toString();
+        if (name.isEmpty()) {
+            getEtAddress.setError("Please enter your Address");
+            return false;
+        } else {
+            getEtAddress.setError(null);
+            return true;
+        }
+    }
+
+    private boolean valSelfDescription() {
+        String name = getEtDescription.getText().toString();
+        if (name.isEmpty()) {
+            getEtDescription.setError("Please enter your description");
+            return false;
+        } else {
+            getEtDescription.setError(null);
+            return true;
+        }
+    }
+
+    private boolean valSchool() {
+        String name = getEtSchool.getText().toString();
+        if (name.isEmpty()) {
+            getEtSchool.setError("Please enter your School");
+            return false;
+        } else {
+            getEtSchool.setError(null);
+            return true;
+        }
     }
 
 
-    private void submitEvent(JobApplication application, ApplicantModel applicant) {
+    private void submitEvent(Pair<JobApplication, ApplicantModel> thispair) {
+
+        jobApplying = thispair.first;
+        applyModel = thispair.second;
 
         db.collection("Applications")
                 .document(jobPosting.getJobId().replaceAll(".*/", ""))
                 .collection("pending")
                 .document(firebaseAuth.getCurrentUser().getUid())
-                .set(application)
+                .set(jobApplying)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
@@ -165,17 +277,17 @@ public class JobApplying extends AppCompatActivity {
         fbDb.getReference("userapplications")
                 .child(jobPosting.getJobId().replaceAll(".*/", ""))
                 .child(firebaseAuth.getCurrentUser().getUid())
-                .setValue(application);
+                .setValue(jobApplying);
 
         fbDb.getReference("employerapplications")
-                .child(jobPosting.getEmployerName())
+                .child(jobPosting.getEmployerFbID())
                 .child(jobPosting.getJobId().replaceAll(".*/", ""))
                 .child(firebaseAuth.getCurrentUser().getUid())
-                .setValue(application);
+                .setValue(jobApplying);
 
         db.collection("Applicants")
                 .document(firebaseAuth.getCurrentUser().getUid())
-                .set(applicant)
+                .set(applyModel)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
@@ -195,7 +307,7 @@ public class JobApplying extends AppCompatActivity {
                 .document(firebaseAuth.getCurrentUser().getUid())
                 .collection("jobs")
                 .document(jobPosting.getJobId().replaceAll(".*/", ""))
-                .set(application)
+                .set(jobApplying)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
@@ -212,19 +324,46 @@ public class JobApplying extends AppCompatActivity {
 
     }
 
-    public void mapping(){
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        AlertDialog.Builder builder = new AlertDialog.Builder(jobApplyingContext);
+        builder.setTitle("Job Applying alert");
+        builder.setMessage("You are about to quit this page. \nAre you sure you want to continue?");
+        DialogInterface.OnClickListener dialogListener = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which) {
+                    case DialogInterface.BUTTON_POSITIVE:
+                        Toast.makeText(JobApplying.this, "Application Cancelled!", Toast.LENGTH_LONG).show();
+                        startActivity(new Intent(jobApplyingContext, UserActivity.class));
+                        break;
+
+                    case DialogInterface.BUTTON_NEGATIVE:
+                        dialog.dismiss();
+                        break;
+                }
+            }
+        };
+        builder.setPositiveButton("Yes", dialogListener);
+        builder.setNegativeButton("No", dialogListener);
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
+
+    public void mapping() {
         positionHiring = findViewById(R.id.titleJob);
         employerName = findViewById(R.id.nameEmp);
         jobtype = findViewById(R.id.typeJob);
         submit = findViewById(R.id.btnApply);
-        imgCv = findViewById(R.id.cvAttach);
-        imgLt = findViewById(R.id.letterAttach);
+        upCv = findViewById(R.id.cvAttach);
 
+        linkCoverletter = findViewById(R.id.pdfLinks);
         getEtFullname = findViewById(R.id.etFullname);
         getEtSchool = findViewById(R.id.etInsitution);
         getEtPhone = findViewById(R.id.etPersonalPhone);
         getEtEmail = findViewById(R.id.etFacebook);
         getEtAddress = findViewById(R.id.etPersonalAddress);
-        cletter = findViewById(R.id.etCoverletter);
+        getEtDescription = findViewById(R.id.etSelfDescription);
     }
 }

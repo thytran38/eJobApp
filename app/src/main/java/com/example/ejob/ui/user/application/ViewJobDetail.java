@@ -62,7 +62,7 @@ public class ViewJobDetail extends AppCompatActivity {
 
         try{
             email.setText(jobPosting.getEmpEmail());
-            numberneed.setText(jobPosting.getNumberneed());
+            numberneed.setText(jobPosting.getNumberneed() + " slots");
 
         }catch (NullPointerException npe){
             email.setText("No email");

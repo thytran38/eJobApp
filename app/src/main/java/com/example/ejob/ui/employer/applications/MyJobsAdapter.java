@@ -18,10 +18,10 @@ import java.util.List;
 public class MyJobsAdapter extends RecyclerView.Adapter<MyJobsAdapter.JobInfoViewHolder>{
 
     private RecyclerView.RecycledViewPool viewPool = new RecyclerView.RecycledViewPool();
-    private List<JobPostingforUser> itemList;
+    private List<JobPostingforUser> jobList;
 
     public MyJobsAdapter(List<JobPostingforUser> itemList){
-        this.itemList = itemList;
+        this.jobList = itemList;
     }
 
     @NonNull
@@ -33,7 +33,7 @@ public class MyJobsAdapter extends RecyclerView.Adapter<MyJobsAdapter.JobInfoVie
 
     @Override
     public void onBindViewHolder(@NonNull JobInfoViewHolder holder, int position) {
-        JobPostingforUser job = itemList.get(position);
+        JobPostingforUser job = jobList.get(position);
         holder.jobTitle.setText(job.getJobTitle());
 
 
@@ -67,6 +67,9 @@ public class MyJobsAdapter extends RecyclerView.Adapter<MyJobsAdapter.JobInfoVie
 
         public JobInfoViewHolder(@NonNull View itemView) {
             super(itemView);
+            jobTitle = itemView.findViewById(R.id.tvJobTitleA);
+            jobID = itemView.findViewById(R.id.tvjobid);
+            jobType = itemView.findViewById(R.id.jobTypeEmp);
             rvApplications = itemView.findViewById(R.id.rcvJobEmp);
 
         }

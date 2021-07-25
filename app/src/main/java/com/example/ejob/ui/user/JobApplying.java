@@ -1,9 +1,11 @@
 package com.example.ejob.ui.user;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -17,6 +19,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -26,6 +31,7 @@ import com.example.ejob.data.model.ApplicantModel;
 import com.example.ejob.data.model.ApplicationStatus;
 import com.example.ejob.ui.employer.AddJob;
 import com.example.ejob.ui.employer.EmployerActivity;
+import com.example.ejob.ui.register.RegisterUsr;
 import com.example.ejob.ui.user.application.JobApplication;
 import com.example.ejob.ui.user.application.ViewJobDetail;
 import com.example.ejob.ui.user.pdf.UploadPdf;
@@ -38,8 +44,12 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -53,19 +63,30 @@ public class JobApplying extends AppCompatActivity {
     FirebaseAuth firebaseAuth;
     DocumentReference documentReference;
     StorageReference storageReference;
+    FirebaseStorage fStorage;
     Boolean cvExist;
     String timeCreated;
     String jobId, employerId, jobStatus;
-    private TextView employerName, positionHiring, jobtype, linkCv, linkCoverletter;
-    private EditText getEtFullname, getEtPhone, getEtAddress, getEtEmail, getEtSchool, getEtDescription;
-    private RelativeLayout submit;
-    private ImageView upCv;
-    private Context jobApplyingContext;
     JobApplication jobApplying;
     ApplicantModel applyModel;
     UploadPdf uploadPdf;
+    Uri imageUri, pdfUri;
+    ActivityResultLauncher<String> getContent = registerForActivityResult(new ActivityResultContracts.GetContent(),
+            new ActivityResultCallback<Uri>() {
+                @Override
+                public void onActivityResult(Uri result) {
 
-
+                    if (result != null) {
+//                        avatar.setImageURI(result);
+                        imageUri = result;
+                    }
+                }
+            });
+    private TextView employerName, positionHiring, jobtype, linkCv, linkCoverletter;
+    private EditText getEtFullname, getEtPhone, getEtAddress, getEtEmail, getEtSchool, getEtDescription, getEtSocialMedia;
+    private RelativeLayout submit;
+    private ImageView upCv;
+    private Context jobApplyingContext;
     private TextWatcher jobApplyTextWatcher = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -122,6 +143,7 @@ public class JobApplying extends AppCompatActivity {
         getEtSchool.addTextChangedListener(jobApplyTextWatcher);
         getEtAddress.addTextChangedListener(jobApplyTextWatcher);
         getEtPhone.addTextChangedListener(jobApplyTextWatcher);
+        getEtDescription.addTextChangedListener(jobApplyTextWatcher);
 
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -167,19 +189,18 @@ public class JobApplying extends AppCompatActivity {
         applicantModel.setApplicantFullname(getEtFullname.getText().toString());
         applicantModel.setApplicantEmail(getEtEmail.getText().toString());
         applicantModel.setApplicantPhone(getEtPhone.getText().toString());
+        applicantModel.setApplicantAddress(getEtAddress.getText().toString());
+        applicantModel.setApplicantSocialmedia(getEtSocialMedia.getText().toString());
 
         JobApplication jobApplication = new JobApplication();
 //        int orderNumber = new Random().
-        jobApplication.setApplicationId(jobPosting.getJobId() +"/"+ applicantModel.getApplicantID());
+        jobApplication.setApplicationId(jobPosting.getJobId().replaceAll(".*/", "") + "/" + applicantModel.getApplicantID());
         jobApplication.setCvitaeLink(linkCoverletter.getText().toString());
         jobApplication.setSelfDescription(getEtDescription.getText().toString());
         jobApplication.setPosition(positionHiring.getText().toString());
         jobApplication.setApplicationDate(String.valueOf(timeCreated));
-        jobApplication.setApplicationStatus(ApplicationStatus.PENDING);
-        // Add self description
-        // jobApplication.setSelfDescription();
-
-
+        jobApplication.setApplicationStatus(ApplicationStatus.SUBMITTED);
+        jobApplication.setApplicantID(firebaseAuth.getCurrentUser().getUid());
 
 
         return new Pair<JobApplication, ApplicantModel>(jobApplication, applicantModel);
@@ -188,6 +209,7 @@ public class JobApplying extends AppCompatActivity {
     private void initFb() {
         firebaseAuth = FirebaseAuth.getInstance();
         fbDb = FirebaseDatabase.getInstance();
+        fStorage = FirebaseStorage.getInstance();
         db = FirebaseFirestore.getInstance();
         Date dateInsc = Date.getInstance();
         date = dateInsc.toString();
@@ -250,15 +272,15 @@ public class JobApplying extends AppCompatActivity {
         }
     }
 
-
     private void submitEvent(Pair<JobApplication, ApplicantModel> thispair) {
 
         jobApplying = thispair.first;
         applyModel = thispair.second;
 
+
         db.collection("Applications")
                 .document(jobPosting.getJobId().replaceAll(".*/", ""))
-                .collection("pending")
+                .collection("applied")
                 .document(firebaseAuth.getCurrentUser().getUid())
                 .set(jobApplying)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -304,9 +326,9 @@ public class JobApplying extends AppCompatActivity {
                     }
                 });
 
-        db.collection("JobAppliedHistory")
+        db.collection("JobApplied")
                 .document(firebaseAuth.getCurrentUser().getUid())
-                .collection("jobs")
+                .collection("submitted")
                 .document(jobPosting.getJobId().replaceAll(".*/", ""))
                 .set(jobApplying)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -366,5 +388,63 @@ public class JobApplying extends AppCompatActivity {
         getEtEmail = findViewById(R.id.etFacebook);
         getEtAddress = findViewById(R.id.etPersonalAddress);
         getEtDescription = findViewById(R.id.etSelfDescription);
+        getEtSocialMedia = findViewById(R.id.etSocialMedia);
     }
+
+    private void uploadImageEvent() {
+        ProgressDialog progressBar = new ProgressDialog(this);
+        progressBar.setMessage("Uploading........");
+        getContent.launch("image/*");
+
+        if (imageUri != null) {
+            int imgRandomLink = new Random().nextInt(5000);
+//            imageUri = String.valueOf(imgRandomLink);
+            StorageReference reference = fStorage.getInstance().getReference().child("images/" + imgRandomLink);
+            reference.putFile(imageUri)
+                    .addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                            if (task.isSuccessful()) {
+                                progressBar.dismiss();
+                                task.getResult().getMetadata().getReference().getDownloadUrl();
+                                Toast.makeText(JobApplying.this, task.getResult().toString(), Toast.LENGTH_SHORT).show();
+
+                            } else {
+                                progressBar.dismiss();
+                                Toast.makeText(JobApplying.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+
+                        }
+                    });
+        }
+    }
+
+    private void uploadPdfEvent() {
+        ProgressDialog progressBar = new ProgressDialog(this);
+        progressBar.setMessage("Uploading........");
+        getContent.launch("image/*");
+
+        if (imageUri != null) {
+            int imgRandomLink = new Random().nextInt(5000);
+//            imageUri = String.valueOf(imgRandomLink);
+            StorageReference reference = fStorage.getInstance().getReference().child("images/" + imgRandomLink);
+            reference.putFile(imageUri)
+                    .addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                            if (task.isSuccessful()) {
+                                progressBar.dismiss();
+                                task.getResult().getMetadata().getReference().getDownloadUrl();
+                                Toast.makeText(JobApplying.this, task.getResult().toString(), Toast.LENGTH_SHORT).show();
+
+                            } else {
+                                progressBar.dismiss();
+                                Toast.makeText(JobApplying.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+
+                        }
+                    });
+        }
+    }
+
 }

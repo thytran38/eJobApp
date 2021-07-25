@@ -334,6 +334,38 @@
                                         android:editable="false"
                                         android:textColor="@color/grey_effective"/>
 
+                                    <RelativeLayout
+                                        android:layout_marginTop="3dp"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content">
+
+                                        <ImageView
+                                            android:id="@+id/iconWebsite2"
+                                            android:layout_width="17dp"
+                                            android:layout_height="17dp"
+                                            android:layout_marginTop="2dp"
+                                            android:src="@drawable/ic_baseline_facebook_24"
+                                            app:tint="@color/text_gray"/>
+
+                                        <TextView
+                                            android:layout_toEndOf="@id/iconWebsite2"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_marginStart="5dp"
+                                            android:text="Social Media"
+                                            android:textIsSelectable="true"/>
+
+                                    </RelativeLayout>
+                                    <EditText
+                                        android:id="@+id/etSocialMedia"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:hint="Facebook, Instagram, Github"
+                                        android:textColorHint="@color/light_gray"
+                                        android:textSize="12sp"
+                                        android:editable="false"
+                                        android:textColor="@color/grey_effective"/>
+
                                 </LinearLayout>
 
                             </LinearLayout>

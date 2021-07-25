@@ -1,4 +1,4 @@
-package com.example.ejob;
+package com.example.ejob.ui.employer;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -16,11 +16,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.example.ejob.R;
 import com.example.ejob.ui.employer.applications.MyJobsAdapter;
 import com.example.ejob.ui.user.userjob.JobPostingforUser;
 import com.example.ejob.ui.user.userjob.UserAllJobViewModel;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -28,7 +28,7 @@ import java.util.List;
  * Use the {@link JobApplicationEmp#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class JobApplicationEmp extends Fragment {
+public class JobApplicationEmp extends androidx.fragment.app.Fragment {
 
     private TextView jobTitle, jobId, jobType;
     private RecyclerView jobRcv;
@@ -95,7 +95,6 @@ public class JobApplicationEmp extends Fragment {
         jobType = v.findViewById(R.id.jobTypeEmp);
         jobRcv = v.findViewById(R.id.rcvJobEmp);
 
-        Context context;
         LinearLayoutManager layoutManager = new LinearLayoutManager(v.getContext());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         jobRcv.setLayoutManager(layoutManager);

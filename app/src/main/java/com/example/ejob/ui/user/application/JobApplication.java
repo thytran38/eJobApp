@@ -6,34 +6,79 @@ import android.os.Parcelable;
 import com.example.ejob.data.model.ApplicationStatus;
 
 public class JobApplication implements Parcelable {
+    String applicantID;
     String applicationId;
     String position;
     String selfDescription;
-    String skills;
     String applicationDate;
     String cvitaeLink;
     ApplicationStatus applicationStatus;
+    String applicantFullname;
+    String applicantEmail;
+    String applicantPhone;
+    String applicantSocialmedia;
+    String applicantUniversity;
+    String applicantAddress;
+    String photoURL;
 
 
     public JobApplication() {
 
     }
 
-    public JobApplication(String applicationId, String position, String selfDescription, String skills, String applicationDate, int view, ApplicationStatus applicationStatus) {
+    public JobApplication(String applicantID, String applicationId, String position, String selfDescription, String applicationDate, String cvitaeLink, ApplicationStatus applicationStatus, String applicantFullname, String applicantEmail, String applicantPhone, String applicantSocialmedia, String applicantUniversity, String applicantAddress, String photoURL) {
+        this.applicantID = applicantID;
         this.applicationId = applicationId;
         this.position = position;
         this.selfDescription = selfDescription;
-        this.skills = skills;
         this.applicationDate = applicationDate;
+        this.cvitaeLink = cvitaeLink;
         this.applicationStatus = applicationStatus;
+        this.applicantFullname = applicantFullname;
+        this.applicantEmail = applicantEmail;
+        this.applicantPhone = applicantPhone;
+        this.applicantSocialmedia = applicantSocialmedia;
+        this.applicantUniversity = applicantUniversity;
+        this.applicantAddress = applicantAddress;
+        this.photoURL = photoURL;
     }
 
     protected JobApplication(Parcel in) {
+        applicantID = in.readString();
         applicationId = in.readString();
         position = in.readString();
         selfDescription = in.readString();
-        skills = in.readString();
         applicationDate = in.readString();
+        cvitaeLink = in.readString();
+        applicantFullname = in.readString();
+        applicantEmail = in.readString();
+        applicantPhone = in.readString();
+        applicantSocialmedia = in.readString();
+        applicantUniversity = in.readString();
+        applicantAddress = in.readString();
+        photoURL = in.readString();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(applicantID);
+        dest.writeString(applicationId);
+        dest.writeString(position);
+        dest.writeString(selfDescription);
+        dest.writeString(applicationDate);
+        dest.writeString(cvitaeLink);
+        dest.writeString(applicantFullname);
+        dest.writeString(applicantEmail);
+        dest.writeString(applicantPhone);
+        dest.writeString(applicantSocialmedia);
+        dest.writeString(applicantUniversity);
+        dest.writeString(applicantAddress);
+        dest.writeString(photoURL);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
     public static final Creator<JobApplication> CREATOR = new Creator<JobApplication>() {
@@ -48,16 +93,12 @@ public class JobApplication implements Parcelable {
         }
     };
 
-    public String getCvitaeLink() {
-        return cvitaeLink;
+    public String getApplicantID() {
+        return applicantID;
     }
 
-    public void setCvitaeLink(String cvitaeLink) {
-        this.cvitaeLink = cvitaeLink;
-    }
-
-    public static Creator<JobApplication> getCREATOR() {
-        return CREATOR;
+    public void setApplicantID(String applicantID) {
+        this.applicantID = applicantID;
     }
 
     public String getApplicationId() {
@@ -84,14 +125,6 @@ public class JobApplication implements Parcelable {
         this.selfDescription = selfDescription;
     }
 
-    public String getSkills() {
-        return skills;
-    }
-
-    public void setSkills(String skills) {
-        this.skills = skills;
-    }
-
     public String getApplicationDate() {
         return applicationDate;
     }
@@ -100,6 +133,13 @@ public class JobApplication implements Parcelable {
         this.applicationDate = applicationDate;
     }
 
+    public String getCvitaeLink() {
+        return cvitaeLink;
+    }
+
+    public void setCvitaeLink(String cvitaeLink) {
+        this.cvitaeLink = cvitaeLink;
+    }
 
     public ApplicationStatus getApplicationStatus() {
         return applicationStatus;
@@ -109,17 +149,59 @@ public class JobApplication implements Parcelable {
         this.applicationStatus = applicationStatus;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
+    public String getApplicantFullname() {
+        return applicantFullname;
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(applicationId);
-        dest.writeString(position);
-        dest.writeString(selfDescription);
-        dest.writeString(skills);
-        dest.writeString(applicationDate);
+    public void setApplicantFullname(String applicantFullname) {
+        this.applicantFullname = applicantFullname;
+    }
+
+    public String getApplicantEmail() {
+        return applicantEmail;
+    }
+
+    public void setApplicantEmail(String applicantEmail) {
+        this.applicantEmail = applicantEmail;
+    }
+
+    public String getApplicantPhone() {
+        return applicantPhone;
+    }
+
+    public void setApplicantPhone(String applicantPhone) {
+        this.applicantPhone = applicantPhone;
+    }
+
+    public String getApplicantSocialmedia() {
+        return applicantSocialmedia;
+    }
+
+    public void setApplicantSocialmedia(String applicantSocialmedia) {
+        this.applicantSocialmedia = applicantSocialmedia;
+    }
+
+    public String getApplicantUniversity() {
+        return applicantUniversity;
+    }
+
+    public void setApplicantUniversity(String applicantUniversity) {
+        this.applicantUniversity = applicantUniversity;
+    }
+
+    public String getApplicantAddress() {
+        return applicantAddress;
+    }
+
+    public void setApplicantAddress(String applicantAddress) {
+        this.applicantAddress = applicantAddress;
+    }
+
+    public String getPhotoURL() {
+        return photoURL;
+    }
+
+    public void setPhotoURL(String photoURL) {
+        this.photoURL = photoURL;
     }
 }

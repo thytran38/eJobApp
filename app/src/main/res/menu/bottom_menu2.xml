@@ -21,16 +21,6 @@
         app:cnb_iconTintMode="src_in"
         app:cnb_textColor="@color/teal_200"
         />
-    <item
-        android:id="@+id/nav_applications_company"
-        android:title="Applications"
-        android:enabled="true"
-        android:icon="@drawable/ic_baseline_saved_search_24"
-        app:cnb_backgroundColor="@color/white"
-        app:cnb_iconColor="@color/teal_200"
-        app:cnb_iconTintMode="src_in"
-        app:cnb_textColor="@color/teal_200"
-        />
 
     <item
         android:title="Company Profile"

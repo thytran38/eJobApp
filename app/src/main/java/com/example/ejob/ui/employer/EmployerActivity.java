@@ -50,12 +50,9 @@ public class EmployerActivity extends AppCompatActivity implements ChipNavigatio
                 break;
 
             case R.id.nav_employer_case:
-                selectedFragment = new EmployerCase();
+                selectedFragment = new JobApplicationEmp();
                 break;
 
-//            case R.id.nav_applications_company:
-//                selectedFragment = new EmployerApplications();
-//                break;
 
             case R.id.nav_employer_profile:
                 selectedFragment = new EmployerProfile();

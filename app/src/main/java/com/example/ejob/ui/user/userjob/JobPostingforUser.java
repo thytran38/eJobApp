@@ -4,17 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class JobPostingforUser implements Parcelable {
-    public static final Creator<JobPostingforUser> CREATOR = new Creator<JobPostingforUser>() {
-        @Override
-        public JobPostingforUser createFromParcel(Parcel in) {
-            return new JobPostingforUser(in);
-        }
 
-        @Override
-        public JobPostingforUser[] newArray(int size) {
-            return new JobPostingforUser[size];
-        }
-    };
     String jobId;
     String jobTitle;
     String jobDescription;
@@ -39,7 +29,7 @@ public class JobPostingforUser implements Parcelable {
 
     }
 
-    public JobPostingforUser(String mail, String jobId, String jobTitle, String jobDescription, String jobLocation, String salary, String employerName, String employerFbID, String jobDeadline, String jobDateCreated, String imageUrl, int jobSkills, int countView, int countLike, String jobStatus, int updateHistory, String jobType, String numberneed, int numberApplied) {
+    public JobPostingforUser(String jobId, String jobTitle, String jobDescription, String jobLocation, String salary, String employerName, String employerFbID, String jobDeadline, String jobDateCreated, String imageUrl, int jobSkills, int countView, int countLike, String jobStatus, String jobType, String numberneed, int numberApplied, String empEmail) {
         this.jobId = jobId;
         this.jobTitle = jobTitle;
         this.jobDescription = jobDescription;
@@ -54,18 +44,12 @@ public class JobPostingforUser implements Parcelable {
         this.countView = countView;
         this.countLike = countLike;
         this.jobStatus = jobStatus;
-        this.updateHistory = updateHistory;
         this.jobType = jobType;
         this.numberneed = numberneed;
-        this.empEmail = mail;
         this.numberApplied = numberApplied;
+        this.empEmail = empEmail;
     }
 
-    public JobPostingforUser(String jobTitle, String employerName, String jobDateCreated) {
-        this.jobTitle = jobTitle;
-        this.employerName = employerName;
-        this.jobDateCreated = jobDateCreated;
-    }
 
     protected JobPostingforUser(Parcel in) {
         jobId = in.readString();
@@ -84,27 +68,9 @@ public class JobPostingforUser implements Parcelable {
         jobStatus = in.readString();
         updateHistory = in.readInt();
         jobType = in.readString();
+        numberneed = in.readString();
         numberApplied = in.readInt();
-    }
-
-    public static Creator<JobPostingforUser> getCREATOR() {
-        return CREATOR;
-    }
-
-    public String getEmpEmail() {
-        return empEmail;
-    }
-
-    public void setEmpEmail(String empEmail) {
-        this.empEmail = empEmail;
-    }
-
-    public String getNumberneed() {
-        return numberneed;
-    }
-
-    public void setNumberneed(String numberneed) {
-        this.numberneed = numberneed;
+        empEmail = in.readString();
     }
 
     @Override
@@ -125,7 +91,9 @@ public class JobPostingforUser implements Parcelable {
         dest.writeString(jobStatus);
         dest.writeInt(updateHistory);
         dest.writeString(jobType);
+        dest.writeString(numberneed);
         dest.writeInt(numberApplied);
+        dest.writeString(empEmail);
     }
 
     @Override
@@ -133,29 +101,17 @@ public class JobPostingforUser implements Parcelable {
         return 0;
     }
 
-    public String getJobStatus() {
-        return jobStatus;
-    }
+    public static final Creator<JobPostingforUser> CREATOR = new Creator<JobPostingforUser>() {
+        @Override
+        public JobPostingforUser createFromParcel(Parcel in) {
+            return new JobPostingforUser(in);
+        }
 
-    public void setJobStatus(String jobStatus) {
-        this.jobStatus = jobStatus;
-    }
-
-    public String getJobType() {
-        return jobType;
-    }
-
-    public void setJobType(String jobType) {
-        this.jobType = jobType;
-    }
-
-    public String getEmployerFbID() {
-        return employerFbID;
-    }
-
-    public void setEmployerFbID(String employerFbID) {
-        this.employerFbID = employerFbID;
-    }
+        @Override
+        public JobPostingforUser[] newArray(int size) {
+            return new JobPostingforUser[size];
+        }
+    };
 
     public String getJobId() {
         return jobId;
@@ -205,6 +161,14 @@ public class JobPostingforUser implements Parcelable {
         this.employerName = employerName;
     }
 
+    public String getEmployerFbID() {
+        return employerFbID;
+    }
+
+    public void setEmployerFbID(String employerFbID) {
+        this.employerFbID = employerFbID;
+    }
+
     public String getJobDeadline() {
         return jobDeadline;
     }
@@ -219,6 +183,14 @@ public class JobPostingforUser implements Parcelable {
 
     public void setJobDateCreated(String jobDateCreated) {
         this.jobDateCreated = jobDateCreated;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     public int getJobSkills() {
@@ -245,6 +217,14 @@ public class JobPostingforUser implements Parcelable {
         this.countLike = countLike;
     }
 
+    public String getJobStatus() {
+        return jobStatus;
+    }
+
+    public void setJobStatus(String jobStatus) {
+        this.jobStatus = jobStatus;
+    }
+
     public int getUpdateHistory() {
         return updateHistory;
     }
@@ -253,12 +233,20 @@ public class JobPostingforUser implements Parcelable {
         this.updateHistory = updateHistory;
     }
 
-    public String getImageUrl() {
-        return imageUrl;
+    public String getJobType() {
+        return jobType;
     }
 
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
+    public void setJobType(String jobType) {
+        this.jobType = jobType;
+    }
+
+    public String getNumberneed() {
+        return numberneed;
+    }
+
+    public void setNumberneed(String numberneed) {
+        this.numberneed = numberneed;
     }
 
     public int getNumberApplied() {
@@ -269,5 +257,11 @@ public class JobPostingforUser implements Parcelable {
         this.numberApplied = numberApplied;
     }
 
+    public String getEmpEmail() {
+        return empEmail;
+    }
 
+    public void setEmpEmail(String empEmail) {
+        this.empEmail = empEmail;
+    }
 }

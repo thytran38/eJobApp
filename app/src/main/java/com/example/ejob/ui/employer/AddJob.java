@@ -45,7 +45,7 @@ import java.util.Random;
 
 public class AddJob extends AppCompatActivity {
     Button addJobButton;
-    EditText jobTitle, jobDescription, jobLocation, jobSalary, employerName, oodDate, jobDateCreated, numberApplicant;
+    EditText jobTitle, jobDescription, jobLocation, jobSalary, employerName, oodDate, jobDateCreated, numberApplicant, cvRequired;
     TextInputLayout textInputLayout;
     AutoCompleteTextView jobType;
     FirebaseAuth fAuth;
@@ -72,7 +72,7 @@ public class AddJob extends AppCompatActivity {
                     && valNumberOfApplicant()
                     && valJd()
                     && valLoca()
-                    && valSalary();
+                    && valSalary() && valCvRequired();
 
             if (allval) {
                 addJobButton.setBackground(getDrawable(R.drawable.button_bg));
@@ -123,6 +123,8 @@ public class AddJob extends AppCompatActivity {
         }
     }
 
+
+
     private boolean valJd() {
         String jd = jobDescription.getText().toString();
         if (jd.isEmpty()) {
@@ -156,6 +158,17 @@ public class AddJob extends AppCompatActivity {
         }
     }
 
+    private boolean valCvRequired() {
+        String num = cvRequired.getText().toString();
+        if (num.isEmpty()) {
+            cvRequired.setError("Please enter cv requirement");
+            return false;
+        } else {
+            cvRequired.setError(null);
+            return true;
+        }
+    }
+
     private boolean valOodDate() {
         String deadlineDate = oodDate.getText().toString();
         if (deadlineDate.isEmpty()) {
@@ -183,6 +196,7 @@ public class AddJob extends AppCompatActivity {
         jobSalary.addTextChangedListener(addjobTextwatcher);
         numberApplicant.addTextChangedListener(addjobTextwatcher);
         oodDate.addTextChangedListener(addjobTextwatcher);
+        cvRequired.addTextChangedListener(addjobTextwatcher);
 
         oodDate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -282,6 +296,7 @@ public class AddJob extends AppCompatActivity {
         jobInfo.put("isAvailable", "1");
         jobInfo.put("jobOod", timeDeadline);
         jobInfo.put("jobDateCreated", timeCreated);
+        jobInfo.put("cvRequired",cvRequired.getText().toString());
         df2.set(jobInfo);
 
 
@@ -360,6 +375,7 @@ public class AddJob extends AppCompatActivity {
         jobDateCreated = findViewById(R.id.etDatecreated);
         addJobButton = findViewById(R.id.btnAdd);
         numberApplicant = findViewById(R.id.etNumApplicant);
+        cvRequired = findViewById(R.id.etCvRequired);
     }
 
     @Override

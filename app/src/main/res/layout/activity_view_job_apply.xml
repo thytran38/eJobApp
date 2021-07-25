@@ -483,7 +483,7 @@
                                         android:layout_height="20dp"
                                         android:layout_alignParentEnd="true"
 
-                                        android:src="@drawable/ic_baseline_attach_file_24"/>
+                                        android:src="@drawable/ic_baseline_file_upload_24"/>
                                 </RelativeLayout>
 
 

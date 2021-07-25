@@ -6,6 +6,7 @@ import android.os.Parcelable;
 import com.example.ejob.data.model.ApplicationStatus;
 
 public class JobApplication implements Parcelable {
+
     String applicantID;
     String applicationId;
     String position;

@@ -24,12 +24,13 @@ public class JobPostingforUser implements Parcelable {
     String numberneed;
     int numberApplied;
     String empEmail;
+    String cvRequired;
 
     public JobPostingforUser() {
 
     }
 
-    public JobPostingforUser(String jobId, String jobTitle, String jobDescription, String jobLocation, String salary, String employerName, String employerFbID, String jobDeadline, String jobDateCreated, String imageUrl, int jobSkills, int countView, int countLike, String jobStatus, String jobType, String numberneed, int numberApplied, String empEmail) {
+    public JobPostingforUser(String jobId, String jobTitle, String jobDescription, String jobLocation, String salary, String employerName, String employerFbID, String jobDeadline, String jobDateCreated, String imageUrl, int jobSkills, int countView, int countLike, String jobStatus, int updateHistory, String jobType, String numberneed, int numberApplied, String empEmail, String cvRequired) {
         this.jobId = jobId;
         this.jobTitle = jobTitle;
         this.jobDescription = jobDescription;
@@ -44,10 +45,12 @@ public class JobPostingforUser implements Parcelable {
         this.countView = countView;
         this.countLike = countLike;
         this.jobStatus = jobStatus;
+        this.updateHistory = updateHistory;
         this.jobType = jobType;
         this.numberneed = numberneed;
         this.numberApplied = numberApplied;
         this.empEmail = empEmail;
+        this.cvRequired = cvRequired;
     }
 
 
@@ -71,6 +74,7 @@ public class JobPostingforUser implements Parcelable {
         numberneed = in.readString();
         numberApplied = in.readInt();
         empEmail = in.readString();
+        cvRequired = in.readString();
     }
 
     @Override
@@ -94,6 +98,7 @@ public class JobPostingforUser implements Parcelable {
         dest.writeString(numberneed);
         dest.writeInt(numberApplied);
         dest.writeString(empEmail);
+        dest.writeString(cvRequired);
     }
 
     @Override
@@ -263,5 +268,13 @@ public class JobPostingforUser implements Parcelable {
 
     public void setEmpEmail(String empEmail) {
         this.empEmail = empEmail;
+    }
+
+    public String getCvRequired() {
+        return cvRequired;
+    }
+
+    public void setCvRequired(String cvRequired) {
+        this.cvRequired = cvRequired;
     }
 }

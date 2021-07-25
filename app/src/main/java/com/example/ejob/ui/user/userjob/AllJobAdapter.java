@@ -30,7 +30,6 @@ import java.util.List;
 public class AllJobAdapter extends RecyclerView.Adapter<AllJobAdapter.JobViewHolderForUser>{
 
     public List<com.example.ejob.ui.user.userjob.JobPostingforUser> mJobList;
-    public JobPostingforUser jobPosting;
     private ItemClickListener itemClickListener;
 
     public Context context;
@@ -62,7 +61,7 @@ public class AllJobAdapter extends RecyclerView.Adapter<AllJobAdapter.JobViewHol
     public void onBindViewHolder(@NonNull AllJobAdapter.JobViewHolderForUser holder, int position) {
         firebaseAuth = firebaseAuth.getInstance();
         String userID = firebaseAuth.getCurrentUser().getUid();
-        jobPosting = mJobList.get(position);
+        JobPostingforUser jobPosting = mJobList.get(position);
         if(jobPosting == null){
             return;
         }

@@ -45,7 +45,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class JobApplying extends AppCompatActivity {
-
+    String date;
     Bundle bundle;
     JobPostingforUser jobPosting;
     FirebaseFirestore db;
@@ -106,7 +106,6 @@ public class JobApplying extends AppCompatActivity {
         jobtype.setText(jobPosting.getJobType());
         getEtEmail.setText(firebaseAuth.getCurrentUser().getEmail());
 
-        long date = Date.getEpochSecond();
         timeCreated = String.valueOf(date);
 
 
@@ -190,6 +189,8 @@ public class JobApplying extends AppCompatActivity {
         firebaseAuth = FirebaseAuth.getInstance();
         fbDb = FirebaseDatabase.getInstance();
         db = FirebaseFirestore.getInstance();
+        Date dateInsc = Date.getInstance();
+        date = dateInsc.toString();
         submit.setEnabled(false);
         submit.setBackground(getDrawable(R.drawable.button_grayout));
     }
@@ -336,7 +337,7 @@ public class JobApplying extends AppCompatActivity {
                 switch (which) {
                     case DialogInterface.BUTTON_POSITIVE:
                         Toast.makeText(JobApplying.this, "Application Cancelled!", Toast.LENGTH_LONG).show();
-                        startActivity(new Intent(jobApplyingContext, UserActivity.class));
+                        startActivity(new Intent(jobApplyingContext, ViewJobDetail.class));
                         break;
 
                     case DialogInterface.BUTTON_NEGATIVE:

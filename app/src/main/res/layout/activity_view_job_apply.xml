@@ -61,37 +61,37 @@
                         android:layout_height="match_parent"
                         android:orientation="vertical">
 
-                        <com.google.android.material.card.MaterialCardView
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
-                            android:layout_marginTop="16sp"
-                            android:layout_gravity="center_horizontal"
-                            app:strokeWidth="0.5dp"
-                            app:strokeColor="#f1f1f1"
-                            app:cardElevation="0dp"
-                            app:cardCornerRadius="8dp">
+<!--                        <com.google.android.material.card.MaterialCardView-->
+<!--                            android:layout_width="40dp"-->
+<!--                            android:layout_height="40dp"-->
+<!--                            android:layout_marginTop="16sp"-->
+<!--                            android:layout_gravity="center_horizontal"-->
+<!--                            app:strokeWidth="0.5dp"-->
+<!--                            app:strokeColor="#f1f1f1"-->
+<!--                            app:cardElevation="0dp"-->
+<!--                            app:cardCornerRadius="8dp">-->
 
-                            <ImageView
-                                android:id="@+id/photoPreview"
-                                android:scaleType="centerInside"
-                                android:layout_margin="5dp"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent" />
+<!--                            <ImageView-->
+<!--                                android:id="@+id/photoPreview"-->
+<!--                                android:scaleType="centerInside"-->
+<!--                                android:layout_margin="5dp"-->
+<!--                                android:layout_width="match_parent"-->
+<!--                                android:layout_height="match_parent" />-->
 
-                            <com.facebook.shimmer.ShimmerFrameLayout
-                                android:id="@+id/imageProgress"
-                                android:layout_width="160dp"
-                                android:layout_height="160dp">
+<!--                            <com.facebook.shimmer.ShimmerFrameLayout-->
+<!--                                android:id="@+id/imageProgress"-->
+<!--                                android:layout_width="160dp"-->
+<!--                                android:layout_height="160dp">-->
 
 
-                                <View
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:background="@color/text_gray"/>
+<!--                                <View-->
+<!--                                    android:layout_width="match_parent"-->
+<!--                                    android:layout_height="match_parent"-->
+<!--                                    android:background="@color/text_gray"/>-->
 
-                            </com.facebook.shimmer.ShimmerFrameLayout>
+<!--                            </com.facebook.shimmer.ShimmerFrameLayout>-->
 
-                        </com.google.android.material.card.MaterialCardView>
+<!--                        </com.google.android.material.card.MaterialCardView>-->
 
                         <TextView
                             android:id="@+id/titleJob"
@@ -331,6 +331,7 @@
                                         android:hint="User Email"
                                         android:textColorHint="@color/light_gray"
                                         android:textSize="12sp"
+                                        android:enabled="false"
                                         android:editable="false"
                                         android:textColor="@color/grey_effective"/>
 
@@ -363,7 +364,8 @@
                                         android:hint="Facebook, Instagram, Github"
                                         android:textColorHint="@color/light_gray"
                                         android:textSize="12sp"
-                                        android:editable="false"
+                                        android:editable="true"
+                                        android:enabled="true"
                                         android:textColor="@color/grey_effective"/>
 
                                 </LinearLayout>
@@ -455,13 +457,14 @@
                                         app:tint="@color/navy_100"/>
 
                                     <TextView
-                                        android:layout_width="match_parent"
+                                        android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:layout_gravity="center_vertical"
                                         android:text="Curriculum Vitae"
                                         android:textColor="@color/navy_100"
                                         android:textStyle="bold"
                                         android:layout_marginStart="5dp"/>
+
                                 </LinearLayout>
 
                                 <RelativeLayout
@@ -471,7 +474,7 @@
 
                                     <TextView
                                         android:id="@+id/pdfLinks"
-                                        android:text="CV link"
+                                        android:text="Click icon to upload"
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
                                         android:textColor="@color/text_gray"
@@ -484,6 +487,28 @@
                                         android:layout_alignParentEnd="true"
 
                                         android:src="@drawable/ic_baseline_file_upload_24"/>
+                                </RelativeLayout>
+
+                                <RelativeLayout
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="horizontal">
+
+                                    <TextView
+                                        android:id="@+id/tvAttachCV"
+                                        android:text="Click icon to attach this CV"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:textColor="@color/text_gray"
+                                        android:textIsSelectable="true"/>
+                                    <ImageView
+                                        android:id="@+id/cvAttach2"
+                                        android:clickable="true"
+                                        android:layout_width="20dp"
+                                        android:layout_height="20dp"
+                                        android:layout_alignParentEnd="true"
+
+                                        android:src="@drawable/ic_baseline_attach_file_24"/>
                                 </RelativeLayout>
 
 

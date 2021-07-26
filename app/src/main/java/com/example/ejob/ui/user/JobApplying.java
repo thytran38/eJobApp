@@ -37,7 +37,11 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
@@ -54,17 +58,22 @@ public class JobApplying extends AppCompatActivity {
     JobPostingforUser jobPosting;
     FirebaseFirestore db;
     FirebaseDatabase fbDb;
+    DatabaseReference cvRef;
     FirebaseAuth firebaseAuth;
     DocumentReference documentReference;
     StorageReference storageReference;
     FirebaseStorage fStorage;
     Boolean cvExist;
+    boolean uploaded;
     String timeCreated;
     String jobId, employerId, jobStatus;
     JobApplication jobApplying;
     ApplicantModel applyModel;
     UploadPdf uploadPdf;
     Uri fileUri;
+    String cvUploadedUrl, cvExistedUrl;
+    JobApplication jobApplication;
+
 
     ActivityResultLauncher<String> getContent = registerForActivityResult(new ActivityResultContracts.GetContent(),
             new ActivityResultCallback<Uri>() {
@@ -77,10 +86,10 @@ public class JobApplying extends AppCompatActivity {
                     }
                 }
             });
-    private TextView employerName, positionHiring, jobtype, linkCv;
+    private TextView employerName, positionHiring, jobtype, linkCv, tvCvAttach;
     private EditText getEtFullname, getEtPhone, getEtAddress, getEtEmail, getEtSchool, getEtDescription, getEtSocialMedia;
     private RelativeLayout submit;
-    private ImageView upCv;
+    private ImageView upCv, attachCv;
     private Context jobApplyingContext;
     private TextWatcher jobApplyTextWatcher = new TextWatcher() {
         @Override
@@ -118,8 +127,8 @@ public class JobApplying extends AppCompatActivity {
         jobId = jobPosting.getJobId();
         employerId = jobPosting.getEmployerFbID();
         jobStatus = jobPosting.getJobStatus();
-        positionHiring.setText(jobPosting.getJobTitle());
-        employerName.setText(jobPosting.getEmployerName());
+        positionHiring.setText("Application for " + jobPosting.getJobTitle());
+        employerName.setText("To employer " + jobPosting.getEmployerName());
         jobtype.setText(jobPosting.getJobType());
         getEtEmail.setText(firebaseAuth.getCurrentUser().getEmail());
         getEtEmail.setEnabled(false);
@@ -131,6 +140,13 @@ public class JobApplying extends AppCompatActivity {
             public void onClick(View v) {
                 uploadPdfEvent();
 
+            }
+        });
+
+        attachCv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                attachEvent();
             }
         });
 
@@ -178,9 +194,19 @@ public class JobApplying extends AppCompatActivity {
         });
     }
 
+    private void attachEvent() throws NullPointerException{
+        if (!(uploaded == true || cvExist == true)){
+            Toast.makeText(jobApplyingContext, "You need to upload first", Toast.LENGTH_SHORT).show();
+        }else{
+            attachCv.setImageDrawable(getDrawable(R.drawable.ic_baseline_check_ok_24));
+            attachCv.setEnabled(false);
+            tvCvAttach.setText("CV attached");
+        }
+    }
+
     private JobApplication gatherData() {
 
-        JobApplication jobApplication = new JobApplication();
+        jobApplication = new JobApplication();
 //        int orderNumber = new Random().
         String cvUrl = getCvUrl();
         String imgUrl = getImgUrl();
@@ -189,7 +215,13 @@ public class JobApplying extends AppCompatActivity {
         jobApplication.setApplicationDate(String.valueOf(timeCreated));
         jobApplication.setApplicationStatus(ApplicationStatus.SUBMITTED);
         jobApplication.setApplicantID(firebaseAuth.getCurrentUser().getUid()); //
-        jobApplication.setCvitaeLink(cvUrl);
+        if(cvUploadedUrl==null || cvExistedUrl==null){
+            jobApplication.setCvitaeLink("none");
+        }else if(cvExistedUrl!= null){
+            jobApplication.setCvitaeLink(cvExistedUrl);
+        }else
+            jobApplication.setCvitaeLink(cvUploadedUrl);
+
         jobApplication.setApplicantAddress(getEtAddress.getText().toString());
         jobApplication.setSelfDescription(getEtDescription.getText().toString());
         jobApplication.setApplicantEmail(getEtEmail.getText().toString());
@@ -212,6 +244,8 @@ public class JobApplying extends AppCompatActivity {
         date = dateInsc.toString();
         submit.setEnabled(false);
         submit.setBackground(getDrawable(R.drawable.button_grayout));
+        cvRef = FirebaseDatabase.getInstance().getReference("cvUploads");
+        cvCheck(firebaseAuth.getCurrentUser().getUid());
     }
 
     private boolean valFullName() {
@@ -365,6 +399,7 @@ public class JobApplying extends AppCompatActivity {
                 switch (which) {
                     case DialogInterface.BUTTON_POSITIVE:
                         Toast.makeText(JobApplying.this, "Application Cancelled!", Toast.LENGTH_LONG).show();
+                        dialog.dismiss();
                         startActivity(new Intent(jobApplyingContext, ViewJobDetail.class));
                         break;
 
@@ -386,7 +421,9 @@ public class JobApplying extends AppCompatActivity {
         jobtype = findViewById(R.id.typeJob);
         submit = findViewById(R.id.btnApply);
         upCv = findViewById(R.id.cvAttach);
+        attachCv = findViewById(R.id.cvAttach2);
 
+        tvCvAttach = findViewById(R.id.tvAttachCV);
         linkCv = findViewById(R.id.pdfLinks);
         getEtFullname = findViewById(R.id.etFullname);
         getEtSchool = findViewById(R.id.etInsitution);
@@ -426,7 +463,7 @@ public class JobApplying extends AppCompatActivity {
     }
 
     private String getCvUrl() {
-        return "f";
+        return "";
 
     }
 
@@ -436,103 +473,30 @@ public class JobApplying extends AppCompatActivity {
     }
 
 
+    private void cvCheck(String UID){
+        cvRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(snapshot.child(UID).exists()){
+                    cvExist = true;
+                    for(DataSnapshot child : snapshot.getChildren()){
+                        upCv.setImageDrawable(getDrawable(R.drawable.ic_baseline_check_ok_24));
+                        upCv.setEnabled(false);
+                        linkCv.setText(child.child("fileName").getValue().toString());
 
+                        cvExistedUrl = child.child("cvURL").getValue().toString();
+                        tvCvAttach.setText(cvExistedUrl);
+                    }
+                }
+            }
 
-/*
-            folder.putFile(fileUri)
-                    .addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                            if (task.isSuccessful()) {
-                                progressBar.dismiss();
-                                task.getResult().getMetadata().getReference().getDownloadUrl();
-                                folder.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                    @Override
-                                    public void onSuccess(Uri uri) {
-                                        upCv.setImageResource(R.drawable.ic_baseline_check_ok_24);
-                                        linkCv.setText("Uploaded Successfully file: " + fileUri.getLastPathSegment());
-                                        progressBar.dismiss();
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
 
-                                        HashMap<String, String> hashMap = new HashMap<>();
-                                        hashMap.put("cvLink", String.valueOf(file_name.getDownloadUrl().toString()));
-                                        hashMap.put("cvUri", String.valueOf(task.getResult()));
-                                        hashMap.put("fileName",fileUri.getLastPathSegment());
-                                        jobApplying.setCvitaeLink(String.valueOf(task.getResult()));
+            }
+        });
 
-                                        fbDb.getReference("cvUploads")
-                                            .child(firebaseAuth.getCurrentUser().getUid())
-                                            .setValue(hashMap)
-                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                @Override
-                                                public void onSuccess(Void aVoid) {
-                                                    Toast.makeText(uploadPdf, "Done uploading!", Toast.LENGTH_SHORT).show();
-                                                }
-                                            });
-                                        }
-                                    });
-
-                            } else {
-                                progressBar.dismiss();
-                                Toast.makeText(JobApplying.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                            }
-
-                        }
-                    });
-
-            file_name.putFile(fileUri)
-                    .addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                            upCv.setImageResource(R.drawable.ic_baseline_check_ok_24);
-                            linkCv.setText("Uploaded Successfully with URL: " + folder.child(possibleNameFile).getDownloadUrl());
-                            progressBar.dismiss();
-                            file_name.getDownloadUrl()
-                                    .addOnCompleteListener(new OnCompleteListener<Uri>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<Uri> task) {
-                                            HashMap<String, String> hashMap = new HashMap<>();
-                                    hashMap.put("cvLink", String.valueOf(file_name.getDownloadUrl().toString()));
-                                    hashMap.put("cvUri", String.valueOf(task.getResult()));
-                                    jobApplying.setCvitaeLink(String.valueOf(task.getResult()));
-
-                                    fbDb.getReference("cvUploads")
-                                            .child(firebaseAuth.getCurrentUser().getUid())
-                                            .setValue(hashMap)
-                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                @Override
-                                                public void onSuccess(Void aVoid) {
-                                                    Toast.makeText(uploadPdf, "Done uploading!", Toast.LENGTH_SHORT).show();
-                                                }
-                                            });
-                                        }
-                                    });
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-
-                            progressBar.setMessage("Failed");
-                            progressBar.dismiss();
-                        }
-                    });
-
-
-            file_name.putFile(fileUri)
-                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                            upCv.setImageResource(R.drawable.ic_baseline_check_ok_24);
-                            file_name.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                @Override
-                                public void onSuccess(Uri uri) {
-
-                                }
-                            });
-                        }
-                    });
-
-        */
+    }
 
 
     private void uploadPdfEvent() throws IllegalStateException, NullPointerException {
@@ -543,20 +507,14 @@ public class JobApplying extends AppCompatActivity {
         progressDialog.setProgressStyle(progressDialog.STYLE_HORIZONTAL);
         progressDialog.setCancelable(false);
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-
-            }
-        });
-
         getContent.launch("application/pdf");
         if (fileUri != null) {
             int cvRandom = new Random().nextInt(5000);
             double progress = 0;
             StorageReference folder = fStorage.getInstance().getReference().child("CVFiles/");
-            String possibleNameFile = "file" + fileUri.getLastPathSegment();
+            String possibleNameFile = fileUri.getLastPathSegment().replaceAll(".*/","");
             StorageReference file_name = folder.child(possibleNameFile);
+            HashMap<String, String> hashMap = new HashMap<>();
             Task task = file_name.putFile(fileUri);
 
             folder.putFile(fileUri)
@@ -566,6 +524,19 @@ public class JobApplying extends AppCompatActivity {
                         progressDialog.setProgress(((int) progress1));
                         if(progress1 == 100){
                             progressDialog.setMessage("Uploaded " + progress1 + " %");
+                        }
+                    })
+                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            Task<Uri> uriTask = taskSnapshot.getStorage().getDownloadUrl();
+                            while(!uriTask.isComplete());
+                            uploaded = true;
+                            Uri uri = uriTask.getResult();
+                            hashMap.put("cvURL", uri.toString());
+                            cvUploadedUrl = uri.toString();
+
+
                         }
                     })
 //                    .continueWithTask(task12 -> {
@@ -584,14 +555,13 @@ public class JobApplying extends AppCompatActivity {
 //                                return;
                             if(task1.isComplete()){
                                 upCv.setImageResource(R.drawable.ic_baseline_check_ok_24);
-                                linkCv.setText("Uploaded Successfully file: " + fileUri.getLastPathSegment());
+                                upCv.setEnabled(false);
+                                linkCv.setText("Uploaded Successfully file: " + possibleNameFile + ".pdf");
                                 progressDialog.setCancelable(true);
                                 progressDialog.dismiss();
 
-                                HashMap<String, String> hashMap = new HashMap<>();
-                                hashMap.put("cvLink", String.valueOf(file_name.getDownloadUrl().toString()));
-                                hashMap.put("cvUri", String.valueOf(task1.getResult()));
-                                hashMap.put("fileName", fileUri.getLastPathSegment());
+                                hashMap.put("cvUri", String.valueOf(task1.getResult().getStorage().getDownloadUrl()));
+                                hashMap.put("fileName", possibleNameFile);
 //                                jobApplying.setCvitaeLink(String.valueOf(task1.getResult()));
 
                                 fbDb.getReference("cvUploads")
@@ -659,3 +629,6 @@ public class JobApplying extends AppCompatActivity {
     }
 
 }
+
+
+

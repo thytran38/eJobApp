@@ -10,9 +10,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.util.Pair;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -29,9 +27,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.ejob.R;
 import com.example.ejob.data.model.ApplicantModel;
 import com.example.ejob.data.model.ApplicationStatus;
-import com.example.ejob.ui.employer.AddJob;
-import com.example.ejob.ui.employer.EmployerActivity;
-import com.example.ejob.ui.register.RegisterUsr;
 import com.example.ejob.ui.user.application.JobApplication;
 import com.example.ejob.ui.user.application.ViewJobDetail;
 import com.example.ejob.ui.user.pdf.UploadPdf;
@@ -50,10 +45,8 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Random;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class JobApplying extends AppCompatActivity {
     String date;
@@ -72,6 +65,7 @@ public class JobApplying extends AppCompatActivity {
     ApplicantModel applyModel;
     UploadPdf uploadPdf;
     Uri fileUri;
+
     ActivityResultLauncher<String> getContent = registerForActivityResult(new ActivityResultContracts.GetContent(),
             new ActivityResultCallback<Uri>() {
                 @Override
@@ -109,6 +103,7 @@ public class JobApplying extends AppCompatActivity {
 
         }
     };
+    private UploadTask urlTask;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -441,35 +436,64 @@ public class JobApplying extends AppCompatActivity {
     }
 
 
-    private void uploadPdfEvent() {
-        ProgressDialog progressBar = new ProgressDialog(jobApplyingContext);
 
-        progressBar.setMessage("Uploading........");
-        progressBar.show();
-        getContent.launch("application/pdf");
 
-        if (fileUri != null) {
-            int cvRandom = new Random().nextInt(5000);
-//            imageUri = String.valueOf(imgRandomLink);
-            StorageReference folder = fStorage.getInstance().getReference().child("CVFiles/");
-            String possibleNameFile = "file" + fileUri.getLastPathSegment();
-            StorageReference file_name = folder.child(possibleNameFile);
+/*
+            folder.putFile(fileUri)
+                    .addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                            if (task.isSuccessful()) {
+                                progressBar.dismiss();
+                                task.getResult().getMetadata().getReference().getDownloadUrl();
+                                folder.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                    @Override
+                                    public void onSuccess(Uri uri) {
+                                        upCv.setImageResource(R.drawable.ic_baseline_check_ok_24);
+                                        linkCv.setText("Uploaded Successfully file: " + fileUri.getLastPathSegment());
+                                        progressBar.dismiss();
+
+                                        HashMap<String, String> hashMap = new HashMap<>();
+                                        hashMap.put("cvLink", String.valueOf(file_name.getDownloadUrl().toString()));
+                                        hashMap.put("cvUri", String.valueOf(task.getResult()));
+                                        hashMap.put("fileName",fileUri.getLastPathSegment());
+                                        jobApplying.setCvitaeLink(String.valueOf(task.getResult()));
+
+                                        fbDb.getReference("cvUploads")
+                                            .child(firebaseAuth.getCurrentUser().getUid())
+                                            .setValue(hashMap)
+                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void aVoid) {
+                                                    Toast.makeText(uploadPdf, "Done uploading!", Toast.LENGTH_SHORT).show();
+                                                }
+                                            });
+                                        }
+                                    });
+
+                            } else {
+                                progressBar.dismiss();
+                                Toast.makeText(JobApplying.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+
+                        }
+                    });
 
             file_name.putFile(fileUri)
-                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    .addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                         @Override
-                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
                             upCv.setImageResource(R.drawable.ic_baseline_check_ok_24);
-                            linkCv.setText("Uploaded Successfully with URL: " + String.valueOf(folder.child(possibleNameFile)
-                                    .getDownloadUrl()));
+                            linkCv.setText("Uploaded Successfully with URL: " + folder.child(possibleNameFile).getDownloadUrl());
                             progressBar.dismiss();
-                            file_name.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                @Override
-                                public void onSuccess(Uri uri) {
-                                    HashMap<String, String> hashMap = new HashMap<>();
+                            file_name.getDownloadUrl()
+                                    .addOnCompleteListener(new OnCompleteListener<Uri>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Uri> task) {
+                                            HashMap<String, String> hashMap = new HashMap<>();
                                     hashMap.put("cvLink", String.valueOf(file_name.getDownloadUrl().toString()));
-                                    hashMap.put("cvUri", String.valueOf(uri));
-                                    jobApplying.setCvitaeLink(String.valueOf(uri));
+                                    hashMap.put("cvUri", String.valueOf(task.getResult()));
+                                    jobApplying.setCvitaeLink(String.valueOf(task.getResult()));
 
                                     fbDb.getReference("cvUploads")
                                             .child(firebaseAuth.getCurrentUser().getUid())
@@ -480,12 +504,158 @@ public class JobApplying extends AppCompatActivity {
                                                     Toast.makeText(uploadPdf, "Done uploading!", Toast.LENGTH_SHORT).show();
                                                 }
                                             });
+                                        }
+                                    });
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+
+                            progressBar.setMessage("Failed");
+                            progressBar.dismiss();
+                        }
+                    });
+
+
+            file_name.putFile(fileUri)
+                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            upCv.setImageResource(R.drawable.ic_baseline_check_ok_24);
+                            file_name.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                @Override
+                                public void onSuccess(Uri uri) {
 
                                 }
                             });
                         }
                     });
+
+        */
+
+
+    private void uploadPdfEvent() throws IllegalStateException, NullPointerException {
+        ProgressDialog progressDialog = new ProgressDialog(jobApplyingContext);
+        progressDialog.setTitle("Upload CV");
+        progressDialog.setMessage("Progress Bar");
+        progressDialog.setMax(100);
+        progressDialog.setProgressStyle(progressDialog.STYLE_HORIZONTAL);
+        progressDialog.setCancelable(false);
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+            }
+        });
+
+        getContent.launch("application/pdf");
+        if (fileUri != null) {
+            int cvRandom = new Random().nextInt(5000);
+            double progress = 0;
+            StorageReference folder = fStorage.getInstance().getReference().child("CVFiles/");
+            String possibleNameFile = "file" + fileUri.getLastPathSegment();
+            StorageReference file_name = folder.child(possibleNameFile);
+            Task task = file_name.putFile(fileUri);
+
+            folder.putFile(fileUri)
+                    .addOnProgressListener(snapshot -> {
+                        double progress1 = (100 * snapshot.getBytesTransferred()) / snapshot.getTotalByteCount();
+                        progressDialog.show();
+                        progressDialog.setProgress(((int) progress1));
+                        if(progress1 == 100){
+                            progressDialog.setMessage("Uploaded " + progress1 + " %");
+                        }
+                    })
+//                    .continueWithTask(task12 -> {
+//                        if (!task12.isSuccessful()) {
+//                            throw task12.getException();
+//                        }
+//                        else{
+//                            return file_name.getDownloadUrl();
+//                        }
+//                    })
+                    .addOnCompleteListener(task1 -> {
+                        if (task1.isSuccessful()) {
+//                            Uri downloadUri = task1.getResult();
+//
+//                            if (downloadUri == null) {
+//                                return;
+                            if(task1.isComplete()){
+                                upCv.setImageResource(R.drawable.ic_baseline_check_ok_24);
+                                linkCv.setText("Uploaded Successfully file: " + fileUri.getLastPathSegment());
+                                progressDialog.setCancelable(true);
+                                progressDialog.dismiss();
+
+                                HashMap<String, String> hashMap = new HashMap<>();
+                                hashMap.put("cvLink", String.valueOf(file_name.getDownloadUrl().toString()));
+                                hashMap.put("cvUri", String.valueOf(task1.getResult()));
+                                hashMap.put("fileName", fileUri.getLastPathSegment());
+//                                jobApplying.setCvitaeLink(String.valueOf(task1.getResult()));
+
+                                fbDb.getReference("cvUploads")
+                                        .child(firebaseAuth.getCurrentUser().getUid())
+                                        .setValue(hashMap)
+                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
+                                                Toast.makeText(jobApplyingContext, "Done uploading!", Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
+                            } else {
+
+                            }
+                        }
+                    });
+
+
+//            UploadTask uploadTask = file_name.putFile(fileUri);
+//            Task<Uri> urltask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+//                @Override
+//                public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+//                    if (!task.isSuccessful()) {
+//                        throw task.getException();
+//
+//                    }
+//                    return file_name.getDownloadUrl();
+//                }
+//            })
+//                    .addOnCompleteListener(new OnCompleteListener<Uri>() {
+//                @Override
+//                public void onComplete(@NonNull Task<Uri> task) {
+//                    if (task.isSuccessful()) {
+//                        Uri downloadUri = task.getResult();
+//                        if (downloadUri == null) {
+//                            return;
+//                        } else {
+//                            upCv.setImageResource(R.drawable.ic_baseline_check_ok_24);
+//                            linkCv.setText("Uploaded Successfully file: " + fileUri.getLastPathSegment());
+//                            progressBar.dismiss();
+//
+//                            HashMap<String, String> hashMap = new HashMap<>();
+//                            hashMap.put("cvLink", String.valueOf(file_name.getDownloadUrl().toString()));
+//                            hashMap.put("cvUri", String.valueOf(task.getResult()));
+//                            hashMap.put("fileName", fileUri.getLastPathSegment());
+//                            jobApplying.setCvitaeLink(String.valueOf(task.getResult()));
+//
+//                            fbDb.getReference("cvUploads")
+//                                    .child(firebaseAuth.getCurrentUser().getUid())
+//                                    .setValue(hashMap)
+//                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+//                                        @Override
+//                                        public void onSuccess(Void aVoid) {
+//                                            Toast.makeText(uploadPdf, "Done uploading!", Toast.LENGTH_SHORT).show();
+//                                        }
+//                                    });
+//                        }
+//                    }
+//                }
+//            });
+
+
         }
+
     }
 
 }

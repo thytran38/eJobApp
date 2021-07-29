@@ -4,4 +4,5 @@ public enum ApplicationStatus {
 
     SHORTLISTED,
     SUBMITTED,
+    CANCELLED
 }

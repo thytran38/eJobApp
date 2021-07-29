@@ -22,11 +22,15 @@ public class JobApplication implements Parcelable {
     String applicantAddress;
     String photoURL;
     String employerFbId;
+    String employerFullname;
+    String jobID;
+    String jobType;
+    String jobLocation;
 
     public JobApplication() {
     }
 
-    public JobApplication(String applicantID, String applicationId, String position, String selfDescription, String applicationDate, String cvitaeLink, ApplicationStatus applicationStatus, String applicantFullname, String applicantEmail, String applicantPhone, String applicantSocialmedia, String applicantUniversity, String applicantAddress, String photoURL, String employerFbId) {
+    public JobApplication(String applicantID, String applicationId, String position, String selfDescription, String applicationDate, String cvitaeLink, ApplicationStatus applicationStatus, String applicantFullname, String applicantEmail, String applicantPhone, String applicantSocialmedia, String applicantUniversity, String applicantAddress, String photoURL, String employerFbId, String employerFullname, String jobID, String jobType, String jobLocation) {
         this.applicantID = applicantID;
         this.applicationId = applicationId;
         this.position = position;
@@ -42,8 +46,11 @@ public class JobApplication implements Parcelable {
         this.applicantAddress = applicantAddress;
         this.photoURL = photoURL;
         this.employerFbId = employerFbId;
+        this.employerFullname = employerFullname;
+        this.jobID = jobID;
+        this.jobType = jobType;
+        this.jobLocation = jobLocation;
     }
-
 
     protected JobApplication(Parcel in) {
         applicantID = in.readString();
@@ -60,6 +67,37 @@ public class JobApplication implements Parcelable {
         applicantAddress = in.readString();
         photoURL = in.readString();
         employerFbId = in.readString();
+        employerFullname = in.readString();
+        jobID = in.readString();
+        jobType = in.readString();
+        jobLocation = in.readString();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(applicantID);
+        dest.writeString(applicationId);
+        dest.writeString(position);
+        dest.writeString(selfDescription);
+        dest.writeString(applicationDate);
+        dest.writeString(cvitaeLink);
+        dest.writeString(applicantFullname);
+        dest.writeString(applicantEmail);
+        dest.writeString(applicantPhone);
+        dest.writeString(applicantSocialmedia);
+        dest.writeString(applicantUniversity);
+        dest.writeString(applicantAddress);
+        dest.writeString(photoURL);
+        dest.writeString(employerFbId);
+        dest.writeString(employerFullname);
+        dest.writeString(jobID);
+        dest.writeString(jobType);
+        dest.writeString(jobLocation);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
     public static final Creator<JobApplication> CREATOR = new Creator<JobApplication>() {
@@ -194,26 +232,35 @@ public class JobApplication implements Parcelable {
         this.employerFbId = employerFbId;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
+    public String getEmployerFullname() {
+        return employerFullname;
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(applicantID);
-        dest.writeString(applicationId);
-        dest.writeString(position);
-        dest.writeString(selfDescription);
-        dest.writeString(applicationDate);
-        dest.writeString(cvitaeLink);
-        dest.writeString(applicantFullname);
-        dest.writeString(applicantEmail);
-        dest.writeString(applicantPhone);
-        dest.writeString(applicantSocialmedia);
-        dest.writeString(applicantUniversity);
-        dest.writeString(applicantAddress);
-        dest.writeString(photoURL);
-        dest.writeString(employerFbId);
+    public void setEmployerFullname(String employerFullname) {
+        this.employerFullname = employerFullname;
+    }
+
+    public String getJobID() {
+        return jobID;
+    }
+
+    public void setJobID(String jobID) {
+        this.jobID = jobID;
+    }
+
+    public String getJobType() {
+        return jobType;
+    }
+
+    public void setJobType(String jobType) {
+        this.jobType = jobType;
+    }
+
+    public String getJobLocation() {
+        return jobLocation;
+    }
+
+    public void setJobLocation(String jobLocation) {
+        this.jobLocation = jobLocation;
     }
 }

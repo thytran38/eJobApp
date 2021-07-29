@@ -3,6 +3,7 @@ package com.example.ejob.ui.user.applications;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.ejob.R;
 import com.example.ejob.data.model.ApplicationStatus;
+import com.example.ejob.ui.employer.AddJob;
 import com.example.ejob.ui.employer.EmployerActivity;
 import com.example.ejob.ui.user.UserActivity;
 import com.example.ejob.ui.user.application.JobApplication;
@@ -25,6 +27,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.List;
@@ -52,7 +55,7 @@ public class ApplicationAdapterforUser extends RecyclerView.Adapter<ApplicationA
     @NonNull
     @Override
     public ApplicationAdapterforUser.ApplicationItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.application_item, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.application_item_user, parent, false);
         this.v = view;
         return new ApplicationAdapterforUser.ApplicationItemViewHolder(view);
     }
@@ -72,45 +75,65 @@ public class ApplicationAdapterforUser extends RecyclerView.Adapter<ApplicationA
         holder.applicantName.setText(jobApplication.getApplicantFullname());
         holder.address.setText(jobApplication.getApplicantAddress());
         holder.school.setText(jobApplication.getApplicantUniversity());
-        holder.cv.setText(jobApplication.getCvitaeLink());
+        try{
+            holder.cv.setText(jobApplication.getCvitaeLink());
+        }catch(NullPointerException npe){
+            Log.d("TAG_npe", npe.getMessage());
+            holder.cv.setText("Applicant has no CV");
+        }
         holder.email.setText(jobApplication.getApplicantEmail());
         holder.phone.setText(jobApplication.getApplicantPhone());
         holder.des.setText(jobApplication.getSelfDescription());
         holder.socialmedia.setText(jobApplication.getApplicantSocialmedia());
 
-//        holder.button.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
-//                builder.setTitle("Job Applying alert");
-//                builder.setMessage("You cannot  after this submission. \nAre you sure you want to continue?");
-//                DialogInterface.OnClickListener dialogListener = new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int which) {
-//                        switch (which) {
-//                            case DialogInterface.BUTTON_POSITIVE:
-//                                shortList(jobApplication.getApplicantID());
-//                                Toast.makeText(v.getContext(), "Application Submitted!", Toast.LENGTH_LONG).show();
-//                                v.getContext().startActivity(new Intent(v.getContext(), EmployerActivity.class));
-//                                break;
-//
-//                            case DialogInterface.BUTTON_NEGATIVE:
-//                                dialog.dismiss();
-//                                break;
-//                        }
-//                    }
-//                };
-//                builder.setPositiveButton("Yes", dialogListener);
-//                builder.setNegativeButton("No", dialogListener);
-//                AlertDialog alert = builder.create();
-//                alert.show();
-//            }
-//        });
+        if(jobApplication.getApplicationStatus().equals("CANCELLED")){
+            holder.status.setBackgroundResource(R.drawable.application_status_cancelled);
+            holder.status.setText(jobApplication.getApplicationStatus().toString());
+        }else if(jobApplication.getApplicationStatus().equals("SUBMITTED")){
+            holder.status.setBackgroundResource(R.drawable.application_status_submitted);
+            holder.status.setText(jobApplication.getApplicationStatus().toString());
+        }else{
+            holder.status.setBackgroundResource(R.drawable.application_status_shortlisted);
+            holder.status.setText(jobApplication.getApplicationStatus().toString());
+        }
+
+
 
         holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
                 return onLongClick(v);
+            }
+        });
+
+        holder.cancelBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
+                builder.setTitle("Application Alert");
+                builder.setMessage("You can not re-open this application once it's cancelled. Are you sure you want to continue?");
+                DialogInterface.OnClickListener dialogListener = new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (which) {
+                            case DialogInterface.BUTTON_POSITIVE:
+                                cancelApplication(jobApplication);
+                                Toast.makeText(v.getContext(), "Application Cancelled", Toast.LENGTH_LONG).show();
+                                v.getContext().startActivity(new Intent(v.getContext(), UserActivity.class));
+                                break;
+
+                            case DialogInterface.BUTTON_NEGATIVE:
+                                // User clicked the No button
+                                break;
+                        }
+                    }
+                };
+
+                builder.setPositiveButton("Yes", dialogListener);
+                builder.setNegativeButton("No", dialogListener);
+                AlertDialog alert = builder.create();
+                alert.show();
             }
         });
 
@@ -121,6 +144,22 @@ public class ApplicationAdapterforUser extends RecyclerView.Adapter<ApplicationA
                 viewPdf();
             }
         });
+
+    }
+
+    private void cancelApplication(JobApplication jobApplication) {
+
+        jobApplication.setApplicationStatus(ApplicationStatus.CANCELLED);
+        firestore.collection("Applications")
+                .document(jobApplication.getApplicationId())
+                .update("applicationStatus", String.valueOf(ApplicationStatus.CANCELLED))
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        Toast.makeText(v.getContext(), "Cancelled successfully!", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
 
     }
 
@@ -137,15 +176,6 @@ public class ApplicationAdapterforUser extends RecyclerView.Adapter<ApplicationA
 
                     }
                 });
-
-//        firestore.collection("Applications")
-//                .document(jobApplication.getApplicationId().substring(11,18))
-//                .update("applicationStatus", String.valueOf(ApplicationStatus.SHORTLISTED))
-//                .addOnCompleteListener(new OnCompleteListener<Void>() {
-//                    @Override
-//                    public void onComplete(@NonNull Task<Void> task) {
-//                    }
-//                });
 
 
     }
@@ -169,10 +199,10 @@ public class ApplicationAdapterforUser extends RecyclerView.Adapter<ApplicationA
         void onItemClick(JobApplication application);
     }
 
-    public class ApplicationItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
-        TextView applicantName, school, phone, address, email, cv, socialmedia, des;
+    public class ApplicationItemViewHolder extends RecyclerView.ViewHolder {
+        TextView applicantName, school, phone, address, email, cv, socialmedia, des, status;
         Button button;
-        ImageView photo;
+        ImageView photo, cancelBtn;
 
 
         public ApplicationItemViewHolder(@NonNull View itemView) {
@@ -186,45 +216,10 @@ public class ApplicationAdapterforUser extends RecyclerView.Adapter<ApplicationA
             socialmedia = itemView.findViewById(R.id.apSocial);
             des = itemView.findViewById(R.id.apSelfdescription);
             photo = itemView.findViewById(R.id.photoPreview);
+            cancelBtn = itemView.findViewById(R.id.cancel);
+            status = itemView.findViewById(R.id.applicationStatus);
 
         }
 
-
-        @Override
-        public void onClick(View v) {
-
-        }
-
-        @Override
-        public boolean onLongClick(View v) {
-//            AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
-//                builder.setTitle("Job Applying alert");
-//                builder.setMessage("You cannot  after this submission. \nAre you sure you want to continue?");
-//                DialogInterface.OnClickListener dialogListener = new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int which) {
-//                        switch (which) {
-//                            case DialogInterface.BUTTON_POSITIVE:
-//                                shortList(jobApplication.getApplicantID());
-//                                Toast.makeText(v.getContext(), "Application Submitted!", Toast.LENGTH_LONG).show();
-//                                v.getContext().startActivity(new Intent(v.getContext(), UserActivity.class));
-//                                break;
-//
-//                            case DialogInterface.BUTTON_NEGATIVE:
-//                                dialog.dismiss();
-//                                break;
-//                        }
-//                    }
-//                };
-//                builder.setPositiveButton("Yes", dialogListener);
-//                builder.setNegativeButton("No", dialogListener);
-//                AlertDialog alert = builder.create();
-//                alert.show();
-
-
-//            mApplicationList.remove(position);
-
-            return false;
-        }
     }
 }

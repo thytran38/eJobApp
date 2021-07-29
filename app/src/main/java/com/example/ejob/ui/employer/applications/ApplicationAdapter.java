@@ -19,6 +19,7 @@ import com.example.ejob.R;
 import com.example.ejob.data.model.ApplicationStatus;
 import com.example.ejob.ui.admin.employer_accounts.Employer;
 import com.example.ejob.ui.employer.EmployerActivity;
+import com.example.ejob.ui.user.UserActivity;
 import com.example.ejob.ui.user.application.JobApplication;
 import com.google.android.gms.tasks.OnCompleteListener;
 
@@ -87,7 +88,30 @@ public class ApplicationAdapter extends RecyclerView.Adapter<ApplicationAdapter.
         holder.add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                shortList(jobApplication.getApplicationId());
+                AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
+                builder.setTitle("Application Alert");
+                builder.setMessage("You can not re-open this application once it's cancelled. Are you sure you want to continue?");
+                DialogInterface.OnClickListener dialogListener = new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (which) {
+                            case DialogInterface.BUTTON_POSITIVE:
+                                shortList(jobApplication.getApplicationId());
+                                Toast.makeText(v.getContext(), "Application Cancelled", Toast.LENGTH_LONG).show();
+                                v.getContext().startActivity(new Intent(v.getContext(), UserActivity.class));
+                                break;
+
+                            case DialogInterface.BUTTON_NEGATIVE:
+                                // User clicked the No button
+                                break;
+                        }
+                    }
+                };
+
+                builder.setPositiveButton("Yes", dialogListener);
+                builder.setNegativeButton("No", dialogListener);
+                AlertDialog alert = builder.create();
+                alert.show();
             }
         });
 
@@ -101,21 +125,16 @@ public class ApplicationAdapter extends RecyclerView.Adapter<ApplicationAdapter.
     }
 
     private void shortList(String applicationID) {
-        applicationID.replace("Applications/","").replace("/.*","");
-        String jobID = applicationID;
-        Log.d("TAG_888", jobID.toString());
-        DatabaseReference usrappRef = FirebaseDatabase.getInstance().getReference("userapplications");
 
-        usrappRef.child(jobID)
-                .child(jobApplication.getApplicantID())
-                .setValue("applicationStatus",String.valueOf(ApplicationStatus.SHORTLISTED))
+        firestore.collection("Applications")
+                .document(applicationID)
+                .update("applicationStatus",String.valueOf(ApplicationStatus.SHORTLISTED))
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-                        Toast.makeText(v.getContext(), "Approved successfully!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(v.getContext(), "Added to shortlist successfully!", Toast.LENGTH_SHORT).show();
                     }
                 });
-
 
 
 

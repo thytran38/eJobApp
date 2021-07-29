@@ -85,7 +85,17 @@ public class ApplicationViewModel_3 extends ViewModel {
                                 ApplicationStatus status = ApplicationStatus.valueOf(statusStr);
                                 application.setApplicationStatus(status);
                                 application.setApplicationDate(document.get("applicationDate").toString());
-                                application.setCvitaeLink(document.get("cvitaeLink").toString());
+                                application.setJobID(document.get("jobID").toString());
+
+                                application.setJobLocation(document.get("jobLocation").toString());
+                                application.setJobType(document.get("jobType").toString());
+
+                                try{
+                                    application.setCvitaeLink(document.get("cvitaeLink").toString());
+                                }catch (NullPointerException nullPointerException){
+                                    Log.d("Tag_NPE", nullPointerException.getMessage());
+                                }
+
                                 application.setPosition(document.get("position").toString());
 
                                 applicationList.add(application);

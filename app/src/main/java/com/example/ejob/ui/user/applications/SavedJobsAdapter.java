@@ -27,10 +27,10 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.List;
 
-public class MyJobsAdapter extends RecyclerView.Adapter<MyJobsAdapter.JobInfoViewHolder>{
+public class SavedJobsAdapter extends RecyclerView.Adapter<SavedJobsAdapter.JobInfoViewHolder>{
 
     public List<JobPostingforUser> mJobList;
-    private MyJobsAdapter.ItemClickListener itemClickListener;
+    private SavedJobsAdapter.ItemClickListener itemClickListener;
     public Context context;
 
     private FirebaseAuth firebaseAuth;
@@ -39,16 +39,16 @@ public class MyJobsAdapter extends RecyclerView.Adapter<MyJobsAdapter.JobInfoVie
     Boolean testClick = false;
     int appliedNum = 0;
 
-    public MyJobsAdapter(List<JobPostingforUser> itemList, MyJobsAdapter.ItemClickListener clickListener ){
+    public SavedJobsAdapter(List<JobPostingforUser> itemList, SavedJobsAdapter.ItemClickListener clickListener ){
         this.mJobList = itemList;
         this.itemClickListener = clickListener;
     }
 
     @NonNull
     @Override
-    public MyJobsAdapter.JobInfoViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public SavedJobsAdapter.JobInfoViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.job_item_emp, parent, false);
-        return new MyJobsAdapter.JobInfoViewHolder(view);
+        return new SavedJobsAdapter.JobInfoViewHolder(view);
     }
 
     public interface ItemClickListener{
@@ -57,7 +57,7 @@ public class MyJobsAdapter extends RecyclerView.Adapter<MyJobsAdapter.JobInfoVie
 
 
     @Override
-    public void onBindViewHolder(@NonNull MyJobsAdapter.JobInfoViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull SavedJobsAdapter.JobInfoViewHolder holder, int position) {
         firebaseAuth = firebaseAuth.getInstance();
         String userID = firebaseAuth.getCurrentUser().getUid();
         JobPostingforUser jobPosting = mJobList.get(position);
@@ -183,7 +183,7 @@ public class MyJobsAdapter extends RecyclerView.Adapter<MyJobsAdapter.JobInfoVie
         }
 
 
-        public void getLikeStatus(MyJobsAdapter.JobInfoViewHolder holder, String postId, String uid){
+        public void getLikeStatus(SavedJobsAdapter.JobInfoViewHolder holder, String postId, String uid){
             likeReference =  FirebaseDatabase.getInstance().getReference("likes");
             likeReference.addValueEventListener(new ValueEventListener() {
                 @Override

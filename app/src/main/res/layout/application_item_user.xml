@@ -59,7 +59,7 @@
             <TextView
                 android:id="@+id/applicationStatus"
                 android:text="SUBMITTED"
-                android:textColor="@color/navy_100"
+                android:textColor="@color/white"
                 android:textStyle="bold"
                 android:textSize="9sp"
                 android:paddingEnd="6dp"
@@ -395,7 +395,7 @@
                             android:layout_toEndOf="@id/locIcon4"
                             android:ellipsize="end"
                             android:singleLine="true"
-                            android:text="Applicant V"
+                            android:text="Applicant CV"
                             android:textColor="@color/text_gray"
                             android:textSize="11sp" />
                     </RelativeLayout>

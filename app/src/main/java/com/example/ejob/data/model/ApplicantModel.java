@@ -4,6 +4,11 @@ import android.app.Application;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.example.ejob.ui.user.application.JobApplication;
+import com.example.ejob.ui.user.userjob.JobPostingforUser;
+
+import java.util.ArrayList;
+
 public class ApplicantModel implements Parcelable {
 
     String applicantID;
@@ -15,11 +20,13 @@ public class ApplicantModel implements Parcelable {
     String applicantAddress;
     String photoURL;
     String cvURl;
+    ArrayList<JobApplication> jobApplicationArrayList;
+    ArrayList<JobPostingforUser> jobSaved;
 
     public ApplicantModel() {
     }
 
-    public ApplicantModel(String applicantID, String applicantFullname, String applicantEmail, String applicantPhone, String applicantSocialmedia, String applicantUniversity, String applicantAddress, String photoURL, String cvURl) {
+    public ApplicantModel(String applicantID, String applicantFullname, String applicantEmail, String applicantPhone, String applicantSocialmedia, String applicantUniversity, String applicantAddress, String photoURL, String cvURl, ArrayList<JobApplication> jobApplicationArrayList, ArrayList<JobPostingforUser> jobSaved) {
         this.applicantID = applicantID;
         this.applicantFullname = applicantFullname;
         this.applicantEmail = applicantEmail;
@@ -29,6 +36,8 @@ public class ApplicantModel implements Parcelable {
         this.applicantAddress = applicantAddress;
         this.photoURL = photoURL;
         this.cvURl = cvURl;
+        this.jobApplicationArrayList = jobApplicationArrayList;
+        this.jobSaved = jobSaved;
     }
 
 
@@ -42,24 +51,8 @@ public class ApplicantModel implements Parcelable {
         applicantAddress = in.readString();
         photoURL = in.readString();
         cvURl = in.readString();
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(applicantID);
-        dest.writeString(applicantFullname);
-        dest.writeString(applicantEmail);
-        dest.writeString(applicantPhone);
-        dest.writeString(applicantSocialmedia);
-        dest.writeString(applicantUniversity);
-        dest.writeString(applicantAddress);
-        dest.writeString(photoURL);
-        dest.writeString(cvURl);
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
+        jobApplicationArrayList = in.createTypedArrayList(JobApplication.CREATOR);
+        jobSaved = in.createTypedArrayList(JobPostingforUser.CREATOR);
     }
 
     public static final Creator<ApplicantModel> CREATOR = new Creator<ApplicantModel>() {
@@ -144,5 +137,41 @@ public class ApplicantModel implements Parcelable {
 
     public void setCvURl(String cvURl) {
         this.cvURl = cvURl;
+    }
+
+    public ArrayList<JobApplication> getJobApplicationArrayList() {
+        return jobApplicationArrayList;
+    }
+
+    public void setJobApplicationArrayList(ArrayList<JobApplication> jobApplicationArrayList) {
+        this.jobApplicationArrayList = jobApplicationArrayList;
+    }
+
+    public ArrayList<JobPostingforUser> getJobSaved() {
+        return jobSaved;
+    }
+
+    public void setJobSaved(ArrayList<JobPostingforUser> jobSaved) {
+        this.jobSaved = jobSaved;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(applicantID);
+        dest.writeString(applicantFullname);
+        dest.writeString(applicantEmail);
+        dest.writeString(applicantPhone);
+        dest.writeString(applicantSocialmedia);
+        dest.writeString(applicantUniversity);
+        dest.writeString(applicantAddress);
+        dest.writeString(photoURL);
+        dest.writeString(cvURl);
+        dest.writeTypedList(jobApplicationArrayList);
+        dest.writeTypedList(jobSaved);
     }
 }

@@ -1,4 +1,4 @@
-package com.example.ejob.ui.employer.applications;
+package com.example.ejob.ui.employer;
 
 import android.util.Log;
 
@@ -19,10 +19,8 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
-public class ApplicationViewModel_2 extends ViewModel {
-
+public class ApplicationViewModel_4 extends ViewModel {
     FirebaseAuth firebaseAuth;
     FirebaseFirestore firebaseFirestore;
     FirebaseUser firebaseUser;
@@ -38,7 +36,7 @@ public class ApplicationViewModel_2 extends ViewModel {
     }
 
 
-    public ApplicationViewModel_2(){
+    public ApplicationViewModel_4(){
         firebaseAuth = FirebaseAuth.getInstance();
         mApplicationLiveData = new MutableLiveData<>();
         initData(firebaseAuth.getCurrentUser().getUid());
@@ -59,7 +57,7 @@ public class ApplicationViewModel_2 extends ViewModel {
 
         firebaseFirestore.collection("Applications")
                 .whereEqualTo("employerFbId",uid)
-                .whereEqualTo("applicationStatus","SUBMITTED")
+                .whereEqualTo("applicationStatus","SHORTLISTED")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -87,13 +85,7 @@ public class ApplicationViewModel_2 extends ViewModel {
                                 ApplicationStatus status = ApplicationStatus.valueOf(statusStr);
                                 application.setApplicationStatus(status);
                                 application.setApplicationDate(document.get("applicationDate").toString());
-                                try{
-                                    application.setCvitaeLink(document.get("cvitaeLink").toString());
-                                }catch(NullPointerException npe)
-                                {
-                                    Log.d("TAG_Npe", npe.getMessage());
-                                }
-
+                                application.setCvitaeLink(document.get("cvitaeLink").toString());
                                 application.setPosition(document.get("position").toString());
 
                                 applicationList.add(application);
@@ -105,6 +97,4 @@ public class ApplicationViewModel_2 extends ViewModel {
         return applicationList;
 
     }
-
-
 }

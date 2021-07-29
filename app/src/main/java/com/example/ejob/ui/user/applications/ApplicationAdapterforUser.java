@@ -119,7 +119,11 @@ public class ApplicationAdapterforUser extends RecyclerView.Adapter<ApplicationA
                         switch (which) {
                             case DialogInterface.BUTTON_POSITIVE:
                                 cancelApplication(jobApplication);
-                                Toast.makeText(v.getContext(), "Application Cancelled", Toast.LENGTH_LONG).show();
+                                try {
+                                    Thread.sleep(500);
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
                                 v.getContext().startActivity(new Intent(v.getContext(), UserActivity.class));
                                 break;
 
@@ -163,22 +167,6 @@ public class ApplicationAdapterforUser extends RecyclerView.Adapter<ApplicationA
 
     }
 
-    private void shortList(String applicationID) {
-        DatabaseReference usrappRef = FirebaseDatabase.getInstance().getReference("userapplications");
-        jobApplication.setApplicationStatus(ApplicationStatus.SHORTLISTED);
-        usrappRef.child(jobApplication.getApplicationId().substring(11,18))
-                .child(jobApplication.getApplicantID())
-                .setValue("applicationStatus",String.valueOf(ApplicationStatus.SHORTLISTED))
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        Toast.makeText(v.getContext(), "Approved successfully!", Toast.LENGTH_SHORT).show();
-
-                    }
-                });
-
-
-    }
 
     private void viewPdf() {
         Intent intent = new Intent(v.getContext(), ViewPdf.class);

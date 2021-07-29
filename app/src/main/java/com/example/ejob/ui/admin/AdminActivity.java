@@ -1,6 +1,7 @@
 package com.example.ejob.ui.admin;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentContainer;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager2.widget.ViewPager2;
 
@@ -9,17 +10,24 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import com.example.ejob.ui.employer.ApplicationsEmp;
+import com.example.ejob.ui.employer.EmployerHome;
+import com.example.ejob.ui.employer.EmployerProfile;
+import com.example.ejob.ui.employer.JobApplicationEmp;
+import com.example.ejob.ui.employer.ShortlistedApps;
 import com.example.ejob.ui.login.LoginActivity;
 import com.example.ejob.R;
 import com.example.ejob.utils.CommonUtils;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.google.firebase.auth.FirebaseAuth;
+import com.ismaeldivita.chipnavigation.ChipNavigationBar;
 
-public class AdminActivity extends AppCompatActivity {
+public class AdminActivity extends AppCompatActivity implements ChipNavigationBar.OnItemSelectedListener{
 
-    private TabLayout tabLayout;
-    private ViewPager2 viewPager2;
+    private ChipNavigationBar chipNavigationBar;
+    FragmentContainer fragmentContainer;
+
     SwipeRefreshLayout swipeRefreshLayout;
 
 
@@ -29,22 +37,39 @@ public class AdminActivity extends AppCompatActivity {
         setContentView(R.layout.activity_admin);
 
 
-//        logout.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                FirebaseAuth.getInstance().signOut();
-//                startActivity(new Intent(getApplicationContext(), LoginActivity.class));
-//                finish();
-//            }
-//        });
+        chipNavigationBar = findViewById(R.id.menu3);
+        chipNavigationBar.setMenuOrientation(ChipNavigationBar.MenuOrientation.HORIZONTAL);
+        chipNavigationBar.setOnItemSelectedListener(this);
+        chipNavigationBar.setItemSelected(R.id.nav_main, true);
+    }
 
-            tabLayout = findViewById(R.id.tabLayout);
-            viewPager2 = findViewById(R.id.view_pager_user);
+    @Override
+    public void onItemSelected(int i) {
+        androidx.fragment.app.Fragment selectedFragment = null;
+        switch (i) {
+            case R.id.nav_employer_main:
+                selectedFragment = new AdminHome();
+                break;
 
-            ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager(), getLifecycle());
-            viewPager2.setAdapter(viewPagerAdapter);
-            new TabLayoutMediator(tabLayout, viewPager2,
-                    (tab, position) -> tab.setText(CommonUtils.getTitlefromUser(position)))
-                    .attach();
+            case R.id.nav_employer_case:
+                selectedFragment = new EmployerAccount();
+                break;
+
+            case R.id.nav_applications:
+                selectedFragment = new UserAccount();
+                break;
+
+            default:
+                chipNavigationBar.setItemSelected(R.id.nav_employer_main, true);
+                selectedFragment = new EmployerHome();
+                break;
+
+        }
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container_employer, selectedFragment).commit();
+    }
+
+    @Override
+    public void onPointerCaptureChanged(boolean hasCapture) {
+
     }
 }

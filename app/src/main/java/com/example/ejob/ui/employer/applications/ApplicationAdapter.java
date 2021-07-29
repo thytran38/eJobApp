@@ -84,6 +84,12 @@ public class ApplicationAdapter extends RecyclerView.Adapter<ApplicationAdapter.
         holder.phone.setText(jobApplication.getApplicantPhone());
         holder.des.setText(jobApplication.getSelfDescription());
         holder.socialmedia.setText(jobApplication.getApplicantSocialmedia());
+        holder.status.setText(String.valueOf(jobApplication.getApplicationStatus()));
+
+        if(jobApplication.getApplicationStatus().toString().equals("SHORTLISTED")){
+            holder.add.setEnabled(false);
+            holder.add.setVisibility(View.INVISIBLE);
+        }
 
         holder.add.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -135,9 +141,6 @@ public class ApplicationAdapter extends RecyclerView.Adapter<ApplicationAdapter.
                         Toast.makeText(v.getContext(), "Added to shortlist successfully!", Toast.LENGTH_SHORT).show();
                     }
                 });
-
-
-
     }
 
     private void viewPdf() {
@@ -160,7 +163,7 @@ public class ApplicationAdapter extends RecyclerView.Adapter<ApplicationAdapter.
     }
 
     public class ApplicationItemViewHolder extends RecyclerView.ViewHolder {
-        TextView applicantName, school, phone, address, email, cv, socialmedia, des;
+        TextView applicantName, school, phone, address, email, cv, socialmedia, des, status;
         Button button;
         ImageView photo, add;
 
@@ -177,6 +180,7 @@ public class ApplicationAdapter extends RecyclerView.Adapter<ApplicationAdapter.
             des = itemView.findViewById(R.id.apSelfdescription);
             photo = itemView.findViewById(R.id.photoPreview);
             add = itemView.findViewById(R.id.changeStatus);
+            status = itemView.findViewById(R.id.applicationStatus);
 
         }
     }

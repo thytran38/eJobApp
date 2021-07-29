@@ -2,7 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:title="Home"
+        android:title="Dashboard"
         android:id="@+id/nav_employer_main"
         android:enabled="true"
         android:icon="@drawable/ic_baseline_home_24"
@@ -12,10 +12,10 @@
         app:cnb_textColor="@color/teal_200" />
 
     <item
-        android:title="My Posted Jobs"
+        android:title="Employer Accounts"
         android:id="@+id/nav_employer_case"
         android:enabled="true"
-        android:icon="@drawable/ic_baseline_work_outline_24"
+        android:icon="@drawable/ic_baseline_business_24"
         app:cnb_backgroundColor="@color/white"
         app:cnb_iconColor="@color/teal_200"
         app:cnb_iconTintMode="src_in"
@@ -23,32 +23,10 @@
         />
 
     <item
-        android:title="All Applicants"
+        android:title="User Accounts"
         android:id="@+id/nav_applications"
         android:enabled="true"
         android:icon="@drawable/ic_baseline_person_outline_24"
-        app:cnb_backgroundColor="@color/white"
-        app:cnb_iconColor="@color/teal_200"
-        app:cnb_iconTintMode="src_in"
-        app:cnb_textColor="@color/teal_200"
-        />
-
-    <item
-        android:title="Shortlisted Applications"
-        android:id="@+id/nav_shortlisted"
-        android:enabled="true"
-        android:icon="@drawable/ic_baseline_person_24"
-        app:cnb_backgroundColor="@color/white"
-        app:cnb_iconColor="@color/teal_200"
-        app:cnb_iconTintMode="src_in"
-        app:cnb_textColor="@color/teal_200"
-        />
-
-    <item
-        android:title="Company Profile"
-        android:id="@+id/nav_employer_profile"
-        android:enabled="true"
-        android:icon="@drawable/ic_baseline_business_24"
         app:cnb_backgroundColor="@color/white"
         app:cnb_iconColor="@color/teal_200"
         app:cnb_iconTintMode="src_in"

@@ -1,4 +1,4 @@
-package com.example.ejob.ui.user.userjob;
+package com.example.ejob.ui.employer.applications;
 
 import android.util.Log;
 
@@ -6,12 +6,13 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.example.ejob.ui.employer.job.JobPosting;
+import com.example.ejob.data.model.ApplicationStatus;
+import com.example.ejob.ui.user.application.JobApplication;
+import com.example.ejob.ui.user.userjob.JobPostingforUser;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -20,7 +21,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UserAllJobViewModel extends ViewModel {
+public class MyJobsViewModel extends ViewModel {
 
     FirebaseAuth firebaseAuth;
     FirebaseFirestore firebaseFirestore;
@@ -33,7 +34,7 @@ public class UserAllJobViewModel extends ViewModel {
         return mListJobLivedata;
     }
 
-    public UserAllJobViewModel(){
+    public MyJobsViewModel(){
         mListJobLivedata = new MutableLiveData<>();
         initData();
     }
@@ -55,7 +56,9 @@ public class UserAllJobViewModel extends ViewModel {
         DocumentSnapshot snapshot;
 //        DocumentReference df = firebaseFirestore.collection("Users").document(uid);
 
-        firebaseFirestore.collection("Jobs")
+        firebaseFirestore.collection("JobsEmp")
+                .document(firebaseAuth.getCurrentUser().getUid())
+                .collection("myjobs")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -64,19 +67,22 @@ public class UserAllJobViewModel extends ViewModel {
                             for(QueryDocumentSnapshot document : task.getResult()){
                                 Log.d("TAG", document.getId() + " => " + document.getData());
                                 JobPostingforUser jobPosting = new JobPostingforUser();
-                                 jobPosting.setJobId(document.getReference().getPath());
-                                 jobPosting.setEmployerName(document.get("jobEmployer").toString());
-                                 jobPosting.setJobId(document.get("jobId").toString());
-                                 jobPosting.setJobStatus(document.get("isAvailable").toString());
-                                 jobPosting.setNumberneed(document.get("numberNeed").toString());
-                                 jobPosting.setEmployerFbID(document.get("empId").toString());
-                                 jobPosting.setJobDescription(document.get("jobDescription").toString());
-                                 jobPosting.setJobTitle(document.get("jobTitle").toString());
-                                 jobPosting.setJobLocation(document.get("jobLocation").toString());
-                                 jobPosting.setEmpEmail(document.get("employerEmail").toString());
-                                 jobPosting.setNumberneed(document.get("numberNeed").toString());
-                                 jobPosting.setJobType(document.get("jobType").toString());
-                                 jobPosting.setSalary(document.get("jobSalary").toString());
+                                jobPosting.setJobId(document.getReference().getPath());
+                                Log.d("TAG", document.getReference().getPath());
+                                jobPosting.setEmployerName(document.get("jobEmployer").toString());
+                                jobPosting.setJobId(document.get("jobId").toString());
+                                jobPosting.setJobStatus(document.get("isAvailable").toString());
+                                jobPosting.setNumberneed(document.get("numberNeed").toString());
+//                                jobPosting.setEmployerFbID(document.get("empId").toString());
+                                jobPosting.setJobDescription(document.get("jobDescription").toString());
+                                jobPosting.setJobTitle(document.get("jobTitle").toString());
+                                jobPosting.setJobLocation(document.get("jobLocation").toString());
+                                jobPosting.setEmpEmail(document.get("employerEmail").toString());
+                                Log.d("TAG", document.get("employerEmail").toString());
+                                jobPosting.setNumberneed(document.get("numberNeed").toString());
+                                Log.d("TAG", document.get("numberNeed").toString());
+                                jobPosting.setJobType(document.get("jobType").toString());
+                                jobPosting.setSalary(document.get("jobSalary").toString());
                                 try{
                                     jobPosting.setJobDeadline(document.get("jobOod").toString());
                                 }catch (NullPointerException npe){
@@ -92,7 +98,9 @@ public class UserAllJobViewModel extends ViewModel {
                     }
                 });
 
-
+        Log.d("TAG_sizeMyJob", String.valueOf(jobPostingArrayList.size()));
         return jobPostingArrayList;
     }
+
+
 }

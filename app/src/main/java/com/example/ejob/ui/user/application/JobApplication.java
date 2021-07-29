@@ -21,13 +21,12 @@ public class JobApplication implements Parcelable {
     String applicantUniversity;
     String applicantAddress;
     String photoURL;
-
+    String employerFbId;
 
     public JobApplication() {
-
     }
 
-    public JobApplication(String applicantID, String applicationId, String position, String selfDescription, String applicationDate, String cvitaeLink, ApplicationStatus applicationStatus, String applicantFullname, String applicantEmail, String applicantPhone, String applicantSocialmedia, String applicantUniversity, String applicantAddress, String photoURL) {
+    public JobApplication(String applicantID, String applicationId, String position, String selfDescription, String applicationDate, String cvitaeLink, ApplicationStatus applicationStatus, String applicantFullname, String applicantEmail, String applicantPhone, String applicantSocialmedia, String applicantUniversity, String applicantAddress, String photoURL, String employerFbId) {
         this.applicantID = applicantID;
         this.applicationId = applicationId;
         this.position = position;
@@ -42,7 +41,9 @@ public class JobApplication implements Parcelable {
         this.applicantUniversity = applicantUniversity;
         this.applicantAddress = applicantAddress;
         this.photoURL = photoURL;
+        this.employerFbId = employerFbId;
     }
+
 
     protected JobApplication(Parcel in) {
         applicantID = in.readString();
@@ -58,28 +59,7 @@ public class JobApplication implements Parcelable {
         applicantUniversity = in.readString();
         applicantAddress = in.readString();
         photoURL = in.readString();
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(applicantID);
-        dest.writeString(applicationId);
-        dest.writeString(position);
-        dest.writeString(selfDescription);
-        dest.writeString(applicationDate);
-        dest.writeString(cvitaeLink);
-        dest.writeString(applicantFullname);
-        dest.writeString(applicantEmail);
-        dest.writeString(applicantPhone);
-        dest.writeString(applicantSocialmedia);
-        dest.writeString(applicantUniversity);
-        dest.writeString(applicantAddress);
-        dest.writeString(photoURL);
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
+        employerFbId = in.readString();
     }
 
     public static final Creator<JobApplication> CREATOR = new Creator<JobApplication>() {
@@ -204,5 +184,36 @@ public class JobApplication implements Parcelable {
 
     public void setPhotoURL(String photoURL) {
         this.photoURL = photoURL;
+    }
+
+    public String getEmployerFbId() {
+        return employerFbId;
+    }
+
+    public void setEmployerFbId(String employerFbId) {
+        this.employerFbId = employerFbId;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(applicantID);
+        dest.writeString(applicationId);
+        dest.writeString(position);
+        dest.writeString(selfDescription);
+        dest.writeString(applicationDate);
+        dest.writeString(cvitaeLink);
+        dest.writeString(applicantFullname);
+        dest.writeString(applicantEmail);
+        dest.writeString(applicantPhone);
+        dest.writeString(applicantSocialmedia);
+        dest.writeString(applicantUniversity);
+        dest.writeString(applicantAddress);
+        dest.writeString(photoURL);
+        dest.writeString(employerFbId);
     }
 }

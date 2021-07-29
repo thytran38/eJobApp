@@ -46,6 +46,7 @@ public class ViewJobDetail extends AppCompatActivity {
     private FirebaseFirestore db1, db2;
     private DatabaseReference db3;
     private FirebaseAuth fAuth;
+    String empId;
 
 
     @Override
@@ -55,7 +56,6 @@ public class ViewJobDetail extends AppCompatActivity {
         mapping();
 
         initDb();
-
 
 
         jobPosting = getIntent().getExtras().getParcelable("myJobposting");
@@ -68,6 +68,7 @@ public class ViewJobDetail extends AppCompatActivity {
             email.setText("No email");
             npe.getMessage();
         }
+        empId = jobPosting.getEmployerFbID();
 
         salary.setText(jobPosting.getSalary());
         location.setText(jobPosting.getJobLocation());
@@ -83,7 +84,7 @@ public class ViewJobDetail extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(v.getContext(), JobApplying.class);
-                intent.putExtra("myJobposting",jobPosting);
+                intent.putExtra("myJobposting1",jobPosting);
                 v.getContext().startActivity(intent);
 
             }

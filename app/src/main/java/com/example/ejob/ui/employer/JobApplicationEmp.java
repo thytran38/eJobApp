@@ -10,14 +10,17 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.ejob.R;
 import com.example.ejob.ui.employer.applications.MyJobsAdapter;
+import com.example.ejob.ui.employer.applications.MyJobsViewModel;
 import com.example.ejob.ui.user.userjob.JobPostingforUser;
 import com.example.ejob.ui.user.userjob.UserAllJobViewModel;
 
@@ -32,10 +35,12 @@ public class JobApplicationEmp extends androidx.fragment.app.Fragment {
 
     private TextView jobTitle, jobId, jobType;
     private RecyclerView jobRcv;
-    MyJobsAdapter mAdapter;
 
-    UserAllJobViewModel userAllJobViewModel;
-
+    MyJobsAdapter myJobsAdapter;
+    MyJobsViewModel myJobsViewModel;
+    private ViewGroup viewgroupContainer;
+    private LayoutInflater layoutInflater;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     View v;
     // TODO: Rename parameter arguments, choose names that match
@@ -82,6 +87,8 @@ public class JobApplicationEmp extends androidx.fragment.app.Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        viewgroupContainer = container;
+        layoutInflater = inflater;
         return inflater.inflate(R.layout.fragment_job_application_emp, container, false);
     }
 
@@ -89,27 +96,55 @@ public class JobApplicationEmp extends androidx.fragment.app.Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         this.v = view;
+        swipeRefreshLayout = (SwipeRefreshLayout) v.findViewById(R.id.swipeJoblistEmployer);
 
         jobTitle = v.findViewById(R.id.tvJobTitleA);
-        jobId = v.findViewById(R.id.tvjobid);
-        jobType = v.findViewById(R.id.jobTypeEmp);
-        jobRcv = v.findViewById(R.id.rcvJobEmp);
+        jobRcv = v.findViewById(R.id.rcvJobsEmp);
 
-        LinearLayoutManager layoutManager = new LinearLayoutManager(v.getContext());
-        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        jobRcv.setLayoutManager(layoutManager);
 
-        userAllJobViewModel = new ViewModelProvider(this).get(UserAllJobViewModel.class);
-        userAllJobViewModel.getmListJobLivedata().observe(getViewLifecycleOwner(), new Observer<List<JobPostingforUser>>() {
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(v.getContext());
+        jobRcv.setLayoutManager(linearLayoutManager);
+
+        myJobsViewModel = new ViewModelProvider(this).get(MyJobsViewModel.class);
+        myJobsViewModel.getmListJobLivedata().observe(getViewLifecycleOwner(), new Observer<List<JobPostingforUser>>() {
             @Override
-            public void onChanged(List<JobPostingforUser> jobPostingforUsers) {
-                mAdapter = new MyJobsAdapter(jobPostingforUsers);
+            public void onChanged(List<JobPostingforUser> jobs) {
+                myJobsAdapter = new MyJobsAdapter(jobs, new MyJobsAdapter.ItemClickListener() {
+                    @Override
+                    public void onItemClick(JobPostingforUser jobPost) {
+                        Toast.makeText(v.getContext(), jobPost.getJobTitle(), Toast.LENGTH_LONG).show();
+
+                    }
+                });
+
+                jobRcv.setAdapter(myJobsAdapter);
+
             }
         });
 
 
-        jobRcv.setAdapter(mAdapter);
 
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                myJobsAdapter.notifyDataSetChanged();
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        });
+
+    }
+
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                myJobsAdapter.notifyDataSetChanged();
+            }
+        });
     }
 
 }

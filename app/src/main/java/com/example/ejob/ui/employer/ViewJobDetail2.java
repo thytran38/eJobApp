@@ -1,5 +1,6 @@
 package com.example.ejob.ui.employer;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -7,12 +8,31 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Lifecycle;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.LifecycleRegistry;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.ejob.R;
+import com.example.ejob.ui.employer.applications.ApplicationAdapter;
+import com.example.ejob.ui.employer.applications.ApplicationViewModel;
+import com.example.ejob.ui.employer.applications.ApplicationViewModelFactory;
+import com.example.ejob.ui.employer.applications.ApplicationViewModelFactory2;
+import com.example.ejob.ui.employer.applications.ApplicationViewModel_2;
+import com.example.ejob.ui.employer.applications.MyJobsAdapter;
+import com.example.ejob.ui.employer.applications.MyJobsViewModel;
 import com.example.ejob.ui.user.JobApplying;
+import com.example.ejob.ui.user.UserHomeFragment;
+import com.example.ejob.ui.user.application.JobApplication;
 import com.example.ejob.ui.user.userjob.JobPostingforUser;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.gms.tasks.Task;
@@ -24,24 +44,47 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.List;
+
 import static android.view.View.VISIBLE;
 
-public class ViewJobDetail2 extends AppCompatActivity {
+public class ViewJobDetail2 extends AppCompatActivity implements LifecycleOwner {
+    View v;
+
+    // TODO: Rename and change types of parameters
+    private String mParam1;
+    private String mParam2;
+
+    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+    private static final String ARG_PARAM1 = "param1";
+    private static final String ARG_PARAM2 = "param2";
 
     private ShimmerFrameLayout container;
     private RelativeLayout buttonApply;
-    private TextView jobTitle, employerName, jobType, jd, email;
+    private TextView jobTitle, employerName, jobType, jd, email, jobId, numberApplied,test;
     private JobPostingforUser jobPosting;
     private TextView applyTv, numberneed, salary, location;
     private ImageView appIcon;
+    private RecyclerView applicationList;
+    private ApplicationViewModel applicationViewModel;
+    private ApplicationAdapter applicationAdapter;
+
 
     private FirebaseFirestore db1, db2;
     private DatabaseReference db3;
     private FirebaseAuth fAuth;
+    private Context context;
+    private LifecycleRegistry lifecycleRegistry;
 
+
+//    @NonNull
+//    @Override
+//    public Lifecycle getLifecycle() {
+//        return lifecycleRegistry;
+//    }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_jobdetail_employer);
         mapping();
@@ -49,41 +92,96 @@ public class ViewJobDetail2 extends AppCompatActivity {
         initDb();
 
         jobPosting = getIntent().getExtras().getParcelable("myJobposting");
-
-        try{
-            email.setText(jobPosting.getEmpEmail());
-            numberneed.setText(jobPosting.getNumberneed());
-
-        }catch (NullPointerException npe){
-            email.setText("No email");
-            npe.getMessage();
-        }
-
-        salary.setText(jobPosting.getSalary());
-        location.setText(jobPosting.getJobLocation());
+        String appliedApplicants = getIntent().getExtras().getParcelable("appliedNum");
+        String appliedNumbers = getAppliedNumber();
         jobTitle.setText(jobPosting.getJobTitle());
-        employerName.setText(jobPosting.getEmployerName());
         jd.setText(jobPosting.getJobDescription());
         jobType.setText(jobPosting.getJobType());
+        jobId.setText(jobPosting.getJobId());
+        numberApplied.setText(appliedApplicants);
 
-        getAppliedStatus(jobPosting.getJobId(),fAuth.getCurrentUser().getUid());
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        applicationList.setLayoutManager(linearLayoutManager);
 
+        //ViewModel1 vm1 = ViewModelProviders.of(this, new MyViewModelFactory(getApplication(), "something")).get(ViewModel1.class);
 
-        buttonApply.setOnClickListener(new View.OnClickListener() {
+        applicationViewModel = new ViewModelProvider(this, new ApplicationViewModelFactory2(jobPosting.getJobId()))
+                .get(ApplicationViewModel.class);
+//        applicationViewModel = new ViewModelProvider(this).get(ApplicationViewModel_2.class);
+
+        applicationViewModel.getmListApplicationsLivedata().observe(this, new Observer<List<JobApplication>>() {
             @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(v.getContext(), JobApplying.class);
-                intent.putExtra("myJobposting",jobPosting);
-                v.getContext().startActivity(intent);
+            public void onChanged(List<JobApplication> jobApplications) {
 
+                applicationAdapter = new ApplicationAdapter(jobApplications, new ApplicationAdapter.ItemClickListener() {
+                    @Override
+                    public void onItemClick(JobApplication application) {
+                    }
+                });
+
+                applicationList.setAdapter(applicationAdapter);
             }
         });
 
-        container = (ShimmerFrameLayout) findViewById(R.id.imageProgress);
-        container.startShimmerAnimation();
-        container.setVisibility(VISIBLE);
-        container.setAutoStart(true);
-        container.setDuration(800);
+
+
+    }
+
+//    private LifecycleOwner getLifeCycleOwner() throws InstantiationException, IllegalAccessException {
+//        return LifecycleOwner.class.newInstance();
+//    }
+
+    /*
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        mapping();
+
+        initDb();
+
+        jobPosting = getIntent().getExtras().getParcelable("myJobposting");
+        String appliedApplicants = getIntent().getExtras().getParcelable("appliedNum");
+        String appliedNumbers = getAppliedNumber();
+        jobTitle.setText(jobPosting.getJobTitle());
+        jd.setText(jobPosting.getJobDescription());
+        jobType.setText(jobPosting.getJobType());
+        jobId.setText(jobPosting.getJobId());
+        numberApplied.setText(appliedApplicants);
+
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        applicationList.setLayoutManager(linearLayoutManager);
+
+        //ViewModel1 vm1 = ViewModelProviders.of(this, new MyViewModelFactory(getApplication(), "something")).get(ViewModel1.class);
+
+        applicationViewModel = new ViewModelProvider(this, new ApplicationViewModelFactory(getApplication(), jobPosting.getJobId()))
+                .get(ApplicationViewModel.class);
+
+        applicationViewModel.getmListApplicationsLivedata().observe(lifecycleOwner, new Observer<List<JobApplication>>() {
+            @Override
+            public void onChanged(List<JobApplication> jobApplications) {
+                applicationAdapter = new ApplicationAdapter(jobApplications, new ApplicationAdapter.ItemClickListener() {
+                    @Override
+                    public void onItemClick(JobApplication application) {
+                        Toast.makeText(context, "", Toast.LENGTH_LONG).show();
+
+                    }
+                });
+
+                applicationList.setAdapter(applicationAdapter);
+            }
+        });
+
+
+    }
+
+
+ */
+
+    private String getAppliedNumber() {
+        return "";
+
 
     }
 
@@ -94,55 +192,17 @@ public class ViewJobDetail2 extends AppCompatActivity {
 
     }
 
+
     private void mapping() {
+        test = findViewById(R.id.tvTest123);
         jobTitle = findViewById(R.id.tvJobTitle);
-        employerName = findViewById(R.id.tvEmpname);
-        applyTv = findViewById(R.id.tvApply);
-        buttonApply = findViewById(R.id.btnApply);
         jd = findViewById(R.id.description);
+        jobId = findViewById(R.id.tvthisJobID);
         jobType = findViewById(R.id.typeJob);
-        appIcon = findViewById(R.id.applyIcon);
-        numberneed = findViewById(R.id.tvVacancy);
-        salary = findViewById(R.id.tvSalary);
-        location = findViewById(R.id.tvLocationDetail);
-        email = findViewById(R.id.tvEmpEmail);
-    }
-
-    public void getAppliedStatus(String postId, String uid){
-        db3 =  FirebaseDatabase.getInstance().getReference("userapplications");
-        db3.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if(snapshot.child(postId.replaceAll(".*/", "")).hasChild(uid)){
-                    applyTv.setText("Already Applied");
-                    buttonApply.setEnabled(false);
-                    appIcon.setImageResource(R.drawable.ic_baseline_check_circle_outline_24);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
+        numberApplied = findViewById(R.id.tvNumerApplied1);
+        applicationList = findViewById(R.id.rcvApplicants);
     }
 
 
-    @Override
-    protected void onResume() {
-        container.startShimmerAnimation();
-        super.onResume();
-        Task task = db2.collection("Applications")
-                .document(jobPosting.getJobId().replaceAll(".*/", ""))
-                .collection("pending")
-                .document(fAuth.getCurrentUser().getUid())
-                .get();
-
-        if(task.isSuccessful() && task.isComplete()){
-            Log.d("TAG5", task.getResult().toString());
-            applyTv.setText("Applied");
-            buttonApply.setEnabled(false);
-        }
-    }
 }
 

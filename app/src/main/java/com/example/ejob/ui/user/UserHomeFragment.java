@@ -55,8 +55,6 @@ public class UserHomeFragment extends Fragment {
 
     View v;
 
-    private static JobPostingforUser jobPostingU;
-
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
@@ -138,9 +136,6 @@ public class UserHomeFragment extends Fragment {
 
     }
 
-    private void showToast(String message){
-        Toast.makeText(UserHomeFragment.this.getContext(), message, Toast.LENGTH_SHORT).show();
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -162,14 +157,6 @@ public class UserHomeFragment extends Fragment {
                 allJobAdapter.notifyDataSetChanged();
             }
         });
-    }
-
-    private static void setJobPostingForUser(JobPostingforUser job){
-        jobPostingU = job;
-    }
-
-    private JobPostingforUser getJobPostingForUser(){
-        return jobPostingU;
     }
 
 }

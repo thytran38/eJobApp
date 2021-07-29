@@ -1,21 +1,13 @@
 package com.example.ejob.ui.employer.applications;
 
-import android.app.Application;
 import android.util.Log;
-import android.view.View;
 
 import androidx.annotation.NonNull;
-import androidx.lifecycle.Lifecycle;
-import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.OnLifecycleEvent;
 import androidx.lifecycle.ViewModel;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.example.ejob.data.model.ApplicationStatus;
-import com.example.ejob.ui.employer.RecruiteType;
 import com.example.ejob.ui.user.application.JobApplication;
-import com.example.ejob.ui.user.userjob.JobPostingforUser;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -27,9 +19,8 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
-public class ApplicationViewModel extends ViewModel {
+public class ApplicationViewModel_2 extends ViewModel {
 
     FirebaseAuth firebaseAuth;
     FirebaseFirestore firebaseFirestore;
@@ -46,32 +37,28 @@ public class ApplicationViewModel extends ViewModel {
     }
 
 
-    public ApplicationViewModel(String jobId){
-        this.jobID = jobId;
+    public ApplicationViewModel_2(){
+        firebaseAuth = FirebaseAuth.getInstance();
         mApplicationLiveData = new MutableLiveData<>();
-        initData(jobID);
+        initData(firebaseAuth.getCurrentUser().getUid());
     }
 
-    private void initData(String jobID) {
-        firebaseAuth = FirebaseAuth.getInstance();
+    private void initData(String uid) {
         firebaseFirestore = FirebaseFirestore.getInstance();
         firebaseUser = firebaseAuth.getCurrentUser();
-        String uid = firebaseUser.getUid().toString();
         mApplicationList = new ArrayList<>();
-        mApplicationList = getApplicationsFromFirestore(jobID);
+        mApplicationList = getApplicationsFromFirestore(uid);
         mApplicationLiveData.setValue(mApplicationList);
     }
 
-    private ArrayList<JobApplication> getApplicationsFromFirestore(String jobId) {
+    private ArrayList<JobApplication> getApplicationsFromFirestore(String uid) {
         applicationList = new ArrayList<>();
         String employername;
         DocumentSnapshot snapshot;
 
-
         firebaseFirestore.collection("Applications")
-                .whereEqualTo("employerFbId",firebaseUser.getUid())
+                .whereEqualTo("employerFbId",uid)
                 .whereEqualTo("applicationStatus","SUBMITTED")
-                .whereArrayContains("applicationId", jobId)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -81,7 +68,6 @@ public class ApplicationViewModel extends ViewModel {
                                 Log.d("TAG_getData", document.getId() + " => " + document.getData());
 
                                 application = new JobApplication();
-
                                 application.setApplicationId(document.get("applicationId").toString());
                                 application.setApplicantID(document.get("applicantID").toString());
                                 application.setApplicantFullname(document.get("applicantFullname").toString());
@@ -104,13 +90,10 @@ public class ApplicationViewModel extends ViewModel {
                                 application.setPosition(document.get("position").toString());
 
                                 applicationList.add(application);
-                                Log.d("TAG_999_in", String.valueOf(applicationList.size()));
                             }
                         }
                     }
                 });
-
-        Log.d("TAG_999_out", String.valueOf(applicationList.size()));
 
         return applicationList;
 

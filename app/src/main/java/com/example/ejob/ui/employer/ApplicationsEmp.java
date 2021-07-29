@@ -1,14 +1,15 @@
 package com.example.ejob.ui.employer;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -16,23 +17,30 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.ejob.R;
+import com.example.ejob.ui.employer.applications.ApplicationAdapter;
+import com.example.ejob.ui.employer.applications.ApplicationViewModel_2;
 import com.example.ejob.ui.employer.applications.MyJobsAdapter;
 import com.example.ejob.ui.employer.applications.MyJobsViewModel;
+import com.example.ejob.ui.user.application.JobApplication;
 import com.example.ejob.ui.user.userjob.JobPostingforUser;
 
 import java.util.List;
 
-public class EmployerProfile extends androidx.fragment.app.Fragment {
+/**
+ * A simple {@link Fragment} subclass.
+ * Use the {@link ApplicationsEmp#newInstance} factory method to
+ * create an instance of this fragment.
+ */
+public class ApplicationsEmp extends Fragment {
 
     private TextView jobTitle, jobId, jobType;
-    private RecyclerView jobRcv;
+    private RecyclerView applicants;
 
-    MyJobsAdapter myJobsAdapter;
-    MyJobsViewModel myJobsViewModel;
+    ApplicationAdapter applicationAdapter;
+    ApplicationViewModel_2 applicationViewModel_2;
     private ViewGroup viewgroupContainer;
     private LayoutInflater layoutInflater;
     private SwipeRefreshLayout swipeRefreshLayout;
-    private TextView tvEmp;
 
     View v;
     // TODO: Rename parameter arguments, choose names that match
@@ -44,7 +52,7 @@ public class EmployerProfile extends androidx.fragment.app.Fragment {
     private String mParam1;
     private String mParam2;
 
-    public EmployerProfile() {
+    public ApplicationsEmp() {
         // Required empty public constructor
     }
 
@@ -57,8 +65,8 @@ public class EmployerProfile extends androidx.fragment.app.Fragment {
      * @return A new instance of fragment JobApplicationEmp.
      */
     // TODO: Rename and change types and number of parameters
-    public static EmployerProfile newInstance(String param1, String param2) {
-        EmployerProfile fragment = new EmployerProfile();
+    public static ApplicationsEmp newInstance(String param1, String param2) {
+        ApplicationsEmp fragment = new ApplicationsEmp();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -81,49 +89,52 @@ public class EmployerProfile extends androidx.fragment.app.Fragment {
         // Inflate the layout for this fragment
         viewgroupContainer = container;
         layoutInflater = inflater;
-        return inflater.inflate(R.layout.fragment_emp_profile, container, false);
+        return inflater.inflate(R.layout.fragment_job_application_emp_2, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         this.v = view;
-        swipeRefreshLayout = (SwipeRefreshLayout) v.findViewById(R.id.swipe222);
+        swipeRefreshLayout = (SwipeRefreshLayout) v.findViewById(R.id.swipeJoblistEmployer);
 
         jobTitle = v.findViewById(R.id.tvJobTitleA);
-        jobRcv = v.findViewById(R.id.rcv2222);
-
-        tvEmp = v.findViewById(R.id.tvEmpProfile);
+        applicants = v.findViewById(R.id.rcvJobsEmp2);
 
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(v.getContext());
-        jobRcv.setLayoutManager(linearLayoutManager);
+        applicants.setLayoutManager(linearLayoutManager);
 
-        myJobsViewModel = new ViewModelProvider(this).get(MyJobsViewModel.class);
-        myJobsViewModel.getmListJobLivedata().observe(getViewLifecycleOwner(), new Observer<List<JobPostingforUser>>() {
+        applicationViewModel_2 = new ViewModelProvider(this).get(ApplicationViewModel_2.class);
+        applicationViewModel_2.getmListApplicationsLivedata().observe(getViewLifecycleOwner(), new Observer<List<JobApplication>>() {
             @Override
-            public void onChanged(List<JobPostingforUser> jobs) {
-                myJobsAdapter = new MyJobsAdapter(jobs, new MyJobsAdapter.ItemClickListener() {
+            public void onChanged(List<JobApplication> jobs) {
+                applicationAdapter = new ApplicationAdapter(jobs, new ApplicationAdapter.ItemClickListener() {
+
                     @Override
-                    public void onItemClick(JobPostingforUser jobPost) {
+                    public void onItemClick(JobApplication application) {
 
                     }
                 });
+
+                applicants.setAdapter(applicationAdapter);
+
             }
         });
 
 
-        jobRcv.setAdapter(myJobsAdapter);
 
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                myJobsAdapter.notifyDataSetChanged();
+                applicationAdapter.notifyDataSetChanged();
                 swipeRefreshLayout.setRefreshing(false);
             }
         });
 
     }
+
+
 
     @Override
     public void onResume() {
@@ -131,10 +142,9 @@ public class EmployerProfile extends androidx.fragment.app.Fragment {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                myJobsAdapter.notifyDataSetChanged();
+                applicationAdapter.notifyDataSetChanged();
             }
         });
     }
-
 
 }

@@ -7,12 +7,12 @@
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/white">
+        android:background="@color/white_grey">
 
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/appbar"
             android:layout_width="match_parent"
-            android:layout_height="40dp"
+            android:layout_height="5dp"
             android:background="@color/teal_900"
             app:elevation="0dp">
 
@@ -84,6 +84,17 @@
                             android:layout_marginStart="16sp"
                             android:layout_marginEnd="16sp"
                             android:gravity="center_horizontal"/>
+
+<!--                        <TextView-->
+<!--                            android:id="@+id/tvJobDatecreation"-->
+<!--                            android:text="Date created"-->
+<!--                            android:textColor="@color/text_gray"-->
+<!--                            android:textSize="14sp"-->
+<!--                            android:layout_width="match_parent"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:layout_marginStart="16sp"-->
+<!--                            android:layout_marginEnd="16sp"-->
+<!--                            android:gravity="center_horizontal"/>-->
 
                         <TextView
                             android:id="@+id/typeJob"
@@ -187,13 +198,24 @@
                                         app:tint="@color/navy_100"/>
 
                                     <TextView
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
+                                        android:id="@+id/tvNumerApplied1"
+                                        android:layout_width="18dp"
+                                        android:layout_height="20dp"
                                         android:layout_gravity="center_vertical"
-                                        android:text="Applications"
+                                        android:text="0"
+                                        android:layout_marginEnd="3dp"
                                         android:textColor="@color/navy_100"
                                         android:textStyle="bold"
                                         android:layout_marginStart="5dp"/>
+
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_gravity="center_vertical"
+                                        android:text="Applied Candidates"
+                                        android:textColor="@color/navy_100"
+                                        android:textStyle="bold"
+                                        android:layout_marginStart="1dp"/>
                                 </LinearLayout>
 
                                 <LinearLayout
@@ -202,13 +224,19 @@
                                     android:layout_marginHorizontal="14dp"
                                     android:orientation="vertical">
 
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="50dp"
+                                        android:id="@+id/tvTest123"/>
+
                                     <androidx.recyclerview.widget.RecyclerView
-                                        android:id="@+id/rcvJobEmp"
+                                        android:id="@+id/rcvApplicants"
                                         android:layout_width="match_parent"
                                         android:layout_height="match_parent"
                                         android:orientation="horizontal"
                                         android:paddingHorizontal="3dp"
-                                        android:paddingVertical="4dp">
+                                        android:paddingVertical="4dp"
+                                        android:layout_marginBottom="10dp">
 
                                     </androidx.recyclerview.widget.RecyclerView>
                                 </LinearLayout>

@@ -2,6 +2,7 @@ package com.example.ejob.ui.employer;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -87,6 +88,7 @@ public class EmployerHome extends androidx.fragment.app.Fragment {
         jobRecyclerView.setLayoutManager(linearLayoutManager);
 
         jobViewModel = new ViewModelProvider(this).get(JobViewModel.class);
+        Log.d("TAG_employerHome", jobViewModel.getmListJobLivedata().getValue().toString());
         jobViewModel.getmListJobLivedata().observe(this.getViewLifecycleOwner(), new Observer<List<JobPosting>>() {
             @Override
             public void onChanged(List<JobPosting> jobPostings) {

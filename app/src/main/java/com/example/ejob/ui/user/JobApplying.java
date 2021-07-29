@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.util.Pair;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -56,7 +57,7 @@ public class JobApplying extends AppCompatActivity {
     String date;
     Bundle bundle;
     JobPostingforUser jobPosting;
-    FirebaseFirestore db;
+    FirebaseFirestore db1, db2, db3, db4, db5;
     FirebaseDatabase fbDb;
     DatabaseReference cvRef;
     FirebaseAuth firebaseAuth;
@@ -73,6 +74,7 @@ public class JobApplying extends AppCompatActivity {
     Uri fileUri;
     String cvUploadedUrl, cvExistedUrl;
     JobApplication jobApplication;
+    String uid;
 
 
     ActivityResultLauncher<String> getContent = registerForActivityResult(new ActivityResultContracts.GetContent(),
@@ -118,11 +120,13 @@ public class JobApplying extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_job_apply);
+
         mapping();
         initFb();
+
         jobApplyingContext = this;
 
-        jobPosting = getIntent().getExtras().getParcelable("myJobposting");
+        jobPosting = getIntent().getExtras().getParcelable("myJobposting1");
 
         jobId = jobPosting.getJobId();
         employerId = jobPosting.getEmployerFbID();
@@ -164,82 +168,102 @@ public class JobApplying extends AppCompatActivity {
                 if (!(valFullName() && valAddress() && valPhone() && valSchool() && valSelfDescription())) {
                     Toast.makeText(JobApplying.this, "Can not leave blank", Toast.LENGTH_SHORT).show();
                 } else {
-                    gatherData();
+                    if (firebaseAuth.getCurrentUser().getUid() == null) {
+                        return;
+                    } else {
+                        gatherData();
 
-                    AlertDialog.Builder builder = new AlertDialog.Builder(jobApplyingContext);
-                    builder.setTitle("Job Applying alert");
-                    builder.setMessage("You cannot edit the application after this submission. \nAre you sure you want to continue?");
-                    DialogInterface.OnClickListener dialogListener = new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            switch (which) {
-                                case DialogInterface.BUTTON_POSITIVE:
-                                    submitEvent(gatherData());
-                                    Toast.makeText(JobApplying.this, "Application Submitted!", Toast.LENGTH_LONG).show();
-                                    startActivity(new Intent(jobApplyingContext, UserActivity.class));
-                                    break;
+                        AlertDialog.Builder builder = new AlertDialog.Builder(jobApplyingContext);
+                        builder.setTitle("Job Applying alert");
+                        builder.setMessage("You cannot edit the application after this submission. \nAre you sure you want to continue?");
+                        DialogInterface.OnClickListener dialogListener = new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                switch (which) {
+                                    case DialogInterface.BUTTON_POSITIVE:
+                                        submitEvent(gatherData());
+                                        Toast.makeText(JobApplying.this, "Application Submitted!", Toast.LENGTH_LONG).show();
+                                        startActivity(new Intent(jobApplyingContext, UserActivity.class));
+                                        break;
 
-                                case DialogInterface.BUTTON_NEGATIVE:
-                                    dialog.dismiss();
-                                    break;
+                                    case DialogInterface.BUTTON_NEGATIVE:
+                                        dialog.dismiss();
+                                        break;
+                                }
                             }
-                        }
-                    };
-                    builder.setPositiveButton("Yes", dialogListener);
-                    builder.setNegativeButton("No", dialogListener);
-                    AlertDialog alert = builder.create();
-                    alert.show();
+                        };
+                        builder.setPositiveButton("Yes", dialogListener);
+                        builder.setNegativeButton("No", dialogListener);
+                        AlertDialog alert = builder.create();
+                        alert.show();
+
+                    }
+
                 }
             }
         });
     }
 
-    private void attachEvent() throws NullPointerException{
-        if (!(uploaded == true || cvExist == true)){
+    private void attachEvent() throws NullPointerException {
+        if (!(uploaded == true || cvExist == true)) {
             Toast.makeText(jobApplyingContext, "You need to upload first", Toast.LENGTH_SHORT).show();
-        }else{
+        } else {
             attachCv.setImageDrawable(getDrawable(R.drawable.ic_baseline_check_ok_24));
             attachCv.setEnabled(false);
             tvCvAttach.setText("CV attached");
         }
     }
 
-    private JobApplication gatherData() {
+    private Pair<JobApplication, ApplicantModel> gatherData() {
+        jobApplying = new JobApplication();
+        applyModel = new ApplicantModel();
 
-        jobApplication = new JobApplication();
-//        int orderNumber = new Random().
-        String cvUrl = getCvUrl();
-        String imgUrl = getImgUrl();
-        jobApplication.setApplicationId(jobPosting.getJobId().replaceAll(".*/", "") + "/" + jobApplication.getApplicantID());
-        jobApplication.setPosition(positionHiring.getText().toString());
-        jobApplication.setApplicationDate(String.valueOf(timeCreated));
-        jobApplication.setApplicationStatus(ApplicationStatus.SUBMITTED);
-        jobApplication.setApplicantID(firebaseAuth.getCurrentUser().getUid()); //
-        if(cvUploadedUrl==null || cvExistedUrl==null){
-            jobApplication.setCvitaeLink("none");
-        }else if(cvExistedUrl!= null){
-            jobApplication.setCvitaeLink(cvExistedUrl);
-        }else
-            jobApplication.setCvitaeLink(cvUploadedUrl);
+        jobApplying.setApplicantID(firebaseAuth.getCurrentUser().getUid()); //
+        jobApplying.setEmployerFbId(jobPosting.getEmployerFbID());
+        jobApplying.setApplicationId(jobPosting.getJobId().replaceAll(".*/", "") + "/" + firebaseAuth.getCurrentUser().getUid());
+        jobApplying.setPosition(positionHiring.getText().toString());
+        jobApplying.setApplicationDate(String.valueOf(timeCreated));
+        jobApplying.setApplicationStatus(ApplicationStatus.SUBMITTED);
 
-        jobApplication.setApplicantAddress(getEtAddress.getText().toString());
-        jobApplication.setSelfDescription(getEtDescription.getText().toString());
-        jobApplication.setApplicantEmail(getEtEmail.getText().toString());
-        jobApplication.setApplicantPhone(getEtPhone.getText().toString());
-        jobApplication.setApplicantSocialmedia(getEtSocialMedia.getText().toString());
-        jobApplication.setApplicantFullname(getEtFullname.getText().toString());
-        jobApplication.setApplicantUniversity(getEtSchool.getText().toString());
-        jobApplication.setPhotoURL(imgUrl);
+        if (cvUploadedUrl == null && cvExistedUrl == null) {
+            jobApplying.setCvitaeLink("none");
+            applyModel.setCvURl("none");
+        } else if (!cvExistedUrl.isEmpty()) {
+            jobApplying.setCvitaeLink(tvCvAttach.getText().toString());
+            applyModel.setCvURl(cvCheck(firebaseAuth.getCurrentUser().getUid()));
+        } else if (!cvUploadedUrl.isEmpty()) {
+            jobApplying.setCvitaeLink(cvUploadedUrl);
+            applyModel.setCvURl(cvUploadedUrl);
+        }
+
+        jobApplying.setApplicantAddress(getEtAddress.getText().toString());
+        jobApplying.setSelfDescription(getEtDescription.getText().toString());
+        jobApplying.setApplicantEmail(getEtEmail.getText().toString());
+        jobApplying.setApplicantPhone(getEtPhone.getText().toString());
+        jobApplying.setApplicantSocialmedia(getEtSocialMedia.getText().toString());
+        jobApplying.setApplicantFullname(getEtFullname.getText().toString());
+        jobApplying.setApplicantUniversity(getEtSchool.getText().toString());
+        jobApplying.setPhotoURL("imgUrl");
 
 
-        return jobApplication;
+        //set Applicant model
+        applyModel.setApplicantID(firebaseAuth.getCurrentUser().getUid());
+        applyModel.setApplicantFullname(getEtFullname.getText().toString());
+        applyModel.setApplicantEmail(getEtEmail.getText().toString());
+        applyModel.setApplicantPhone(getEtPhone.getText().toString());
+        applyModel.setApplicantSocialmedia(getEtSocialMedia.getText().toString());
+        applyModel.setApplicantUniversity(getEtSchool.getText().toString());
+        applyModel.setApplicantAddress(getEtAddress.getText().toString());
+
+        return new Pair<JobApplication, ApplicantModel>(jobApplying, applyModel);
     }
 
     private void initFb() {
         firebaseAuth = FirebaseAuth.getInstance();
         fbDb = FirebaseDatabase.getInstance();
         fStorage = FirebaseStorage.getInstance();
-        db = FirebaseFirestore.getInstance();
+        db1 = FirebaseFirestore.getInstance();
+
         Date dateInsc = Date.getInstance();
         date = dateInsc.toString();
         submit.setEnabled(false);
@@ -314,78 +338,99 @@ public class JobApplying extends AppCompatActivity {
         }
     }
 
-    private void submitEvent(JobApplication jobApplication) {
+    private void submitEvent(Pair<JobApplication, ApplicantModel> paramPair) {
 
-        jobApplying = jobApplication;
+        jobApplying = paramPair.first;
+        applyModel = paramPair.second;
 
-        db.collection("Applications")
-                .document(jobPosting.getJobId().replaceAll(".*/", ""))
-                .collection("applied")
-                .document(firebaseAuth.getCurrentUser().getUid())
-                .set(jobApplying)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        Toast.makeText(JobApplying.this, "Applied successfully for this " + jobPosting.getJobTitle() + " job.", Toast.LENGTH_SHORT).show();
-                        finish();
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(JobApplying.this, "Failed to apply. Please retry.", Toast.LENGTH_SHORT).show();
-                    }
-                });
 
-        fbDb.getReference("userapplications")
-                .child(jobPosting.getJobId().replaceAll(".*/", ""))
-                .child(firebaseAuth.getCurrentUser().getUid())
-                .setValue(jobApplying);
+            db1.collection("Applications")
+                    .document()
+                    .set(jobApplying)
+                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            Toast.makeText(JobApplying.this, "Applied successfully for this " + jobPosting.getJobTitle() + " job.", Toast.LENGTH_SHORT).show();
+                            startActivity(new Intent(jobApplyingContext, ViewJobDetail.class));
 
-        fbDb.getReference("employerapplications")
-                .child(jobPosting.getEmployerFbID())
-                .child(jobPosting.getJobId().replaceAll(".*/", ""))
-                .child(firebaseAuth.getCurrentUser().getUid())
-                .setValue(jobApplying);
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(JobApplying.this, "Failed to apply. Please retry.", Toast.LENGTH_SHORT).show();
+                        }
+                    });
 
-        db.collection("Applicants")
-                .document(firebaseAuth.getCurrentUser().getUid())
-                .set(applyModel)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        Log.d("Applicants", "Succeeded add job to Applicants");
+            fbDb.getReference("userapplications")
+                    .child(jobPosting.getJobId().replaceAll(".*/", ""))
+                    .child(firebaseAuth.getCurrentUser().getUid())
+                    .setValue(jobApplying);
 
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.d("Applicants", "Failed add job to Applicants");
+            fbDb.getReference("employerapplications")
+                    .child(jobPosting.getEmployerFbID())
+                    .child(jobPosting.getJobId().replaceAll(".*/", ""))
+                    .child(firebaseAuth.getCurrentUser().getUid())
+                    .setValue(jobApplying);
 
-                    }
-                });
+            db1.collection("Applicants")
+                    .document(firebaseAuth.getCurrentUser().getUid())
+                    .set(applyModel)
+                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            Log.d("Applicants", "Succeeded add job to Applicants");
 
-        db.collection("JobApplied")
-                .document(firebaseAuth.getCurrentUser().getUid())
-                .collection("submitted")
-                .document(jobPosting.getJobId().replaceAll(".*/", ""))
-                .set(jobApplying)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        Log.d("AppliedHistory", "Success add job to JobAppliedHistory");
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.d("AppliedHistory", "Failure add job to JobAppliedHistory");
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.d("Applicants", "Failed add job to Applicants");
 
-                    }
-                });
+                        }
+                    });
+
+            db1.collection("JobApplied")
+                    .document(firebaseAuth.getCurrentUser().getUid())
+                    .collection("submitted")
+                    .document()
+                    .set(jobApplying)
+                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            Log.d("AppliedHistory", "Success add job to JobAppliedHistory");
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.d("AppliedHistory", "Failure add job to JobAppliedHistory");
+
+                        }
+                    });
+
+            db1.collection("JobsPending")
+                    .document(jobPosting.getEmployerFbID())
+                    .collection("pending")
+                    .document()
+                    .set(jobApplying)
+                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            Log.d("AppliedHistory", "Success add job to JobAppliedHistory");
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.d("AppliedHistory", "Failure add job to JobAppliedHistory");
+
+                        }
+                    });
 
     }
+
 
     @Override
     public void onBackPressed() {
@@ -473,13 +518,13 @@ public class JobApplying extends AppCompatActivity {
     }
 
 
-    private void cvCheck(String UID){
+    private String cvCheck(String UID) {
         cvRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if(snapshot.child(UID).exists()){
+                if (snapshot.child(UID).exists()) {
                     cvExist = true;
-                    for(DataSnapshot child : snapshot.getChildren()){
+                    for (DataSnapshot child : snapshot.getChildren()) {
                         upCv.setImageDrawable(getDrawable(R.drawable.ic_baseline_check_ok_24));
                         upCv.setEnabled(false);
                         linkCv.setText(child.child("fileName").getValue().toString());
@@ -495,6 +540,8 @@ public class JobApplying extends AppCompatActivity {
 
             }
         });
+        String cvurl = tvCvAttach.getText().toString();
+        return cvurl;
 
     }
 
@@ -512,7 +559,7 @@ public class JobApplying extends AppCompatActivity {
             int cvRandom = new Random().nextInt(5000);
             double progress = 0;
             StorageReference folder = fStorage.getInstance().getReference().child("CVFiles/");
-            String possibleNameFile = fileUri.getLastPathSegment().replaceAll(".*/","");
+            String possibleNameFile = fileUri.getLastPathSegment().replaceAll(".*/", "");
             StorageReference file_name = folder.child(possibleNameFile);
             HashMap<String, String> hashMap = new HashMap<>();
             Task task = file_name.putFile(fileUri);
@@ -522,7 +569,7 @@ public class JobApplying extends AppCompatActivity {
                         double progress1 = (100 * snapshot.getBytesTransferred()) / snapshot.getTotalByteCount();
                         progressDialog.show();
                         progressDialog.setProgress(((int) progress1));
-                        if(progress1 == 100){
+                        if (progress1 == 100) {
                             progressDialog.setMessage("Uploaded " + progress1 + " %");
                         }
                     })
@@ -530,7 +577,7 @@ public class JobApplying extends AppCompatActivity {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                             Task<Uri> uriTask = taskSnapshot.getStorage().getDownloadUrl();
-                            while(!uriTask.isComplete());
+                            while (!uriTask.isComplete()) ;
                             uploaded = true;
                             Uri uri = uriTask.getResult();
                             hashMap.put("cvURL", uri.toString());
@@ -553,7 +600,7 @@ public class JobApplying extends AppCompatActivity {
 //
 //                            if (downloadUri == null) {
 //                                return;
-                            if(task1.isComplete()){
+                            if (task1.isComplete()) {
                                 upCv.setImageResource(R.drawable.ic_baseline_check_ok_24);
                                 upCv.setEnabled(false);
                                 linkCv.setText("Uploaded Successfully file: " + possibleNameFile + ".pdf");

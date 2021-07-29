@@ -13,18 +13,66 @@ public class ApplicantModel implements Parcelable {
     String applicantSocialmedia;
     String applicantUniversity;
     String applicantAddress;
+    String photoURL;
+    String cvURl;
 
-    public String getApplicantAddress() {
-        return applicantAddress;
+    public ApplicantModel() {
     }
 
-    public void setApplicantAddress(String applicantAddress) {
+    public ApplicantModel(String applicantID, String applicantFullname, String applicantEmail, String applicantPhone, String applicantSocialmedia, String applicantUniversity, String applicantAddress, String photoURL, String cvURl) {
+        this.applicantID = applicantID;
+        this.applicantFullname = applicantFullname;
+        this.applicantEmail = applicantEmail;
+        this.applicantPhone = applicantPhone;
+        this.applicantSocialmedia = applicantSocialmedia;
+        this.applicantUniversity = applicantUniversity;
         this.applicantAddress = applicantAddress;
+        this.photoURL = photoURL;
+        this.cvURl = cvURl;
     }
 
-    public ApplicantModel(){
 
+    protected ApplicantModel(Parcel in) {
+        applicantID = in.readString();
+        applicantFullname = in.readString();
+        applicantEmail = in.readString();
+        applicantPhone = in.readString();
+        applicantSocialmedia = in.readString();
+        applicantUniversity = in.readString();
+        applicantAddress = in.readString();
+        photoURL = in.readString();
+        cvURl = in.readString();
     }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(applicantID);
+        dest.writeString(applicantFullname);
+        dest.writeString(applicantEmail);
+        dest.writeString(applicantPhone);
+        dest.writeString(applicantSocialmedia);
+        dest.writeString(applicantUniversity);
+        dest.writeString(applicantAddress);
+        dest.writeString(photoURL);
+        dest.writeString(cvURl);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<ApplicantModel> CREATOR = new Creator<ApplicantModel>() {
+        @Override
+        public ApplicantModel createFromParcel(Parcel in) {
+            return new ApplicantModel(in);
+        }
+
+        @Override
+        public ApplicantModel[] newArray(int size) {
+            return new ApplicantModel[size];
+        }
+    };
 
     public String getApplicantID() {
         return applicantID;
@@ -74,40 +122,27 @@ public class ApplicantModel implements Parcelable {
         this.applicantUniversity = applicantUniversity;
     }
 
-    public static Creator<ApplicantModel> getCREATOR() {
-        return CREATOR;
+    public String getApplicantAddress() {
+        return applicantAddress;
     }
 
-    protected ApplicantModel(Parcel in) {
-        applicantID = in.readString();
-        applicantFullname = in.readString();
-        applicantEmail = in.readString();
-        applicantPhone = in.readString();
+    public void setApplicantAddress(String applicantAddress) {
+        this.applicantAddress = applicantAddress;
     }
 
-    public static final Creator<ApplicantModel> CREATOR = new Creator<ApplicantModel>() {
-        @Override
-        public ApplicantModel createFromParcel(Parcel in) {
-            return new ApplicantModel(in);
-        }
-
-        @Override
-        public ApplicantModel[] newArray(int size) {
-            return new ApplicantModel[size];
-        }
-    };
-
-    @Override
-    public int describeContents() {
-        return 0;
+    public String getPhotoURL() {
+        return photoURL;
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(applicantID);
-        dest.writeString(applicantFullname);
-        dest.writeString(applicantEmail);
-        dest.writeString(applicantPhone);
+    public void setPhotoURL(String photoURL) {
+        this.photoURL = photoURL;
     }
 
+    public String getCvURl() {
+        return cvURl;
+    }
+
+    public void setCvURl(String cvURl) {
+        this.cvURl = cvURl;
+    }
 }

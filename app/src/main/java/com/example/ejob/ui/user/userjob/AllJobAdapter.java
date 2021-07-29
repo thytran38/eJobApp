@@ -136,10 +136,6 @@ public class AllJobAdapter extends RecyclerView.Adapter<AllJobAdapter.JobViewHol
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(v.getContext(), ViewJobDetail.class);
-//            intent.putExtra("employerName", mJobList.get(position).getEmployerName());
-//            intent.putExtra("positionHiring", mJobList.get(position).getJobTitle());
-//            intent.putExtra("dateCreated", mJobList.get(position).getJobDateCreated());
-//            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 intent.putExtra("myJobposting",jobPosting);
                 v.getContext().startActivity(intent);
             }
@@ -236,5 +232,6 @@ public class AllJobAdapter extends RecyclerView.Adapter<AllJobAdapter.JobViewHol
                 }
             });
         }
+
     }
 }

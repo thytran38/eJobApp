@@ -44,6 +44,7 @@ public class EmployerProfile extends androidx.fragment.app.Fragment {
     private String mParam1;
     private String mParam2;
 
+
     public EmployerProfile() {
         // Required empty public constructor
     }

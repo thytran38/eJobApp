@@ -17,6 +17,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.ejob.R;
+import com.example.ejob.ui.employer.applications.ApplicationAdapter;
+import com.example.ejob.ui.user.application.JobApplication;
+import com.example.ejob.ui.user.applications.ApplicationAdapterforUser;
+import com.example.ejob.ui.user.applications.ApplicationViewModel_3;
 import com.example.ejob.ui.user.userjob.AllJobAdapter;
 import com.example.ejob.ui.user.userjob.JobPostingforUser;
 import com.example.ejob.ui.user.userjob.UserAllJobViewModel;
@@ -31,8 +35,8 @@ public class ApplicationFragment extends androidx.fragment.app.Fragment {
     private static final String ARG_PARAM2 = "param2";
 
     private RecyclerView jobRecyclerView;
-    private UserAllJobViewModel userAllJobView;
-    private AllJobAdapter allJobAdapter;
+    private ApplicationViewModel_3 userAllJobView;
+    private ApplicationAdapterforUser applicationAdapter;
 
     private ViewGroup viewgroupContainer;
     private LayoutInflater layoutInflater;
@@ -76,23 +80,20 @@ public class ApplicationFragment extends androidx.fragment.app.Fragment {
         jobRecyclerView = (RecyclerView) v.findViewById(R.id.rcvJobUser);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(v.getContext());
         jobRecyclerView.setLayoutManager(linearLayoutManager);
-        userAllJobView = new ViewModelProvider(this).get(UserAllJobViewModel.class);
+        userAllJobView = new ViewModelProvider(this).get(ApplicationViewModel_3.class);
 
-        userAllJobView.getmListJobLivedata().observe(getViewLifecycleOwner(), new Observer<List<JobPostingforUser>>() {
+        userAllJobView.getMyApplicationsLivedata().observe(getViewLifecycleOwner(), new Observer<List<JobApplication>>() {
             @Override
-            public void onChanged(List<JobPostingforUser> jobPostings) {
-                allJobAdapter = new AllJobAdapter(jobPostings, new AllJobAdapter.ItemClickListener() {
+            public void onChanged(List<JobApplication> jobPostings) {
+                applicationAdapter = new ApplicationAdapterforUser(jobPostings, new ApplicationAdapterforUser.ItemClickListener() {
+
 
                     @Override
-                    public void onItemClick(JobPostingforUser jobPost) {
+                    public void onItemClick(JobApplication application) {
 
-                        FragmentManager fragmentManager = getChildFragmentManager();
-                        layoutInflater.inflate(R.layout.fragment_application_job,viewgroupContainer, false);
-                        Toast.makeText(ApplicationFragment.this.getContext(),jobPost.getJobTitle(),Toast.LENGTH_LONG).show();
                     }
-
                 });
-                jobRecyclerView.setAdapter(allJobAdapter);
+                jobRecyclerView.setAdapter(applicationAdapter);
 
             }
 
@@ -102,7 +103,7 @@ public class ApplicationFragment extends androidx.fragment.app.Fragment {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                allJobAdapter.notifyDataSetChanged();
+                applicationAdapter.notifyDataSetChanged();
                 swipeRefreshLayout.setRefreshing(false);
             }
         });

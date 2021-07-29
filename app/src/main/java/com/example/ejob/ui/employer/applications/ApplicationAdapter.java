@@ -3,6 +3,7 @@ package com.example.ejob.ui.employer.applications;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,6 +33,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 public class ApplicationAdapter extends RecyclerView.Adapter<ApplicationAdapter.ApplicationItemViewHolder> {
 
@@ -82,32 +84,10 @@ public class ApplicationAdapter extends RecyclerView.Adapter<ApplicationAdapter.
         holder.des.setText(jobApplication.getSelfDescription());
         holder.socialmedia.setText(jobApplication.getApplicantSocialmedia());
 
-        holder.button.setOnClickListener(new View.OnClickListener() {
+        holder.add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
-                builder.setTitle("Job Applying alert");
-                builder.setMessage("You cannot  after this submission. \nAre you sure you want to continue?");
-                DialogInterface.OnClickListener dialogListener = new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        switch (which) {
-                            case DialogInterface.BUTTON_POSITIVE:
-                                shortList(jobApplication.getApplicantID());
-                                Toast.makeText(v.getContext(), "Application Submitted!", Toast.LENGTH_LONG).show();
-                                v.getContext().startActivity(new Intent(v.getContext(), EmployerActivity.class));
-                                break;
-
-                            case DialogInterface.BUTTON_NEGATIVE:
-                                dialog.dismiss();
-                                break;
-                        }
-                    }
-                };
-                builder.setPositiveButton("Yes", dialogListener);
-                builder.setNegativeButton("No", dialogListener);
-                AlertDialog alert = builder.create();
-                alert.show();
+                shortList(jobApplication.getApplicationId());
             }
         });
 
@@ -121,27 +101,22 @@ public class ApplicationAdapter extends RecyclerView.Adapter<ApplicationAdapter.
     }
 
     private void shortList(String applicationID) {
+        applicationID.replace("Applications/","").replace("/.*","");
+        String jobID = applicationID;
+        Log.d("TAG_888", jobID.toString());
         DatabaseReference usrappRef = FirebaseDatabase.getInstance().getReference("userapplications");
-        jobApplication.setApplicationStatus(ApplicationStatus.SHORTLISTED);
-        usrappRef.child(jobApplication.getApplicationId().substring(11,18))
+
+        usrappRef.child(jobID)
                 .child(jobApplication.getApplicantID())
                 .setValue("applicationStatus",String.valueOf(ApplicationStatus.SHORTLISTED))
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         Toast.makeText(v.getContext(), "Approved successfully!", Toast.LENGTH_SHORT).show();
-
                     }
                 });
 
-//        firestore.collection("Applications")
-//                .document(jobApplication.getApplicationId().substring(11,18))
-//                .update("applicationStatus", String.valueOf(ApplicationStatus.SHORTLISTED))
-//                .addOnCompleteListener(new OnCompleteListener<Void>() {
-//                    @Override
-//                    public void onComplete(@NonNull Task<Void> task) {
-//                    }
-//                });
+
 
 
     }
@@ -168,7 +143,7 @@ public class ApplicationAdapter extends RecyclerView.Adapter<ApplicationAdapter.
     public class ApplicationItemViewHolder extends RecyclerView.ViewHolder {
         TextView applicantName, school, phone, address, email, cv, socialmedia, des;
         Button button;
-        ImageView photo;
+        ImageView photo, add;
 
 
         public ApplicationItemViewHolder(@NonNull View itemView) {
@@ -179,11 +154,10 @@ public class ApplicationAdapter extends RecyclerView.Adapter<ApplicationAdapter.
             address = itemView.findViewById(R.id.address);
             email = itemView.findViewById(R.id.apEmail);
             cv = itemView.findViewById(R.id.cvView);
-            button = itemView.findViewById(R.id.btnChooseProfile);
             socialmedia = itemView.findViewById(R.id.apSocial);
             des = itemView.findViewById(R.id.apSelfdescription);
-            button = itemView.findViewById(R.id.btnChooseProfile);
             photo = itemView.findViewById(R.id.photoPreview);
+            add = itemView.findViewById(R.id.changeStatus);
 
         }
     }

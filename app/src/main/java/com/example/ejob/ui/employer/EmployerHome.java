@@ -33,24 +33,14 @@ public class EmployerHome extends androidx.fragment.app.Fragment {
     FloatingActionButton logout, newJob;
     RecyclerView jobRecyclerView;
     SwipeRefreshLayout swipeRefreshLayout;
-    private JobViewModel jobViewModel;
-    private JobAdapter jobAdapter;
     View v;
     LayoutInflater layoutInflater;
     ViewGroup container;
-
+    private JobViewModel jobViewModel;
+    private JobAdapter jobAdapter;
     private String mParam1;
     private String mParam2;
 
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
 
     public EmployerHome() {
         // Required empty public constructor
@@ -63,6 +53,15 @@ public class EmployerHome extends androidx.fragment.app.Fragment {
         args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            mParam1 = getArguments().getString(ARG_PARAM1);
+            mParam2 = getArguments().getString(ARG_PARAM2);
+        }
     }
 
     @Nullable

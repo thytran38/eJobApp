@@ -33,21 +33,18 @@ import java.util.List;
  */
 public class JobApplicationEmp extends androidx.fragment.app.Fragment {
 
-    private TextView jobTitle, jobId, jobType;
-    private RecyclerView jobRcv;
-
-    MyJobsAdapter myJobsAdapter;
-    MyJobsViewModel myJobsViewModel;
-    private ViewGroup viewgroupContainer;
-    private LayoutInflater layoutInflater;
-    private SwipeRefreshLayout swipeRefreshLayout;
-
-    View v;
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-
+    MyJobsAdapter myJobsAdapter;
+    MyJobsViewModel myJobsViewModel;
+    View v;
+    private TextView jobTitle, jobId, jobType;
+    private RecyclerView jobRcv;
+    private ViewGroup viewgroupContainer;
+    private LayoutInflater layoutInflater;
+    private SwipeRefreshLayout swipeRefreshLayout;
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
@@ -123,7 +120,6 @@ public class JobApplicationEmp extends androidx.fragment.app.Fragment {
         });
 
 
-
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -133,7 +129,6 @@ public class JobApplicationEmp extends androidx.fragment.app.Fragment {
         });
 
     }
-
 
 
     @Override

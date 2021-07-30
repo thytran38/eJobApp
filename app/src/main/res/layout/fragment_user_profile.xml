@@ -1,54 +1,386 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.user.UserProfileFragment">
+    android:orientation="vertical"
+    tools:context=".MainActivity"
+    android:background="@color/white_grey">
 
-    <!-- TODO: Update blank fragment layout -->
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-
-        <ImageView
-            android:id="@+id/userAvatar"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:src="@drawable/ic_baseline_person_100"/>
-
-        <TextView
+        <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"/>
-        <TextView
-            android:id="@+id/tvFilepath"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="file path"
-            android:gravity="center"
-            android:layout_marginBottom="20dp"
-            />
+            android:layout_height="match_parent"
+            android:paddingBottom="40dp">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_horizontal"
-            android:padding="10dp">
-            <Button
-                android:id="@+id/btBrowse"
-                android:layout_width="wrap_content"
+             <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardUP"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Pdf browse" />
+                android:layout_marginStart="14dp"
+                android:layout_marginEnd="14dp"
+                android:layout_marginTop="24dp"
+                app:strokeWidth="0.5dp"
+                 android:paddingBottom="20dp"
+                 android:layout_marginBottom="20dp"
+                app:strokeColor="#f1f1f1"
+                app:cardElevation="2dp"
+                app:cardCornerRadius="10dp">
 
-            <View
-                android:layout_width="30dp"
-                android:layout_height="30dp"/>
-        </LinearLayout>
-    </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical"
+                            android:paddingTop="7dp"
+                            android:paddingBottom="20dp">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:layout_margin="16sp">
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginBottom="16dp"
+                                    android:orientation="horizontal">
+
+                                    <ImageView
+                                        android:layout_width="21dp"
+                                        android:layout_height="21dp"
+                                        android:src="@drawable/ic_baseline_person_24"
+                                        app:tint="@color/navy_100"/>
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_gravity="center_vertical"
+                                        android:text="Personal Information"
+                                        android:textColor="@color/navy_100"
+                                        android:textStyle="bold"
+                                        android:layout_marginStart="5dp"/>
+
+                                </LinearLayout>
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="vertical">
+                                    <RelativeLayout
+                                        android:layout_marginTop="3dp"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content">
+
+                                        <ImageView
+                                            android:id="@+id/iconEmailUP"
+                                            android:layout_width="17dp"
+                                            android:layout_height="17dp"
+                                            android:layout_marginTop="2dp"
+                                            android:src="@drawable/ic_baseline_facebook_24"
+                                            app:tint="@color/text_gray"/>
+
+                                        <TextView
+                                            android:layout_toEndOf="@id/iconEmailUP"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_marginStart="5dp"
+                                            android:text="Email "
+                                            android:textIsSelectable="true"/>
+                                    </RelativeLayout>
+
+                                    <EditText
+                                        android:id="@+id/etEmailUP1"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:hint="User Email"
+                                        android:textColorHint="@color/light_gray"
+                                        android:textSize="12sp"
+                                        android:textColor="@color/grey_effective"
+                                        android:layout_marginTop="10dp"/>
+
+                                    <RelativeLayout
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="10dp">
+
+                                        <ImageView
+                                            android:id="@+id/fullnameUP"
+                                            android:layout_width="17dp"
+                                            android:layout_height="17dp"
+                                            android:src="@drawable/ic_baseline_person_outline_24"
+                                            app:tint="@color/text_gray"/>
+
+                                        <TextView
+                                            android:layout_toEndOf="@id/fullnameUP"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_marginStart="5dp"
+                                            android:text="Full Name"/>
+
+                                    </RelativeLayout>
+
+                                    <EditText
+                                        android:id="@+id/etFullnameUP1"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:hint="Enter Full Name"
+                                        android:textColorHint="@color/light_gray"
+                                        android:textSize="12sp"
+                                        android:textColor="@color/grey_effective"
+                                        android:layout_marginTop="10dp"/>
+
+                                    <RelativeLayout
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="10dp">
+
+                                        <ImageView
+                                            android:id="@+id/dobUP"
+                                            android:layout_width="17dp"
+                                            android:layout_height="17dp"
+                                            android:src="@drawable/ic_baseline_date_range_24"
+                                            app:tint="@color/text_gray"/>
+
+                                        <TextView
+                                            android:layout_toEndOf="@id/dobUP"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_marginStart="5dp"
+                                            android:text="Date of Birth"/>
+
+                                    </RelativeLayout>
+
+                                    <EditText
+                                        android:id="@+id/etDateofBirthUP1"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:hint="Enter Birthday"
+                                        android:clickable="true"
+                                        android:inputType="date"
+                                        android:textColorHint="@color/light_gray"
+                                        android:textSize="12sp"
+                                        android:textColor="@color/grey_effective"
+                                        android:layout_marginTop="10dp"/>
 
 
 
-</FrameLayout>
+                                    <RelativeLayout
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="10dp">
+
+                                        <ImageView
+                                            android:id="@+id/iconCompanyUP"
+                                            android:layout_width="17dp"
+                                            android:layout_height="17dp"
+                                            android:src="@drawable/ic_baseline_school_24"
+                                            app:tint="@color/text_gray"/>
+
+                                        <TextView
+                                            android:layout_toEndOf="@id/iconCompanyUP"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_marginStart="5dp"
+                                            android:text="Education Institution"/>
+
+                                    </RelativeLayout>
+
+                                    <EditText
+                                        android:id="@+id/etSchoolUP1"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:hint="Enter your institution name"
+                                        android:textColorHint="@color/light_gray"
+                                        android:textSize="12sp"
+                                        android:textColor="@color/grey_effective"
+                                        android:layout_marginTop="10dp"/>
+
+                                    <RelativeLayout
+                                        android:layout_marginTop="10dp"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content">
+
+                                        <ImageView
+                                            android:id="@+id/iconPhoneUP"
+                                            android:layout_width="17dp"
+                                            android:layout_height="17dp"
+                                            android:layout_marginTop="2dp"
+                                            android:src="@drawable/common_full_open_on_phone"
+                                            app:tint="@color/text_gray"/>
+
+                                        <TextView
+                                            android:layout_toEndOf="@id/iconPhoneUP"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_marginStart="5dp"
+                                            android:text="Mobile Phone"/>
+
+                                    </RelativeLayout>
+
+                                    <EditText
+                                        android:id="@+id/etPersonalPhoneUP1"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:hint="Enter your phone number"
+                                        android:textColorHint="@color/light_gray"
+                                        android:textSize="12sp"
+                                        android:textColor="@color/grey_effective"
+                                        android:layout_marginTop="10dp"/>
+
+                                    <RelativeLayout
+                                        android:layout_marginTop="10dp"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content">
+
+                                        <ImageView
+                                            android:id="@+id/iconLocationUP"
+                                            android:layout_width="17dp"
+                                            android:layout_height="17dp"
+                                            android:layout_marginTop="2dp"
+                                            android:src="@drawable/ic_baseline_location_on_24"
+                                            app:tint="@color/text_gray"/>
+
+                                        <TextView
+                                            android:layout_toEndOf="@id/iconLocationUP"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_marginStart="5dp"
+                                            android:text="Personal Address"/>
+
+                                    </RelativeLayout>
+
+                                    <EditText
+                                        android:id="@+id/etPersonalAddressUP1"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:hint="Enter your address"
+                                        android:textColorHint="@color/light_gray"
+                                        android:textSize="12sp"
+                                        android:textColor="@color/grey_effective"
+                                        android:layout_marginTop="10dp"/>
+
+                                </LinearLayout>
+
+
+
+                            </LinearLayout>
+
+                            <com.google.android.material.card.MaterialCardView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="14dp"
+                                android:layout_marginEnd="14dp"
+                                android:layout_marginTop="14dp"
+                                app:strokeWidth="0.5dp"
+                                app:strokeColor="@color/white"
+                                app:cardElevation="0dp"
+                                app:cardCornerRadius="10dp">
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="vertical"
+                                    android:layout_margin="0sp">
+
+                                    <LinearLayout
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginBottom="16dp"
+                                        android:orientation="horizontal">
+
+                                        <ImageView
+                                            android:layout_width="21dp"
+                                            android:layout_height="21dp"
+                                            android:src="@drawable/ic_baseline_insert_drive_file_24"
+                                            app:tint="@color/navy_100"/>
+
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_gravity="center_vertical"
+                                            android:text="Curriculum Vitae"
+                                            android:textColor="@color/navy_100"
+                                            android:textStyle="bold"
+                                            android:layout_marginStart="5dp"/>
+
+                                    </LinearLayout>
+
+                                    <RelativeLayout
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:orientation="horizontal">
+
+                                        <TextView
+                                            android:id="@+id/tvFileTitle"
+                                            android:layout_toEndOf="@+id/fileTitle"
+                                            android:text="Filename"
+                                            android:layout_width="fill_parent"
+                                            android:layout_marginLeft="5dp"
+                                            android:layout_height="wrap_content"
+                                            android:textColor="@color/text_gray"
+                                            android:textIsSelectable="true"/>
+
+                                        <ImageView
+                                            android:id="@+id/fileTitle"
+                                            android:layout_width="24dp"
+                                            android:layout_height="24dp"
+                                            android:layout_alignParentLeft="true"
+                                            android:clickable="true"
+                                            android:visibility="visible"
+
+                                            android:src="@drawable/ic_baseline_picture_as_pdf_grey_24" />
+                                    </RelativeLayout>
+
+
+                                    <RelativeLayout
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:orientation="horizontal">
+
+                                        <ImageView
+                                            android:id="@+id/cvUpload"
+                                            android:clickable="true"
+                                            android:layout_width="20dp"
+                                            android:layout_height="20dp"
+                                            android:layout_alignParentLeft="true"
+
+                                            android:src="@drawable/ic_baseline_file_upload_24"/>
+
+                                        <TextView
+                                            android:id="@+id/pdfLinks"
+                                            android:layout_toEndOf="@+id/cvUpload"
+                                            android:text="Click icon to upload"
+                                            android:layout_marginLeft="5dp"
+                                            android:layout_width="fill_parent"
+                                            android:layout_height="wrap_content"
+                                            android:textColor="@color/text_gray"
+                                            android:textIsSelectable="true"/>
+
+                                    </RelativeLayout>
+
+
+
+                                    <RelativeLayout
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:orientation="horizontal"/>
+
+
+                                </LinearLayout>
+
+                            </com.google.android.material.card.MaterialCardView>
+
+                        </LinearLayout>
+
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+        </androidx.core.widget.NestedScrollView>
+</LinearLayout>

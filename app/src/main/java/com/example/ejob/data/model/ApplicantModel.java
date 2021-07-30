@@ -26,6 +26,20 @@ public class ApplicantModel implements Parcelable {
     public ApplicantModel() {
     }
 
+    public ApplicantModel(ApplicantModel applicantModel){
+        this.applicantID = applicantModel.applicantID;
+        this.applicantFullname = applicantModel.applicantFullname;
+        this.applicantEmail = applicantModel.applicantEmail;
+        this.applicantPhone = applicantModel.applicantPhone;
+        this.applicantSocialmedia = applicantModel.applicantSocialmedia;
+        this.applicantUniversity = applicantModel.applicantUniversity;
+        this.applicantAddress = applicantModel.applicantAddress;
+        this.photoURL = applicantModel.photoURL;
+        this.cvURl = applicantModel.cvURl;
+        this.jobApplicationArrayList = applicantModel.jobApplicationArrayList;
+        this.jobSaved = applicantModel.jobSaved;
+    }
+
     public ApplicantModel(String applicantID, String applicantFullname, String applicantEmail, String applicantPhone, String applicantSocialmedia, String applicantUniversity, String applicantAddress, String photoURL, String cvURl, ArrayList<JobApplication> jobApplicationArrayList, ArrayList<JobPostingforUser> jobSaved) {
         this.applicantID = applicantID;
         this.applicantFullname = applicantFullname;

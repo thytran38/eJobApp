@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultCallback;
@@ -62,7 +63,8 @@ public class RegisterUsr extends AppCompatActivity {
     FirebaseStorage fStorage;
     private EditText fullName, email, password, phone, school, address, etDob;
     private Button registerButton, loginButton;
-    private ImageView emCheck, psCheck, avatar;
+    private ImageView emCheck, psCheck, avatar, dob;
+    private TextView dobtv;
     private String usEmail, usPassword, usDob, usDatecreated, usFullname, usPhone, usSchool, usAddress, imgLink;
     private Uri imgUri;
 

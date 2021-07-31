@@ -103,8 +103,8 @@ public class ApplicationAdapter extends RecyclerView.Adapter<ApplicationAdapter.
                         switch (which) {
                             case DialogInterface.BUTTON_POSITIVE:
                                 shortList(jobApplication.getApplicationId());
-                                Toast.makeText(v.getContext(), "Application Cancelled", Toast.LENGTH_LONG).show();
-                                v.getContext().startActivity(new Intent(v.getContext(), UserActivity.class));
+                                Toast.makeText(v.getContext(), "Application Shortlisted", Toast.LENGTH_LONG).show();
+                                v.getContext().startActivity(new Intent(v.getContext(), EmployerActivity.class));
                                 break;
 
                             case DialogInterface.BUTTON_NEGATIVE:

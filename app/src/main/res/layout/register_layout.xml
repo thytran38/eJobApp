@@ -259,11 +259,20 @@
                                 app:tint="@color/text_gray" />
 
                             <TextView
+                                android:id="@+id/tvdob"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="5dp"
                                 android:layout_toEndOf="@id/dob"
                                 android:text="Date of Birth" />
+
+<!--                            <ImageView-->
+<!--                                android:layout_width="16dp"-->
+<!--                                android:layout_height="16dp"-->
+<!--                                android:layout_toEndOf="@+id/tvdob"-->
+<!--                                android:layout_marginStart="5dp"-->
+<!--                                android:foregroundGravity="center_vertical"-->
+<!--                                android:src="@drawable/ic_baseline_calendar_today_24"/>-->
 
                         </RelativeLayout>
 
@@ -271,9 +280,11 @@
                             android:id="@+id/etDateofBirth"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:clickable="true"
-                            android:hint="Enter Birthday"
-                            android:inputType="date"
+                            android:hint="Click to choose date of birth"
+                            android:clickable="false"
+                            android:cursorVisible="false"
+                            android:focusable="false"
+                            android:focusableInTouchMode="false"
                             android:textColor="@color/grey_effective"
                             android:textColorHint="@color/light_gray"
                             android:textSize="12sp" />

@@ -45,6 +45,7 @@ import com.example.ejob.ui.user.application.JobApplication;
 import com.example.ejob.ui.user.userjob.JobPostingforUser;
 import com.example.ejob.utils.Date;
 import com.facebook.shimmer.ShimmerFrameLayout;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -54,6 +55,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.HashMap;
 import java.util.List;
 
 import static android.view.View.VISIBLE;
@@ -105,15 +107,10 @@ public class ViewJobDetail2 extends AppCompatActivity implements LifecycleOwner 
         update.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(allVal()){
                     if(gatherData().second == true){
+                        update.setEnabled(true);
                         updateJob(gatherData().first);
                     }
-
-                }else{
-                    return;
-                }
-
             }
         });
     }
@@ -128,10 +125,10 @@ public class ViewJobDetail2 extends AppCompatActivity implements LifecycleOwner 
         companyName.addTextChangedListener(updateTextwatcher);
         deadline.addTextChangedListener(updateTextwatcher);
         salary.addTextChangedListener(updateTextwatcher);
-        jobType2.getValidator(validator);
     }
 
     private void setData() {
+        update.setEnabled(false);
         jobPosting = getIntent().getExtras().getParcelable("myJobposting");
 
         jobID.setText(jobPosting.getJobId());
@@ -143,15 +140,17 @@ public class ViewJobDetail2 extends AppCompatActivity implements LifecycleOwner 
         companyName.setText(jobPosting.getEmployerName());
         deadline.setText(jobPosting.getJobDeadline());
         salary.setText(jobPosting.getSalary());
-    }
-
-    private boolean allVal() {
-
-        return false;
+        dateUpdated.setText(Date.getInstance().toString());
     }
 
     private Pair<JobPostingforUser, Boolean> gatherData() {
         JobPostingforUser job = new JobPostingforUser();
+        job.setJobType(jobType2.getText().toString());
+        job.setJobTitle(jobTitle.getText().toString());
+        job.setJobId(jobID.getText().toString());
+        
+        job.setJobStatus(statusType.getText().toString());
+
 
         Boolean successUpdate = false;
 
@@ -159,9 +158,16 @@ public class ViewJobDetail2 extends AppCompatActivity implements LifecycleOwner 
     }
 
     private void updateJob(JobPostingforUser jobPosting) {
-//        db2.collection("Jobs")
-//                .document(jobPosting.getJobId())
-//                .set()
+
+        db2.collection("Jobs")
+                .document(jobPosting.getJobId())
+                .set(jobPosting)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+
+                    }
+                });
 
 
     }
@@ -230,18 +236,6 @@ public class ViewJobDetail2 extends AppCompatActivity implements LifecycleOwner 
         }
     };
 
-    private AutoCompleteTextView.Validator validator = new AutoCompleteTextView.Validator() {
-        @Override
-        public boolean isValid(CharSequence text) {
-            return false;
-        }
-
-        @Override
-        public CharSequence fixText(CharSequence invalidText) {
-            return null;
-        }
-    };
-
     private DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
         @Override
         public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
@@ -257,6 +251,30 @@ public class ViewJobDetail2 extends AppCompatActivity implements LifecycleOwner 
 
         }
     };
+
+    private boolean valJobtype(){
+        String type = jobType2.getText().toString();
+        if(type.equals("")){
+            Toast.makeText(this, "Please choose job type", Toast.LENGTH_SHORT).show();
+            jobType2.setError("Please choose job type");
+            return false;
+        }else{
+            jobType2.setError(null);
+            return true;
+        }
+    }
+
+    private boolean valStatus(){
+        String status = statusType.getText().toString();
+        if(status.equals("")){
+            Toast.makeText(this, "Please choose job type", Toast.LENGTH_SHORT).show();
+            statusType.setError("Please choose status type");
+            return false;
+        }else{
+            statusType.setError(null);
+            return true;
+        }
+    }
 
     private boolean valNumberneed() {
         String name = numberNeed.getText().toString();

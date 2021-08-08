@@ -41,7 +41,7 @@
             android:layout_marginTop="3dp"
             android:id="@+id/fragment_container"
             android:layout_width="match_parent"
-            android:background="@color/white_grey"
+            android:background="@drawable/gradient_bg"
             android:layout_height="fill_parent" />
 
         <com.ismaeldivita.chipnavigation.ChipNavigationBar

@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.ejob.ui.employer.job.JobPosting;
+import com.example.ejob.utils.Date;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -18,6 +19,9 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class UserAllJobViewModel extends ViewModel {
@@ -56,6 +60,8 @@ public class UserAllJobViewModel extends ViewModel {
 //        DocumentReference df = firebaseFirestore.collection("Users").document(uid);
 
         firebaseFirestore.collection("Jobs")
+                .whereEqualTo("isAvailable", "1")
+                .orderBy("jobTitle")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -91,7 +97,6 @@ public class UserAllJobViewModel extends ViewModel {
                         }
                     }
                 });
-
 
         return jobPostingArrayList;
     }

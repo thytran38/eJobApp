@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -52,6 +53,11 @@ public class UserHomeFragment extends Fragment {
     private ViewGroup viewgroupContainer;
     private LayoutInflater layoutInflater;
     private SwipeRefreshLayout swipeRefreshLayout;
+
+    private boolean isLoading;
+    private boolean isLastPage;
+    private int totalPage = 10;
+    private int currentPage = 1;
 
     View v;
 
@@ -102,29 +108,36 @@ public class UserHomeFragment extends Fragment {
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(v.getContext());
         jobRecyclerView.setLayoutManager(linearLayoutManager);
+        jobRecyclerView.setHasFixedSize(true);
         userAllJobView = new ViewModelProvider(this).get(UserAllJobViewModel.class);
 
+//        allJobAdapter = new AllJobAdapter();
         userAllJobView.getmListJobLivedata().observe(getViewLifecycleOwner(), new Observer<List<JobPostingforUser>>() {
             @Override
             public void onChanged(List<JobPostingforUser> jobPostings) {
+//                allJobAdapter.setData(jobPostings);
                 allJobAdapter = new AllJobAdapter(jobPostings, new AllJobAdapter.ItemClickListener() {
-
                     @Override
                     public void onItemClick(JobPostingforUser jobPost) {
-
                         FragmentManager fragmentManager = getChildFragmentManager();
                         layoutInflater.inflate(R.layout.fragment_application_job,viewgroupContainer, false);
-                        Toast.makeText(UserHomeFragment.this.getContext(),jobPost.getJobTitle(),Toast.LENGTH_LONG).show();
+                        Toast.makeText(UserHomeFragment.this.getContext(),jobPost.getSalary(),Toast.LENGTH_LONG).show();
                         Log.d("TAG_UHFragment", jobPost.getJobTitle());
                     }
 
                 });
-                jobRecyclerView.setAdapter(allJobAdapter);
+                 jobRecyclerView.setAdapter(allJobAdapter);
+                 jobRecyclerView.smoothScrollToPosition(0);
 
             }
-
-
         });
+
+        RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(v.getContext(), DividerItemDecoration.VERTICAL);
+        jobRecyclerView.addItemDecoration(itemDecoration);
+
+        if(swipeRefreshLayout.isRefreshing()){
+            swipeRefreshLayout.setRefreshing(false);
+        }
 
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -140,9 +153,6 @@ public class UserHomeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-
-
         viewgroupContainer = container;
         layoutInflater = inflater;
         return inflater.inflate(R.layout.fragment_job_detail, container, false);

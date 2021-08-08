@@ -26,7 +26,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.List;
 
-public class EmployerHome extends androidx.fragment.app.Fragment {
+public class EmployerHome extends androidx.fragment.app.Fragment implements IEmployerHome {
 
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
@@ -136,5 +136,25 @@ public class EmployerHome extends androidx.fragment.app.Fragment {
                 jobAdapter.notifyDataSetChanged();
             }
         });
+    }
+
+
+    @Override
+    public void viewApplication() {
+        increaseViewNumber();
+    }
+
+    private void increaseViewNumber() {
+
+    }
+
+    @Override
+    public void viewApplicant() {
+
+    }
+
+    @Override
+    public void viewJob() {
+
     }
 }

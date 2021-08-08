@@ -85,6 +85,8 @@ public class ApplicationAdapter extends RecyclerView.Adapter<ApplicationAdapter.
         holder.des.setText(jobApplication.getSelfDescription());
         holder.socialmedia.setText(jobApplication.getApplicantSocialmedia());
         holder.status.setText(String.valueOf(jobApplication.getApplicationStatus()));
+        holder.position.setText(jobApplication.getPosition());
+
 
         if(jobApplication.getApplicationStatus().toString().equals("SHORTLISTED")){
             holder.add.setEnabled(false);
@@ -96,7 +98,7 @@ public class ApplicationAdapter extends RecyclerView.Adapter<ApplicationAdapter.
             public void onClick(View v) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
                 builder.setTitle("Application Alert");
-                builder.setMessage("You can not re-open this application once it's cancelled. Are you sure you want to continue?");
+                builder.setMessage("You will add this person to shortlist. This will notify the applicant and you cannot undo this. Are you going to continue?");
                 DialogInterface.OnClickListener dialogListener = new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -163,7 +165,7 @@ public class ApplicationAdapter extends RecyclerView.Adapter<ApplicationAdapter.
     }
 
     public class ApplicationItemViewHolder extends RecyclerView.ViewHolder {
-        TextView applicantName, school, phone, address, email, cv, socialmedia, des, status;
+        TextView applicantName, school, phone, address, email, cv, socialmedia, des, status, position;
         Button button;
         ImageView photo, add;
 
@@ -181,6 +183,7 @@ public class ApplicationAdapter extends RecyclerView.Adapter<ApplicationAdapter.
             photo = itemView.findViewById(R.id.photoPreview);
             add = itemView.findViewById(R.id.changeStatus);
             status = itemView.findViewById(R.id.applicationStatus);
+            position = itemView.findViewById(R.id.applicationName5);
 
         }
     }

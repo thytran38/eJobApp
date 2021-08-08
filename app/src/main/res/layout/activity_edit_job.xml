@@ -31,7 +31,7 @@
                 android:textColor="@color/navy_100"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="ADD A NEW JOB" />
+                android:text="EDIT JOB" />
 
 
             <com.google.android.material.card.MaterialCardView
@@ -52,6 +52,74 @@
                     android:layout_height="match_parent"
                     android:orientation="vertical"
                     android:paddingVertical="10dp">
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="10dp"
+                        app:boxCornerRadiusBottomEnd="13dp"
+                        app:boxCornerRadiusBottomStart="13dp"
+                        app:boxCornerRadiusTopEnd="13dp"
+                        app:boxCornerRadiusTopStart="13dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:startIconDrawable="@drawable/ic_baseline_calendar_today_24"
+                        android:hint="Change Job Status">
+
+                        <AutoCompleteTextView
+                            android:id="@+id/autoComplete1"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:enabled="false"
+                            android:inputType="none"
+                            android:layout_gravity="center_vertical"
+                            android:textColorHint="@color/text_gray"
+                            android:textSize="13sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/navy_100"
+                            android:background="@color/white" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <RelativeLayout
+                        android:layout_marginTop="13dp"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="10dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <ImageView
+                            android:id="@+id/etJobID"
+                            android:layout_width="17dp"
+                            android:layout_height="17dp"
+                            android:src="@drawable/ic_baseline_confirmation_number_24"
+                            app:tint="@color/text_gray"/>
+
+                        <TextView
+                            android:layout_toEndOf="@id/etJobID"
+                            android:id="@+id/jobID"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Job ID"
+                            android:layout_marginStart="5dp"
+                            android:textStyle=""/>
+
+                    </RelativeLayout>
+
+                    <EditText
+                        android:id="@+id/etJobIDEt"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:ems="10"
+                        android:textSize="13sp"
+                        android:padding="10dp"
+                        android:enabled="false"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="10dp"
+                        android:inputType="numberSigned"
+                        android:textStyle="bold"
+                        android:textColor="@color/navy_100"
+                        android:hint="342451" />
 
                     <RelativeLayout
                         android:layout_marginTop="13dp"
@@ -209,15 +277,21 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:ems="10"
-                        android:maxLines="10"
-                        android:padding="10dp"
+                        android:maxLines="65"
                         android:textSize="13sp"
                         android:textColor="@color/navy_100"
                         android:layout_marginStart="10dp"
                         android:layout_marginEnd="10dp"
-                        android:inputType="textPersonName"
                         android:textStyle="bold"
-                        android:hint="This position requires coding." />
+                        android:overScrollMode="always"
+                        android:scrollbarStyle="insideInset"
+                        android:inputType="textMultiLine|textCapSentences"
+                        android:hint="This position requires coding."
+                        android:scrollHorizontally="false"
+                        android:scrollbars="vertical"
+                        android:padding="5dp"
+                        android:paddingVertical="10dp"
+                        />
 
                     <RelativeLayout
                         android:layout_marginTop="13dp"
@@ -328,6 +402,7 @@
                         android:ems="10"
                         android:padding="10dp"
                         android:textSize="13sp"
+                        android:enabled="false"
                         android:textColor="@color/navy_100"
                         android:layout_marginStart="10dp"
                         android:layout_marginEnd="10dp"
@@ -431,16 +506,17 @@
                             android:layout_toEndOf="@id/jobtype8"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Posted Date"
+                            android:text="Update Date"
                             android:layout_marginStart="5dp"/>
 
                     </RelativeLayout>
 
                     <EditText
-                        android:id="@+id/etDatecreated"
+                        android:id="@+id/etDateUpdate"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:ems="10"
+                        android:enabled="false"
                         android:textStyle="bold"
                         android:padding="10dp"
                         android:textSize="13sp"
@@ -457,7 +533,7 @@
 
 
             <Button
-                android:id="@+id/btnAdd"
+                android:id="@+id/btnEdit"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginStart="60dp"
                 android:layout_marginEnd="60dp"
@@ -466,7 +542,7 @@
                 android:background="@drawable/button_bg"
                 android:textAllCaps="false"
                 android:textStyle="bold"
-                android:text="Post this Job" />
+                android:text="Update this Job" />
 
         </LinearLayout>
 

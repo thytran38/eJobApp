@@ -11,6 +11,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.ejob.R;
@@ -26,8 +27,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.List;
-
-public class AllJobAdapter extends RecyclerView.Adapter<AllJobAdapter.JobViewHolderForUser>{
+public class AllJobAdapter extends RecyclerView.Adapter<AllJobAdapter.JobViewHolderForUser> {
 
     public List<com.example.ejob.ui.user.userjob.JobPostingforUser> mJobList;
     private ItemClickListener itemClickListener;
@@ -40,6 +40,9 @@ public class AllJobAdapter extends RecyclerView.Adapter<AllJobAdapter.JobViewHol
     Boolean testClick = false;
     private ShimmerFrameLayout shimmerFrameLayout;
 
+
+    public AllJobAdapter() {
+    }
 
     public AllJobAdapter(List<JobPostingforUser> mJobList, ItemClickListener itemClickListener1) {
         this.mJobList = mJobList;
@@ -55,6 +58,13 @@ public class AllJobAdapter extends RecyclerView.Adapter<AllJobAdapter.JobViewHol
     public interface ItemClickListener{
         void onItemClick(JobPostingforUser jobPost);
     }
+
+    public void setData(List<JobPostingforUser> jobList){
+        this.mJobList = jobList;
+        notifyDataSetChanged();
+    }
+
+
 
 
     @Override

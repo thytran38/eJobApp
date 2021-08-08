@@ -55,6 +55,7 @@ public class JobViewModel extends ViewModel {
         DocumentReference df = firebaseFirestore.collection("Users").document(uid);
 
         firebaseFirestore.collection("Jobs")
+                .orderBy("jobTitle")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override

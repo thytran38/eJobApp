@@ -51,11 +51,11 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="bottom|right"
                         android:layout_marginBottom="32dp"
-                        android:background="@color/green_effective"
+                        android:background="@color/tealPastel"
                         android:pointerIcon="arrow"
                         android:src="@android:drawable/ic_input_add"
                         android:text="Add New Job"
-                        app:backgroundTint="@color/green_effective" />
+                        app:backgroundTint="@color/tealPastel" />
 
                 </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

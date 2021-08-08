@@ -1,10 +1,19 @@
 package com.example.ejob.ui.employer;
 
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.util.Pair;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
+import android.widget.Button;
+import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -34,6 +43,7 @@ import com.example.ejob.ui.user.JobApplying;
 import com.example.ejob.ui.user.UserHomeFragment;
 import com.example.ejob.ui.user.application.JobApplication;
 import com.example.ejob.ui.user.userjob.JobPostingforUser;
+import com.example.ejob.utils.Date;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -59,16 +69,21 @@ public class ViewJobDetail2 extends AppCompatActivity implements LifecycleOwner 
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
+    //UI
     private ShimmerFrameLayout container;
-    private RelativeLayout buttonApply;
-    private TextView jobTitle, employerName, jobType, jd, email, jobId, numberApplied,test;
+    private EditText jobID, numberNeed, jobTitle, jobDescription, cvRequired, jobLocation, companyName, deadline, salary, dateUpdated;
     private JobPostingforUser jobPosting;
-    private TextView applyTv, numberneed, salary, location;
-    private ImageView appIcon;
     private RecyclerView applicationList;
     private ApplicationViewModel applicationViewModel;
     private ApplicationAdapter applicationAdapter;
+    private RecruiteType[] option;
+    private JobStatus[] option2;
+    AutoCompleteTextView jobType2, statusType;
+    private Button update;
+    private Boolean updated = false;
 
+    // logic variables
+    int sDay, sYear, sMonth;
 
     private FirebaseFirestore db1, db2;
     private DatabaseReference db3;
@@ -76,114 +91,81 @@ public class ViewJobDetail2 extends AppCompatActivity implements LifecycleOwner 
     private Context context;
     private LifecycleRegistry lifecycleRegistry;
 
-
-//    @NonNull
-//    @Override
-//    public Lifecycle getLifecycle() {
-//        return lifecycleRegistry;
-//    }
-
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_view_jobdetail_employer);
+        setContentView(R.layout.activity_edit_job);
         mapping();
-
         initDb();
+        setAdapters();
+        setData();
+        addTextWatchers();
 
-        jobPosting = getIntent().getExtras().getParcelable("myJobposting");
-        String appliedApplicants = getIntent().getExtras().getParcelable("appliedNum");
-        String appliedNumbers = getAppliedNumber();
-        jobTitle.setText(jobPosting.getJobTitle());
-        jd.setText(jobPosting.getJobDescription());
-        jobType.setText(jobPosting.getJobType());
-        jobId.setText(jobPosting.getJobId());
-        numberApplied.setText(appliedApplicants);
 
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
-        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        applicationList.setLayoutManager(linearLayoutManager);
-
-        //ViewModel1 vm1 = ViewModelProviders.of(this, new MyViewModelFactory(getApplication(), "something")).get(ViewModel1.class);
-
-        applicationViewModel = new ViewModelProvider(this, new ApplicationViewModelFactory2(jobPosting.getJobId()))
-                .get(ApplicationViewModel.class);
-//        applicationViewModel = new ViewModelProvider(this).get(ApplicationViewModel_2.class);
-
-        applicationViewModel.getmListApplicationsLivedata().observe(this, new Observer<List<JobApplication>>() {
+        update.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onChanged(List<JobApplication> jobApplications) {
-
-                applicationAdapter = new ApplicationAdapter(jobApplications, new ApplicationAdapter.ItemClickListener() {
-                    @Override
-                    public void onItemClick(JobApplication application) {
+            public void onClick(View v) {
+                if(allVal()){
+                    if(gatherData().second == true){
+                        updateJob(gatherData().first);
                     }
-                });
 
-                applicationList.setAdapter(applicationAdapter);
+                }else{
+                    return;
+                }
+
             }
         });
-
-
-
     }
 
-//    private LifecycleOwner getLifeCycleOwner() throws InstantiationException, IllegalAccessException {
-//        return LifecycleOwner.class.newInstance();
-//    }
+    private void addTextWatchers() {
 
-    /*
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+        jobTitle.addTextChangedListener(updateTextwatcher);
+        numberNeed.addTextChangedListener(updateTextwatcher);
+        jobDescription.addTextChangedListener(updateTextwatcher);
+        cvRequired.addTextChangedListener(updateTextwatcher);
+        jobLocation.addTextChangedListener(updateTextwatcher);
+        companyName.addTextChangedListener(updateTextwatcher);
+        deadline.addTextChangedListener(updateTextwatcher);
+        salary.addTextChangedListener(updateTextwatcher);
+        jobType2.getValidator(validator);
+    }
 
-        mapping();
-
-        initDb();
-
+    private void setData() {
         jobPosting = getIntent().getExtras().getParcelable("myJobposting");
-        String appliedApplicants = getIntent().getExtras().getParcelable("appliedNum");
-        String appliedNumbers = getAppliedNumber();
+
+        jobID.setText(jobPosting.getJobId());
         jobTitle.setText(jobPosting.getJobTitle());
-        jd.setText(jobPosting.getJobDescription());
-        jobType.setText(jobPosting.getJobType());
-        jobId.setText(jobPosting.getJobId());
-        numberApplied.setText(appliedApplicants);
+        numberNeed.setText(jobPosting.getNumberneed());
+        jobDescription.setText(jobPosting.getJobDescription());
+        cvRequired.setText(jobPosting.getCvRequired());
+        jobLocation.setText(jobPosting.getJobLocation());
+        companyName.setText(jobPosting.getEmployerName());
+        deadline.setText(jobPosting.getJobDeadline());
+        salary.setText(jobPosting.getSalary());
+    }
 
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
-        applicationList.setLayoutManager(linearLayoutManager);
+    private boolean allVal() {
 
-        //ViewModel1 vm1 = ViewModelProviders.of(this, new MyViewModelFactory(getApplication(), "something")).get(ViewModel1.class);
+        return false;
+    }
 
-        applicationViewModel = new ViewModelProvider(this, new ApplicationViewModelFactory(getApplication(), jobPosting.getJobId()))
-                .get(ApplicationViewModel.class);
+    private Pair<JobPostingforUser, Boolean> gatherData() {
+        JobPostingforUser job = new JobPostingforUser();
 
-        applicationViewModel.getmListApplicationsLivedata().observe(lifecycleOwner, new Observer<List<JobApplication>>() {
-            @Override
-            public void onChanged(List<JobApplication> jobApplications) {
-                applicationAdapter = new ApplicationAdapter(jobApplications, new ApplicationAdapter.ItemClickListener() {
-                    @Override
-                    public void onItemClick(JobApplication application) {
-                        Toast.makeText(context, "", Toast.LENGTH_LONG).show();
+        Boolean successUpdate = false;
 
-                    }
-                });
+        return new Pair<JobPostingforUser,Boolean>(job, successUpdate);
+    }
 
-                applicationList.setAdapter(applicationAdapter);
-            }
-        });
+    private void updateJob(JobPostingforUser jobPosting) {
+//        db2.collection("Jobs")
+//                .document(jobPosting.getJobId())
+//                .set()
 
 
     }
 
-
- */
-
-    private String getAppliedNumber() {
-        return "";
-
-
-    }
 
     private void initDb() {
         db1 = FirebaseFirestore.getInstance();
@@ -192,16 +174,167 @@ public class ViewJobDetail2 extends AppCompatActivity implements LifecycleOwner 
 
     }
 
+    private void setAdapters() {
+        option = new RecruiteType[]{RecruiteType.FULLTIME, RecruiteType.PARTTIME, RecruiteType.ONETIME};
+        ArrayAdapter arrayAdapter = new ArrayAdapter<RecruiteType>(this, R.layout.jobtype_option, option);
+        jobType2.setText(arrayAdapter.getItem(0).toString(), false);
+        jobType2.setAdapter(arrayAdapter);
+
+        option2 = new JobStatus[]{JobStatus.AVAILABLE, JobStatus.UNAVAILABLE};
+        ArrayAdapter arrayAdapter2 = new ArrayAdapter<JobStatus>(this, R.layout.jobtype_option, option2);
+        statusType.setText(arrayAdapter2.getItem(0).toString(), false);
+        statusType.setAdapter(arrayAdapter2);
+
+    }
 
     private void mapping() {
-        test = findViewById(R.id.tvTest123);
-        jobTitle = findViewById(R.id.tvJobTitle);
-        jd = findViewById(R.id.description);
-        jobId = findViewById(R.id.tvthisJobID);
-        jobType = findViewById(R.id.typeJob);
-        numberApplied = findViewById(R.id.tvNumerApplied1);
-        applicationList = findViewById(R.id.rcvApplicants);
+        jobType2 = findViewById(R.id.autoComplete);
+        statusType = findViewById(R.id.autoComplete1);
+        jobID = findViewById(R.id.etJobIDEt);
+        numberNeed = findViewById(R.id.etNumApplicant);
+        jobTitle = findViewById(R.id.etTitle);
+        jobDescription = findViewById(R.id.etDescription);
+
+        cvRequired = findViewById(R.id.etCvRequired);
+        jobLocation = findViewById(R.id.etLocation);
+        companyName = findViewById(R.id.etEmployername);
+        deadline = findViewById(R.id.etTime);
+        update = findViewById(R.id.btnEdit);
+        salary = findViewById(R.id.etSalary);
+        dateUpdated = findViewById(R.id.etDateUpdate);
     }
+
+    private TextWatcher updateTextwatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            boolean allval = valNumberneed() && valJD()
+                    && valCvRequired()
+                    && valjobTitle()
+                    && valLocation()
+                    && valSalary() && valDeadline();
+
+            if (allval) {
+                update.setBackground(getDrawable(R.drawable.button_bg));
+            }
+            update.setEnabled(allval);
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+
+        }
+    };
+
+    private AutoCompleteTextView.Validator validator = new AutoCompleteTextView.Validator() {
+        @Override
+        public boolean isValid(CharSequence text) {
+            return false;
+        }
+
+        @Override
+        public CharSequence fixText(CharSequence invalidText) {
+            return null;
+        }
+    };
+
+    private DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
+        @Override
+        public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+            sYear = year;
+            sMonth = month;
+            sDay = dayOfMonth;
+            Date date2 = Date.getInstance(sDay, sMonth, sYear);
+
+            long des = Date.getEpochSecond(sDay, sMonth, sYear);
+            String dateUpdate = String.valueOf(date2.getEpochSecond());
+            Log.d("TAG", dateUpdate);
+            dateUpdated.setText(Date.getInstance(sDay, sMonth, sYear).toString());
+
+        }
+    };
+
+    private boolean valNumberneed() {
+        String name = numberNeed.getText().toString();
+        if (name.isEmpty()) {
+            numberNeed.setError("Please enter number of slots");
+            return false;
+        } else {
+            numberNeed.setError(null);
+            return true;
+        }
+    }
+
+    private boolean valJD() {
+        String name = jobDescription.getText().toString();
+        if (name.isEmpty()) {
+            jobDescription.setError("Please enter Job Description");
+            return false;
+        } else {
+            jobDescription.setError(null);
+            return true;
+        }
+    }
+
+    private boolean valCvRequired() {
+        String name = cvRequired.getText().toString();
+        if (name.isEmpty()) {
+            cvRequired.setError("Please enter requirement of CV");
+            return false;
+        } else {
+            cvRequired.setError(null);
+            return true;
+        }
+    }
+
+    private boolean valjobTitle() {
+        String name = jobTitle.getText().toString();
+        if (name.isEmpty()) {
+            jobTitle.setError("Please enter job title");
+            return false;
+        } else {
+            jobTitle.setError(null);
+            return true;
+        }
+    }
+
+    private boolean valLocation() {
+        String name = jobLocation.getText().toString();
+        if (name.isEmpty()) {
+            jobLocation.setError("Please enter job Location");
+            return false;
+        } else {
+            jobLocation.setError(null);
+            return true;
+        }
+    }
+
+    private boolean valSalary() {
+        String name = salary.getText().toString();
+        if (name.isEmpty()) {
+            salary.setError("Please enter salary");
+            return false;
+        } else {
+            salary.setError(null);
+            return true;
+        }
+    }
+
+    private boolean valDeadline() {
+        String name = salary.getText().toString();
+        if (name.isEmpty()) {
+            deadline.setError("Please enter deadline of this job");
+            return false;
+        } else {
+            deadline.setError(null);
+            return true;
+        }
+    }
+
 
 
 }

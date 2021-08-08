@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.ejob.R;
 import com.example.ejob.ui.user.JobApplying;
@@ -41,13 +42,17 @@ public class ViewJobDetail extends AppCompatActivity {
     private TextView jobTitle, employerName, jobType, jd, email;
     private JobPostingforUser jobPosting;
     private TextView applyTv, numberneed, salary, location;
-    private ImageView appIcon;
+    private ImageView appIcon, save;
 
     private FirebaseFirestore db1, db2;
     private DatabaseReference db3;
     private FirebaseAuth fAuth;
+    private FirebaseDatabase fDb;
     String empId;
+    private JobPostingforUser job;
+    DatabaseReference savedRef;
 
+    Boolean testClick = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,7 +82,35 @@ public class ViewJobDetail extends AppCompatActivity {
         jd.setText(jobPosting.getJobDescription());
         jobType.setText(jobPosting.getJobType());
 
-        getAppliedStatus(jobPosting.getJobId(),fAuth.getCurrentUser().getUid());
+        getSavedStatus(jobPosting.getJobId(),fAuth.getCurrentUser().getUid());
+
+        save.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                testClick = true;
+
+                savedRef.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if(testClick==true){
+
+                            if(snapshot.child(jobPosting.getJobId()).hasChild(fAuth.getCurrentUser().getUid())){
+                                savedRef.child(jobPosting.getJobId()).child(fAuth.getCurrentUser().getUid()).removeValue();
+                                testClick = false;
+                            }else{
+                                savedRef.child(jobPosting.getJobId()).child(fAuth.getCurrentUser().getUid()).setValue(true);
+                                testClick=false;
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+            }
+        });
 
 
         buttonApply.setOnClickListener(new View.OnClickListener() {
@@ -98,10 +131,64 @@ public class ViewJobDetail extends AppCompatActivity {
 
     }
 
+
+    public void getSavedStatus(String postId, String uid){
+        savedRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(snapshot.child(postId).hasChild(uid)){
+                    save.setImageResource(R.drawable.marked_24);
+                }
+                else{
+                    save.setImageResource(R.drawable.unmark_border_24);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    private void saveThisJob(JobPostingforUser jobPosting1) {
+        this.job = jobPosting1;
+        savedRef = fDb.getReference("jobsSaved");
+        savedRef
+                .child(job.getJobId())
+                .child(fAuth.getCurrentUser().getUid())
+                .setValue(job);
+
+        testClick = true;
+
+        savedRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(testClick==true){
+
+                    if(snapshot.child(job.getJobId()).hasChild(fAuth.getCurrentUser().getUid())){
+                        savedRef.child(job.getJobId()).child(fAuth.getCurrentUser().getUid()).removeValue();
+                        testClick = false;
+                    }else{
+                        savedRef.child(job.getJobId()).child(fAuth.getCurrentUser().getUid()).setValue(true);
+                        testClick=false;
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
     private void initDb() {
         db1 = FirebaseFirestore.getInstance();
         db2 = FirebaseFirestore.getInstance();
         fAuth = FirebaseAuth.getInstance();
+        fDb = FirebaseDatabase.getInstance();
+        savedRef = FirebaseDatabase.getInstance().getReference("jobsSaved");
 
     }
 
@@ -117,27 +204,8 @@ public class ViewJobDetail extends AppCompatActivity {
         salary = findViewById(R.id.tvSalary);
         location = findViewById(R.id.tvLocationDetail);
         email = findViewById(R.id.tvEmpEmail);
+        save = findViewById(R.id.btnMark);
     }
-
-    public void getAppliedStatus(String postId, String uid){
-        db3 =  FirebaseDatabase.getInstance().getReference("userapplications");
-        db3.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if(snapshot.child(postId.replaceAll(".*/", "")).hasChild(uid)){
-                    applyTv.setText("Already Applied");
-                    buttonApply.setEnabled(false);
-                    appIcon.setImageResource(R.drawable.ic_baseline_check_circle_outline_24);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-    }
-
 
     @Override
     protected void onResume() {

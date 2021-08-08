@@ -53,7 +53,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
-                            android:text="Account Registration"
+                            android:text="Đăng ký tài khoản công ty"
                             android:textColor="@color/navy_100"
                             android:textStyle="bold"
                             android:layout_marginStart="5dp"/>
@@ -119,7 +119,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="5dp"
-                            android:text="Password "
+                            android:text="@string/pwd"
                             android:textIsSelectable="true"/>
 
                     </RelativeLayout>
@@ -171,7 +171,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
-                            android:text="Personal Information"
+                            android:text="Thông tin công ty"
                             android:textColor="@color/navy_100"
                             android:textStyle="bold"
                             android:layout_marginStart="5dp"/>
@@ -208,7 +208,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="5dp"
-                                android:text="Full Name"/>
+                                android:text="Tên công ty"/>
 
                         </RelativeLayout>
 
@@ -216,7 +216,7 @@
                             android:id="@+id/etUsrFullname"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="Enter Full Name"
+                            android:hint="Asian Commercial Bank etc.."
                             android:textColorHint="@color/light_gray"
                             android:textSize="12sp"
                             android:textColor="@color/grey_effective"/>
@@ -237,7 +237,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="5dp"
-                                android:text="Date of Birth"/>
+                                android:text="Năm thành lập"/>
 
                         </RelativeLayout>
 
@@ -245,7 +245,7 @@
                             android:id="@+id/etDateofBirth"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="Enter Birthday"
+                            android:hint="1990"
                             android:clickable="true"
                             android:inputType="date"
                             android:textColorHint="@color/light_gray"
@@ -262,7 +262,7 @@
                                 android:id="@+id/iconCompany"
                                 android:layout_width="17dp"
                                 android:layout_height="17dp"
-                                android:src="@drawable/ic_baseline_school_24"
+                                android:src="@drawable/ic_baseline_work_outline_24"
                                 app:tint="@color/text_gray"/>
 
                             <TextView
@@ -270,7 +270,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="5dp"
-                                android:text="Education Institution"/>
+                                android:text="Lĩnh vực hoạt động"/>
 
                         </RelativeLayout>
 
@@ -278,7 +278,7 @@
                             android:id="@+id/etSchool"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="Enter your institution name"
+                            android:hint="IT, Sales, Engineering.."
                             android:textColorHint="@color/light_gray"
                             android:textSize="12sp"
                             android:textColor="@color/grey_effective"/>
@@ -301,7 +301,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="5dp"
-                                android:text="Mobile Phone"/>
+                                android:text="Điện thoại"/>
 
                         </RelativeLayout>
 
@@ -309,7 +309,7 @@
                             android:id="@+id/etPersonalPhone"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="Enter your phone number"
+                            android:hint="Điện thoại liên lạc"
                             android:textColorHint="@color/light_gray"
                             android:textSize="12sp"
                             android:textColor="@color/grey_effective"/>
@@ -332,7 +332,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="5dp"
-                                android:text="Personal Address"/>
+                                android:text="Địa chỉ "/>
 
                         </RelativeLayout>
 
@@ -340,7 +340,7 @@
                             android:id="@+id/etPersonalAddress"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="Enter your address"
+                            android:hint="Nhập địa chỉ"
                             android:textColorHint="@color/light_gray"
                             android:textSize="12sp"
                             android:textColor="@color/grey_effective"/>
@@ -366,7 +366,7 @@
                     android:textAllCaps="false"
                     android:textStyle="bold"
                     android:background="@drawable/button_bg"
-                    android:text="Create Account" />
+                    android:text="Tạo tài khoản" />
 
             </LinearLayout>
         </LinearLayout>

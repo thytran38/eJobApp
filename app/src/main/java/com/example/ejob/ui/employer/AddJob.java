@@ -31,6 +31,7 @@ import com.example.ejob.utils.Date;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -58,6 +59,8 @@ public class AddJob extends AppCompatActivity {
     private AutoCompleteTextView autoCompleteTextView;
     private RecruiteType[] option;
     private Context addJobContext;
+    DocumentReference df;
+    FirebaseUser firebaseUser;
 
 
     private TextWatcher addjobTextwatcher = new TextWatcher() {
@@ -185,6 +188,8 @@ public class AddJob extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_job);
+        FirebaseApp.initializeApp(AddJob.this);
+
         addJobContext = this;
         mapping();
         initActivity();
@@ -259,15 +264,10 @@ public class AddJob extends AppCompatActivity {
                         }
                     }
                 };
-
                 builder.setPositiveButton("Yes", dialogListener);
                 builder.setNegativeButton("No", dialogListener);
                 AlertDialog alert = builder.create();
                 alert.show();
-
-
-
-
             }
         });
     }
@@ -329,17 +329,19 @@ public class AddJob extends AppCompatActivity {
         jobType.setAdapter(arrayAdapter);
     }
 
-    private void initActivity() {
+    private void initActivity() throws NullPointerException{
         fAuth = FirebaseAuth.getInstance();
         firebaseFirestore = FirebaseFirestore.getInstance();
         firebaseFirestore2 = FirebaseFirestore.getInstance();
+        firebaseUser = fAuth.getCurrentUser();
+
+        df = firebaseFirestore.collection("Users").document(firebaseUser.getUid());
 
         addJobButton.setEnabled(false);
         addJobButton.setBackground(getDrawable(R.drawable.button_grayout));
         employerName.setEnabled(false);
         jobDateCreated.setEnabled(false);
         FirebaseUser firebaseUser = fAuth.getCurrentUser();
-        DocumentReference df = firebaseFirestore.collection("Users").document(firebaseUser.getUid());
         df.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {

@@ -88,6 +88,7 @@ public class JobApplying extends AppCompatActivity {
                     }
                 }
             });
+
     private TextView employerName, positionHiring, jobtype, linkCv, tvCvAttach;
     private EditText getEtFullname, getEtPhone, getEtAddress, getEtEmail, getEtSchool, getEtDescription, getEtSocialMedia;
     private RelativeLayout submit;
@@ -571,9 +572,7 @@ public class JobApplying extends AppCompatActivity {
             double progress = 0;
             StorageReference folder = fStorage.getInstance().getReference().child("CVFiles/");
             String possibleNameFile = fileUri.getLastPathSegment().replaceAll(".*/", "");
-            StorageReference file_name = folder.child(possibleNameFile);
             HashMap<String, String> hashMap = new HashMap<>();
-            Task task = file_name.putFile(fileUri);
 
             folder.putFile(fileUri)
                     .addOnProgressListener(snapshot -> {
@@ -593,11 +592,8 @@ public class JobApplying extends AppCompatActivity {
                             Uri uri = uriTask.getResult();
                             hashMap.put("cvURL", uri.toString());
                             cvUploadedUrl = uri.toString();
-
-
                         }
                     })
-
                     .addOnCompleteListener(task1 -> {
                         if (task1.isSuccessful()) {
 //                            Uri downloadUri = task1.getResult();

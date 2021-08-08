@@ -15,12 +15,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.util.Supplier;
 
 import com.example.ejob.R;
+import com.example.ejob.data.model.ApplicantModel;
 import com.example.ejob.ui.admin.AdminActivity;
 import com.example.ejob.ui.employer.EmployerActivity;
 import com.example.ejob.ui.passwordrecover.ForgetPassActivity;
 import com.example.ejob.ui.register.TransitRegister;
 import com.example.ejob.ui.user.UserActivity;
 import com.example.ejob.ui.main.MainFragment;
+import com.example.ejob.ui.user.UserProfileFragment;
+import com.example.ejob.ui.user.application.ViewJobDetail;
 import com.example.ejob.utils.SessionManager;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -32,8 +35,10 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.MetadataChanges;
 
 import java.util.Arrays;
+import java.util.logging.Logger;
 import java.util.stream.Stream;
 
 public class LoginActivity extends AppCompatActivity implements LoginNavigator {
@@ -121,6 +126,7 @@ public class LoginActivity extends AppCompatActivity implements LoginNavigator {
                             if (locked == true) {
                                 startActivity(new Intent(getApplicationContext(), LockedActivity.class));
                             } else {
+                                fetchData();
 
                                 Toast.makeText(LoginActivity.this, "Signed in successfully.", Toast.LENGTH_SHORT).show();
                                 saveData(emailText.getText().toString().trim(), fAuth.getCurrentUser());
@@ -143,6 +149,33 @@ public class LoginActivity extends AppCompatActivity implements LoginNavigator {
                 startActivity(new Intent(getApplicationContext(), ForgetPassActivity.class));
             }
         });
+    }
+
+    private void fetchData() {
+
+
+        fStore.collection("Applicants")
+                .document(fAuth.getCurrentUser().getUid())
+                .addSnapshotListener(MetadataChanges.INCLUDE, (data, error) ->{
+                    if(error == null){
+                        if(data != null && data.exists()){
+                            UserProfileFragment userProfileFragment = new UserProfileFragment();
+                            ApplicantModel applicantModel = new ApplicantModel();
+                            applicantModel = data.toObject(ApplicantModel.class);
+                            Bundle bundle = new Bundle();
+                            assert applicantModel != null;
+                            if(applicantModel!=null){
+                                bundle.putParcelable("applicant", applicantModel);
+                                userProfileFragment.setArguments(bundle);
+                                Log.d("applicant_not_null","170");
+                            }
+                            Log.d("applicant_not_null","172");
+
+                        }
+                    }
+
+                });
+
     }
 
     @Override

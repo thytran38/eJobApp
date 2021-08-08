@@ -1,6 +1,7 @@
 package com.example.ejob.ui.register;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -36,6 +37,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -60,13 +62,16 @@ public class RegisterUsr extends AppCompatActivity {
     FirebaseAuth firebaseAuth;
     FirebaseFirestore firebaseFirestore;
     FirebaseDatabase fDb;
+    DatabaseReference profileRef, availRef, authenRef;
     FirebaseStorage fStorage;
-    private EditText fullName, email, password, phone, school, address, etDob;
+    private EditText fullName, email, password, phone, school, address, etDob, avatarUrl;
     private Button registerButton, loginButton;
-    private ImageView emCheck, psCheck, avatar, dob;
+    private ImageView emCheck, psCheck, avatar, dob, checkAvatar;
     private TextView dobtv;
     private String usEmail, usPassword, usDob, usDatecreated, usFullname, usPhone, usSchool, usAddress, imgLink;
     private Uri imgUri;
+    private Context context;
+    boolean uploaded;
 
     ActivityResultLauncher<String> getContent = registerForActivityResult(new ActivityResultContracts.GetContent(),
             new ActivityResultCallback<Uri>() {
@@ -143,7 +148,7 @@ public class RegisterUsr extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.register_layout);
-
+        context = this;
         mapping();
         buttonSet(0);
         init();
@@ -181,6 +186,77 @@ public class RegisterUsr extends AppCompatActivity {
 
     }
 
+    private void uploadImageEvent() throws IllegalStateException, NullPointerException {
+        ProgressDialog progressDialog = new ProgressDialog(context);
+        progressDialog.setTitle("Upload image");
+        progressDialog.setMessage("Progress Bar");
+        progressDialog.setMax(100);
+        progressDialog.setProgressStyle(progressDialog.STYLE_HORIZONTAL);
+        progressDialog.setCancelable(false);
+
+        getContent.launch("image/*");
+        if (imgUri != null) {
+            int cvRandom = new Random().nextInt(5000);
+            double progress = 0;
+            StorageReference folder = fStorage.getInstance().getReference().child("images/");
+            String possibleNameFile = imgUri.getLastPathSegment().replaceAll(".*/", "");
+            StorageReference file_name = folder.child(possibleNameFile);
+            HashMap<String, String> hashMap = new HashMap<>();
+
+            folder.putFile(imgUri)
+                    .addOnProgressListener(snapshot -> {
+                        double progress1 = (100 * snapshot.getBytesTransferred()) / snapshot.getTotalByteCount();
+                        progressDialog.show();
+                        progressDialog.setProgress(((int) progress1));
+                        if (progress1 == 100) {
+                            progressDialog.setMessage("Uploaded " + progress1 + " %");
+                        }
+                    })
+                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            Task<Uri> uriTask = taskSnapshot.getStorage().getDownloadUrl();
+                            while (!uriTask.isComplete()) ;
+                            uploaded = true;
+                            Uri uri = uriTask.getResult();
+                            imgLink = uri.toString();
+                            hashMap.put("imgURL", imgLink);
+                        }
+                    })
+                    .addOnCompleteListener(task1 -> {
+                        if (task1.isSuccessful()) {
+                            if (task1.isComplete()) {
+                                progressDialog.setCancelable(true);
+                                progressDialog.dismiss();
+
+                                hashMap.put("imgUri", String.valueOf(task1.getResult().getStorage().getDownloadUrl()));
+                                hashMap.put("fileName", possibleNameFile);
+                                avatarUrl.post(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        avatarUrl.setText("Photo URL" + imgLink);
+                                    }
+                                });
+                                fDb.getReference("imgUploads")
+                                        .child(firebaseAuth.getCurrentUser().getUid())
+                                        .setValue(hashMap)
+                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
+                                                Toast.makeText(context, "Done uploading!", Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
+                            } else {
+
+                            }
+                        }
+                    });
+
+        }
+
+    }
+
+
     private void buttonSet(int i) {
         switch (i) {
 
@@ -216,33 +292,7 @@ public class RegisterUsr extends AppCompatActivity {
         }
     }
 
-    private void uploadImageEvent() {
-        ProgressDialog progressBar = new ProgressDialog(this);
-        progressBar.setMessage("Uploading........");
-        getContent.launch("image/*");
 
-        if (imgUri != null) {
-            int imgRandomLink = new Random().nextInt(5000);
-            imgLink = String.valueOf(imgRandomLink);
-            StorageReference reference = fStorage.getInstance().getReference().child("images/" + imgRandomLink);
-            reference.putFile(imgUri)
-                    .addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                            if (task.isSuccessful()) {
-                                progressBar.dismiss();
-                                task.getResult().getMetadata().getReference().getDownloadUrl();
-                                Toast.makeText(RegisterUsr.this, task.getResult().toString(), Toast.LENGTH_SHORT).show();
-
-                            } else {
-                                progressBar.dismiss();
-                                Toast.makeText(RegisterUsr.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                            }
-
-                        }
-                    });
-        }
-    }
 
     private void registerEvent() {
         if (valEmail() && valFullName() && valAddress() && valPhoneNum()) {
@@ -268,17 +318,17 @@ public class RegisterUsr extends AppCompatActivity {
                 Map<String, Object> userAvailablilityInfo = new HashMap<>();
                 userAvailablilityInfo.put("isAvailable", "1");
                 df2.set(userAvailablilityInfo);
+                availRef.child(firebaseAuth.getCurrentUser().getUid()).setValue(userAvailablilityInfo);
 
-                DocumentReference df3 = firebaseFirestore.collection("UserProfiles").document(firebaseUser.getUid());
                 Map<String, Object> userProfile = new HashMap<>();
-                userProfile.put("PhotoName", imgLink);
+                userProfile.put("imgUrl", imgLink);
                 userProfile.put("University", usSchool);
                 userProfile.put("FullName", usFullname);
                 userProfile.put("DoB", usDob);
                 userProfile.put("PhoneNumber", usPhone);
                 userProfile.put("Address", usAddress);
                 userProfile.put("AccountDateCreated", usDatecreated);
-                df3.set(userProfile);
+                profileRef.child(firebaseAuth.getCurrentUser().getUid()).setValue(userProfile);
 
                 startActivity(new Intent(getApplicationContext(), LoginActivity.class));
             }
@@ -309,13 +359,9 @@ public class RegisterUsr extends AppCompatActivity {
         firebaseFirestore = FirebaseFirestore.getInstance();
         fStorage = FirebaseStorage.getInstance();
         fDb = FirebaseDatabase.getInstance();
-//        StorageReference storageReference = fStorage.getInstance().getReference();
-//        storageReference.child("images").child("3598.jpeg").getDownloadUrl();
-//        Picasso.get().load(storageReference.child("images").child("3598.jpeg").getDownloadUrl().getResult().getPath()).into(avatar);
-
-
-//        Toast.makeText(this, storageReference.child("images").child("3598.jpeg").getDownloadUrl().getResult().getPath().toString(), Toast.LENGTH_SHORT).show();
-
+        profileRef = fDb.getReference("Profiles");
+        authenRef = fDb.getReference("Authentications");
+        availRef = fDb.getReference("Availability");
     }
 
     private void mapping() {
@@ -330,6 +376,7 @@ public class RegisterUsr extends AppCompatActivity {
         psCheck = findViewById(R.id.personalCheck);
         avatar = findViewById(R.id.avatarUser);
         registerButton = findViewById(R.id.btRegister);
+        avatarUrl = findViewById(R.id.etAvatar);
     }
 
     private boolean valFullName() {

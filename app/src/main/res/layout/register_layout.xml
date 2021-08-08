@@ -381,6 +381,39 @@
                             android:textColorHint="@color/light_gray"
                             android:textSize="12sp" />
 
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="3dp">
+
+                            <ImageView
+                                android:id="@+id/iconAvatar"
+                                android:layout_width="17dp"
+                                android:layout_height="17dp"
+                                android:layout_marginTop="2dp"
+                                android:src="@drawable/ic_baseline_insert_photo_24"
+                                app:tint="@color/text_gray" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="5dp"
+                                android:layout_toEndOf="@id/iconAvatar"
+                                android:id="@+id/tvAvatar"
+                                android:text="Avatar URL" />
+
+                        </RelativeLayout>
+
+                        <EditText
+                            android:id="@+id/etAvatar"
+                            android:enabled="false"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Avatar URL"
+                            android:textColor="@color/grey_effective"
+                            android:textColorHint="@color/light_gray"
+                            android:textSize="12sp" />
+
                     </LinearLayout>
 
                 </LinearLayout>

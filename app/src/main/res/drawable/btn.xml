@@ -3,5 +3,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
+    <gradient
+        android:startColor="@color/tealPastel"
+        android:endColor="@color/white_grey"
+        android:angle="270"
+        />
 
 </shape>

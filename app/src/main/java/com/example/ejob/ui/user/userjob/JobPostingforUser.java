@@ -4,48 +4,55 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class JobPostingforUser implements Parcelable {
+
     String jobId;
     String jobTitle;
     String jobDescription;
     String jobLocation;
     String salary;
     String employerName;
+    String employerFbID;
     String jobDeadline;
     String jobDateCreated;
     String imageUrl;
     int jobSkills;
     int countView;
     int countLike;
-    boolean jobStatus;
+    String jobStatus;
     int updateHistory;
-
+    String jobType;
+    String numberneed;
     int numberApplied;
+    String empEmail;
+    String cvRequired;
 
     public JobPostingforUser() {
 
     }
 
-    public JobPostingforUser(String jobId, String jobTitle, String jobDescription, String jobLocation, String salary, String employerName, String jobDeadline, String jobDateCreated, int jobSkills, int countView, int countLike, boolean jobStatus, int updateHistory) {
+    public JobPostingforUser(String jobId, String jobTitle, String jobDescription, String jobLocation, String salary, String employerName, String employerFbID, String jobDeadline, String jobDateCreated, String imageUrl, int jobSkills, int countView, int countLike, String jobStatus, int updateHistory, String jobType, String numberneed, int numberApplied, String empEmail, String cvRequired) {
         this.jobId = jobId;
         this.jobTitle = jobTitle;
         this.jobDescription = jobDescription;
         this.jobLocation = jobLocation;
         this.salary = salary;
         this.employerName = employerName;
+        this.employerFbID = employerFbID;
         this.jobDeadline = jobDeadline;
         this.jobDateCreated = jobDateCreated;
+        this.imageUrl = imageUrl;
         this.jobSkills = jobSkills;
         this.countView = countView;
         this.countLike = countLike;
         this.jobStatus = jobStatus;
         this.updateHistory = updateHistory;
+        this.jobType = jobType;
+        this.numberneed = numberneed;
+        this.numberApplied = numberApplied;
+        this.empEmail = empEmail;
+        this.cvRequired = cvRequired;
     }
 
-    public JobPostingforUser(String jobTitle, String employerName, String jobDateCreated){
-        this.jobTitle = jobTitle;
-        this.employerName = employerName;
-        this.jobDateCreated = jobDateCreated;
-    }
 
     protected JobPostingforUser(Parcel in) {
         jobId = in.readString();
@@ -54,15 +61,49 @@ public class JobPostingforUser implements Parcelable {
         jobLocation = in.readString();
         salary = in.readString();
         employerName = in.readString();
+        employerFbID = in.readString();
         jobDeadline = in.readString();
         jobDateCreated = in.readString();
         imageUrl = in.readString();
         jobSkills = in.readInt();
         countView = in.readInt();
         countLike = in.readInt();
-        jobStatus = in.readByte() != 0;
+        jobStatus = in.readString();
         updateHistory = in.readInt();
+        jobType = in.readString();
+        numberneed = in.readString();
         numberApplied = in.readInt();
+        empEmail = in.readString();
+        cvRequired = in.readString();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(jobId);
+        dest.writeString(jobTitle);
+        dest.writeString(jobDescription);
+        dest.writeString(jobLocation);
+        dest.writeString(salary);
+        dest.writeString(employerName);
+        dest.writeString(employerFbID);
+        dest.writeString(jobDeadline);
+        dest.writeString(jobDateCreated);
+        dest.writeString(imageUrl);
+        dest.writeInt(jobSkills);
+        dest.writeInt(countView);
+        dest.writeInt(countLike);
+        dest.writeString(jobStatus);
+        dest.writeInt(updateHistory);
+        dest.writeString(jobType);
+        dest.writeString(numberneed);
+        dest.writeInt(numberApplied);
+        dest.writeString(empEmail);
+        dest.writeString(cvRequired);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
     public static final Creator<JobPostingforUser> CREATOR = new Creator<JobPostingforUser>() {
@@ -125,6 +166,14 @@ public class JobPostingforUser implements Parcelable {
         this.employerName = employerName;
     }
 
+    public String getEmployerFbID() {
+        return employerFbID;
+    }
+
+    public void setEmployerFbID(String employerFbID) {
+        this.employerFbID = employerFbID;
+    }
+
     public String getJobDeadline() {
         return jobDeadline;
     }
@@ -139,6 +188,14 @@ public class JobPostingforUser implements Parcelable {
 
     public void setJobDateCreated(String jobDateCreated) {
         this.jobDateCreated = jobDateCreated;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     public int getJobSkills() {
@@ -165,11 +222,11 @@ public class JobPostingforUser implements Parcelable {
         this.countLike = countLike;
     }
 
-    public boolean isJobStatus() {
+    public String getJobStatus() {
         return jobStatus;
     }
 
-    public void setJobStatus(boolean jobStatus) {
+    public void setJobStatus(String jobStatus) {
         this.jobStatus = jobStatus;
     }
 
@@ -181,12 +238,20 @@ public class JobPostingforUser implements Parcelable {
         this.updateHistory = updateHistory;
     }
 
-    public String getImageUrl() {
-        return imageUrl;
+    public String getJobType() {
+        return jobType;
     }
 
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
+    public void setJobType(String jobType) {
+        this.jobType = jobType;
+    }
+
+    public String getNumberneed() {
+        return numberneed;
+    }
+
+    public void setNumberneed(String numberneed) {
+        this.numberneed = numberneed;
     }
 
     public int getNumberApplied() {
@@ -197,27 +262,19 @@ public class JobPostingforUser implements Parcelable {
         this.numberApplied = numberApplied;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
+    public String getEmpEmail() {
+        return empEmail;
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(jobId);
-        dest.writeString(jobTitle);
-        dest.writeString(jobDescription);
-        dest.writeString(jobLocation);
-        dest.writeString(salary);
-        dest.writeString(employerName);
-        dest.writeString(jobDeadline);
-        dest.writeString(jobDateCreated);
-        dest.writeString(imageUrl);
-        dest.writeInt(jobSkills);
-        dest.writeInt(countView);
-        dest.writeInt(countLike);
-        dest.writeByte((byte) (jobStatus ? 1 : 0));
-        dest.writeInt(updateHistory);
-        dest.writeInt(numberApplied);
+    public void setEmpEmail(String empEmail) {
+        this.empEmail = empEmail;
+    }
+
+    public String getCvRequired() {
+        return cvRequired;
+    }
+
+    public void setCvRequired(String cvRequired) {
+        this.cvRequired = cvRequired;
     }
 }

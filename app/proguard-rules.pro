@@ -21,3 +21,4 @@
 #-renamesourcefileattribute SourceFile
 
 -dontwarn okhttp3.internal.platform.*
+-dontwarn org.json.**

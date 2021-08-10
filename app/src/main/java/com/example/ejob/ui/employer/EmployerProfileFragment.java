@@ -1,4 +1,4 @@
-package com.example.ejob.ui.user;
+package com.example.ejob.ui.employer;
 
 import android.os.Bundle;
 import android.util.Pair;
@@ -102,7 +102,7 @@ public class EmployerProfileFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_user_profile, container, false);
+        return inflater.inflate(R.layout.fragment_employer_profile, container, false);
     }
 
 
@@ -122,15 +122,6 @@ public class EmployerProfileFragment extends Fragment {
 
             }
         });
-
-//        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-//            @Override
-//            public void onRefresh() {
-//                profileAdapter.notifyDataSetChanged();
-//                swipeRefreshLayout.setRefreshing(false);
-//            }
-//        });
-
 
     }
 
@@ -168,27 +159,6 @@ public class EmployerProfileFragment extends Fragment {
         DatabaseReference cvRef = firebaseDatabase.getReference("cvUploads");
         DatabaseReference profileRef = firebaseDatabase.getReference("Applicants");
 
-        cvRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.child(firebaseAuth.getCurrentUser().getUid()).exists()) {
-                    cvExist = true;
-                    for (DataSnapshot child : snapshot.getChildren()) {
-                        cvTitle.setText(snapshot.child(firebaseAuth.getCurrentUser().getUid()).child("fileName").getValue().toString());
-
-                        String cvLink = snapshot.child(firebaseAuth.getCurrentUser().getUid()).child("cvURL").getValue().toString();
-                        filepath.setText(cvLink);
-                    }
-                } else {
-                    filepath.setText("Click icon on the right to upload CV");
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
 
         profileRef.addValueEventListener(new ValueEventListener() {
             @Override

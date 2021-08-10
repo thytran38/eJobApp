@@ -76,7 +76,7 @@
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:layout_gravity="center_vertical"
-                                        android:text="Personal Information"
+                                        android:text="Thông tin cá nhân"
                                         android:textColor="@color/navy_100"
                                         android:textStyle="bold"
                                         android:layout_marginStart="5dp"/>
@@ -105,7 +105,7 @@
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
                                             android:layout_marginStart="5dp"
-                                            android:text="Email "
+                                            android:text="Email ứng viên "
                                             android:textIsSelectable="true"/>
                                     </RelativeLayout>
 
@@ -113,12 +113,12 @@
                                         android:id="@+id/etEmailUP1"
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
-                                        android:hint="User Email"
+                                        android:hint="email người dùng.."
                                         android:textColorHint="@color/light_gray"
                                         android:textSize="12sp"
                                         android:textStyle="bold"
                                         android:textColor="@color/navy_100"
-                                        android:layout_marginTop="10dp"/>
+                                        android:layout_marginTop="2dp"/>
 
                                     <RelativeLayout
                                         android:layout_width="match_parent"
@@ -137,7 +137,7 @@
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
                                             android:layout_marginStart="5dp"
-                                            android:text="Full Name"/>
+                                            android:text="Họ và tên"/>
 
                                     </RelativeLayout>
 
@@ -145,12 +145,12 @@
                                         android:id="@+id/etFullnameUP1"
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
-                                        android:hint="Enter Full Name"
+                                        android:hint="Nhập họ và tên"
                                         android:textColorHint="@color/light_gray"
                                         android:textSize="12sp"
                                         android:textStyle="bold"
                                         android:textColor="@color/navy_100"
-                                        android:layout_marginTop="10dp"/>
+                                        android:layout_marginTop="2dp"/>
 
                                     <RelativeLayout
                                         android:layout_width="match_parent"
@@ -169,7 +169,7 @@
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
                                             android:layout_marginStart="5dp"
-                                            android:text="Date of Birth"/>
+                                            android:text="Ngày tháng năm sinh"/>
 
                                     </RelativeLayout>
 
@@ -177,14 +177,14 @@
                                         android:id="@+id/etDateofBirthUP1"
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
-                                        android:hint="Enter Birthday"
+                                        android:hint="Ngày tháng năm sinh"
                                         android:clickable="true"
                                         android:inputType="date"
                                         android:textColorHint="@color/light_gray"
                                         android:textSize="12sp"
                                         android:textStyle="bold"
                                         android:textColor="@color/navy_100"
-                                        android:layout_marginTop="10dp"/>
+                                        android:layout_marginTop="2dp"/>
 
 
                                     <RelativeLayout
@@ -204,7 +204,7 @@
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
                                             android:layout_marginStart="5dp"
-                                            android:text="Education Institution"/>
+                                            android:text="Trường Đại học/ Cao đẳng"/>
 
                                     </RelativeLayout>
 
@@ -212,12 +212,12 @@
                                         android:id="@+id/etSchoolUP1"
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
-                                        android:hint="Enter your institution name"
+                                        android:hint="Trường ĐH Văn Lang, ĐH BK, ĐH KHTN.."
                                         android:textColorHint="@color/light_gray"
                                         android:textSize="12sp"
                                         android:textStyle="bold"
                                         android:textColor="@color/navy_100"
-                                        android:layout_marginTop="10dp"/>
+                                        android:layout_marginTop="2dp"/>
 
                                     <RelativeLayout
                                         android:layout_marginTop="10dp"
@@ -237,7 +237,7 @@
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
                                             android:layout_marginStart="5dp"
-                                            android:text="Mobile Phone"/>
+                                            android:text="Số điện thoại cá nhân"/>
 
                                     </RelativeLayout>
 
@@ -245,12 +245,12 @@
                                         android:id="@+id/etPersonalPhoneUP1"
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
-                                        android:hint="Enter your phone number"
+                                        android:hint="Nhập số điện thoại cá nhân"
                                         android:textColorHint="@color/light_gray"
                                         android:textSize="12sp"
                                         android:textStyle="bold"
                                         android:textColor="@color/navy_100"
-                                        android:layout_marginTop="10dp"/>
+                                        android:layout_marginTop="2dp"/>
 
                                     <RelativeLayout
                                         android:layout_marginTop="10dp"
@@ -270,7 +270,7 @@
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
                                             android:layout_marginStart="5dp"
-                                            android:text="Personal Address"/>
+                                            android:text="Địa chỉ nhà riêng"/>
 
                                     </RelativeLayout>
 
@@ -278,12 +278,45 @@
                                         android:id="@+id/etPersonalAddressUP1"
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
-                                        android:hint="Enter your address"
+                                        android:hint="Nhập địa chỉ"
                                         android:textColorHint="@color/light_gray"
                                         android:textSize="12sp"
                                         android:textStyle="bold"
                                         android:textColor="@color/navy_100"
-                                        android:layout_marginTop="10dp"/>
+                                        android:layout_marginTop="2dp"/>
+
+                                    <RelativeLayout
+                                        android:layout_marginTop="10dp"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content">
+
+                                        <ImageView
+                                            android:id="@+id/iconNgaydangkyUSer"
+                                            android:layout_width="17dp"
+                                            android:layout_height="17dp"
+                                            android:layout_marginTop="2dp"
+                                            android:src="@drawable/ic_baseline_calendar_today_24"
+                                            app:tint="@color/text_gray"/>
+
+                                        <TextView
+                                            android:layout_toEndOf="@id/iconNgaydangkyUSer"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_marginStart="5dp"
+                                            android:text="Ngày đăng ký tài khoản"/>
+
+                                    </RelativeLayout>
+
+                                    <EditText
+                                        android:id="@+id/etNgaydangkyUser"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:hint="31/10/2020"
+                                        android:textColorHint="@color/light_gray"
+                                        android:textSize="12sp"
+                                        android:textStyle="bold"
+                                        android:textColor="@color/navy_100"
+                                        android:layout_marginTop="2dp"/>
 
                                 </LinearLayout>
 
@@ -324,7 +357,7 @@
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
                                             android:layout_gravity="center_vertical"
-                                            android:text="Curriculum Vitae"
+                                            android:text="CV ứng viên"
                                             android:textColor="@color/navy_100"
                                             android:textStyle="bold"
                                             android:layout_marginStart="5dp"/>
@@ -340,12 +373,10 @@
                                         <TextView
                                             android:id="@+id/tvFileTitle"
                                             android:layout_toEndOf="@+id/fileTitle"
-                                            android:text="Filename"
+                                            android:text="Tên file CV"
                                             android:layout_width="fill_parent"
                                             android:layout_marginLeft="5dp"
                                             android:layout_height="wrap_content"
-                                            android:textStyle="bold"
-                                            android:textColor="@color/navy_100"
                                             android:textIsSelectable="true"/>
 
                                         <ImageView
@@ -358,6 +389,17 @@
 
                                             android:src="@drawable/ic_baseline_picture_as_pdf_grey_24" />
                                     </RelativeLayout>
+
+                                    <EditText
+                                        android:id="@+id/etTenfileCV"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:hint="CV_NguyenVanA.pdf"
+                                        android:textColorHint="@color/light_gray"
+                                        android:textSize="12sp"
+                                        android:textStyle="bold"
+                                        android:textColor="@color/navy_100"
+                                        android:layout_marginTop="2dp"/>
 
 
                                     <RelativeLayout
@@ -372,20 +414,29 @@
                                             android:layout_height="20dp"
                                             android:layout_alignParentLeft="true"
 
-                                            android:src="@drawable/ic_baseline_file_upload_24"/>
+                                            android:src="@drawable/ic_baseline_link_24"/>
 
                                         <TextView
                                             android:id="@+id/pdfLinks"
                                             android:layout_toEndOf="@+id/cvUpload"
-                                            android:text="Click icon to upload"
+                                            android:text="Đường dẫn URL"
                                             android:layout_marginLeft="5dp"
                                             android:layout_width="fill_parent"
                                             android:layout_height="wrap_content"
-                                            android:textStyle="bold"
-                                            android:textColor="@color/navy_100"
                                             android:textIsSelectable="true"/>
 
                                     </RelativeLayout>
+
+                                    <EditText
+                                        android:id="@+id/etDuongDanCV"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:hint="https://firebase.google.com/cvfiles/abcxyz.pdf..."
+                                        android:textColorHint="@color/light_gray"
+                                        android:textSize="12sp"
+                                        android:textStyle="bold"
+                                        android:textColor="@color/navy_100"
+                                        android:layout_marginTop="2dp"/>
 
 
                                     <RelativeLayout

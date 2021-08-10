@@ -32,9 +32,9 @@
                 android:id="@+id/cardUP"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="14dp"
-                android:layout_marginEnd="14dp"
-                android:layout_marginTop="4dp"
+                android:layout_marginStart="7dp"
+                android:layout_marginEnd="7dp"
+                android:layout_marginTop="5dp"
                 app:strokeWidth="0.5dp"
                  android:paddingBottom="20dp"
                  android:layout_marginBottom="20dp"
@@ -69,14 +69,14 @@
                                     <ImageView
                                         android:layout_width="21dp"
                                         android:layout_height="21dp"
-                                        android:src="@drawable/ic_baseline_person_24"
+                                        android:src="@drawable/ic_twotone_work_24"
                                         app:tint="@color/navy_100"/>
 
                                     <TextView
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:layout_gravity="center_vertical"
-                                        android:text="Personal Information"
+                                        android:text="Thông tin doanh nghiệp"
                                         android:textColor="@color/navy_100"
                                         android:textStyle="bold"
                                         android:layout_marginStart="5dp"/>
@@ -113,12 +113,45 @@
                                         android:id="@+id/etEmailUP1"
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
-                                        android:hint="User Email"
+                                        android:hint="hrdept@acb.com.vn"
                                         android:textColorHint="@color/light_gray"
                                         android:textSize="12sp"
                                         android:textStyle="bold"
                                         android:textColor="@color/navy_100"
-                                        android:layout_marginTop="10dp"/>
+                                        android:layout_marginTop="2dp"/>
+
+                                    <RelativeLayout
+                                        android:layout_marginTop="3dp"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content">
+
+                                        <ImageView
+                                            android:id="@+id/iconWebsite3"
+                                            android:layout_width="17dp"
+                                            android:layout_height="17dp"
+                                            android:layout_marginTop="2dp"
+                                            android:src="@drawable/ic_baseline_link_24"
+                                            app:tint="@color/text_gray"/>
+
+                                        <TextView
+                                            android:layout_toEndOf="@id/iconWebsite3"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_marginStart="5dp"
+                                            android:text="Website công ty "
+                                            android:textIsSelectable="true"/>
+                                    </RelativeLayout>
+
+                                    <EditText
+                                        android:id="@+id/etWebcongty"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:hint="www.acb.com.vn"
+                                        android:textColorHint="@color/light_gray"
+                                        android:textSize="12sp"
+                                        android:textStyle="bold"
+                                        android:textColor="@color/navy_100"
+                                        android:layout_marginTop="2dp"/>
 
                                     <RelativeLayout
                                         android:layout_width="match_parent"
@@ -129,7 +162,7 @@
                                             android:id="@+id/fullnameUP"
                                             android:layout_width="17dp"
                                             android:layout_height="17dp"
-                                            android:src="@drawable/ic_baseline_person_outline_24"
+                                            android:src="@drawable/ic_baseline_work_outline_24"
                                             app:tint="@color/text_gray"/>
 
                                         <TextView
@@ -137,7 +170,7 @@
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
                                             android:layout_marginStart="5dp"
-                                            android:text="Full Name"/>
+                                            android:text="Tên công ty"/>
 
                                     </RelativeLayout>
 
@@ -145,46 +178,12 @@
                                         android:id="@+id/etFullnameUP1"
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
-                                        android:hint="Enter Full Name"
+                                        android:hint="ACB"
                                         android:textColorHint="@color/light_gray"
                                         android:textSize="12sp"
                                         android:textStyle="bold"
                                         android:textColor="@color/navy_100"
-                                        android:layout_marginTop="10dp"/>
-
-                                    <RelativeLayout
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:layout_marginTop="10dp">
-
-                                        <ImageView
-                                            android:id="@+id/dobUP"
-                                            android:layout_width="17dp"
-                                            android:layout_height="17dp"
-                                            android:src="@drawable/ic_baseline_date_range_24"
-                                            app:tint="@color/text_gray"/>
-
-                                        <TextView
-                                            android:layout_toEndOf="@id/dobUP"
-                                            android:layout_width="wrap_content"
-                                            android:layout_height="wrap_content"
-                                            android:layout_marginStart="5dp"
-                                            android:text="Date of Birth"/>
-
-                                    </RelativeLayout>
-
-                                    <EditText
-                                        android:id="@+id/etDateofBirthUP1"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:hint="Enter Birthday"
-                                        android:clickable="true"
-                                        android:inputType="date"
-                                        android:textColorHint="@color/light_gray"
-                                        android:textSize="12sp"
-                                        android:textStyle="bold"
-                                        android:textColor="@color/navy_100"
-                                        android:layout_marginTop="10dp"/>
+                                        android:layout_marginTop="2dp"/>
 
 
                                     <RelativeLayout
@@ -204,7 +203,7 @@
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
                                             android:layout_marginStart="5dp"
-                                            android:text="Education Institution"/>
+                                            android:text="Lĩnh vực hoạt động"/>
 
                                     </RelativeLayout>
 
@@ -212,12 +211,12 @@
                                         android:id="@+id/etSchoolUP1"
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
-                                        android:hint="Enter your institution name"
+                                        android:hint="Ngân hàng, IT, công nghệ, kinh doanh.."
                                         android:textColorHint="@color/light_gray"
                                         android:textSize="12sp"
                                         android:textStyle="bold"
                                         android:textColor="@color/navy_100"
-                                        android:layout_marginTop="10dp"/>
+                                        android:layout_marginTop="2dp"/>
 
                                     <RelativeLayout
                                         android:layout_marginTop="10dp"
@@ -237,7 +236,7 @@
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
                                             android:layout_marginStart="5dp"
-                                            android:text="Mobile Phone"/>
+                                            android:text="Điện thoại công ty"/>
 
                                     </RelativeLayout>
 
@@ -245,12 +244,12 @@
                                         android:id="@+id/etPersonalPhoneUP1"
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
-                                        android:hint="Enter your phone number"
+                                        android:hint="+849999985"
                                         android:textColorHint="@color/light_gray"
                                         android:textSize="12sp"
                                         android:textStyle="bold"
                                         android:textColor="@color/navy_100"
-                                        android:layout_marginTop="10dp"/>
+                                        android:layout_marginTop="2dp"/>
 
                                     <RelativeLayout
                                         android:layout_marginTop="10dp"
@@ -270,7 +269,7 @@
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
                                             android:layout_marginStart="5dp"
-                                            android:text="Personal Address"/>
+                                            android:text="Địa chỉ công ty"/>
 
                                     </RelativeLayout>
 
@@ -278,12 +277,46 @@
                                         android:id="@+id/etPersonalAddressUP1"
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
-                                        android:hint="Enter your address"
+                                        android:hint="Nhập Địa chỉ công ty"
                                         android:textColorHint="@color/light_gray"
                                         android:textSize="12sp"
                                         android:textStyle="bold"
                                         android:textColor="@color/navy_100"
-                                        android:layout_marginTop="10dp"/>
+                                        android:layout_marginTop="2dp"/>
+
+
+                                    <RelativeLayout
+                                        android:layout_marginTop="10dp"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content">
+
+                                        <ImageView
+                                            android:id="@+id/iconDateCreation"
+                                            android:layout_width="17dp"
+                                            android:layout_height="17dp"
+                                            android:layout_marginTop="2dp"
+                                            android:src="@drawable/ic_baseline_access_time_24"
+                                            app:tint="@color/text_gray"/>
+
+                                        <TextView
+                                            android:layout_toEndOf="@id/iconDateCreation"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_marginStart="5dp"
+                                            android:text="Ngày đăng ký"/>
+
+                                    </RelativeLayout>
+
+                                    <EditText
+                                        android:id="@+id/etNgaydangkyCty"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:hint="Ngày đăng ký"
+                                        android:textColorHint="@color/light_gray"
+                                        android:textSize="12sp"
+                                        android:textStyle="bold"
+                                        android:textColor="@color/navy_100"
+                                        android:layout_marginTop="2dp"/>
 
                                 </LinearLayout>
 
@@ -291,112 +324,6 @@
 
                             </LinearLayout>
 
-                            <com.google.android.material.card.MaterialCardView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="14dp"
-                                android:layout_marginEnd="14dp"
-                                android:layout_marginTop="14dp"
-                                app:strokeWidth="0.5dp"
-                                app:strokeColor="@color/white"
-                                app:cardElevation="0dp"
-                                app:cardCornerRadius="10dp">
-
-                                <LinearLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:orientation="vertical"
-                                    android:layout_margin="0sp">
-
-                                    <LinearLayout
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:layout_marginBottom="16dp"
-                                        android:orientation="horizontal">
-
-                                        <ImageView
-                                            android:layout_width="21dp"
-                                            android:layout_height="21dp"
-                                            android:src="@drawable/ic_baseline_insert_drive_file_24"
-                                            app:tint="@color/navy_100"/>
-
-                                        <TextView
-                                            android:layout_width="wrap_content"
-                                            android:layout_height="wrap_content"
-                                            android:layout_gravity="center_vertical"
-                                            android:text="Curriculum Vitae"
-                                            android:textColor="@color/navy_100"
-                                            android:textStyle="bold"
-                                            android:layout_marginStart="5dp"/>
-
-
-                                    </LinearLayout>
-
-                                    <RelativeLayout
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:orientation="horizontal">
-
-                                        <TextView
-                                            android:id="@+id/tvFileTitle"
-                                            android:layout_toEndOf="@+id/fileTitle"
-                                            android:text="Filename"
-                                            android:layout_width="fill_parent"
-                                            android:layout_marginLeft="5dp"
-                                            android:layout_height="wrap_content"
-                                            android:textStyle="bold"
-                                            android:textColor="@color/navy_100"
-                                            android:textIsSelectable="true"/>
-
-                                        <ImageView
-                                            android:id="@+id/fileTitle"
-                                            android:layout_width="24dp"
-                                            android:layout_height="24dp"
-                                            android:layout_alignParentLeft="true"
-                                            android:clickable="true"
-                                            android:visibility="visible"
-
-                                            android:src="@drawable/ic_baseline_picture_as_pdf_grey_24" />
-                                    </RelativeLayout>
-
-
-                                    <RelativeLayout
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:orientation="horizontal">
-
-                                        <ImageView
-                                            android:id="@+id/cvUpload"
-                                            android:clickable="true"
-                                            android:layout_width="20dp"
-                                            android:layout_height="20dp"
-                                            android:layout_alignParentLeft="true"
-
-                                            android:src="@drawable/ic_baseline_file_upload_24"/>
-
-                                        <TextView
-                                            android:id="@+id/pdfLinks"
-                                            android:layout_toEndOf="@+id/cvUpload"
-                                            android:text="Click icon to upload"
-                                            android:layout_marginLeft="5dp"
-                                            android:layout_width="fill_parent"
-                                            android:layout_height="wrap_content"
-                                            android:textStyle="bold"
-                                            android:textColor="@color/navy_100"
-                                            android:textIsSelectable="true"/>
-
-                                    </RelativeLayout>
-
-
-                                    <RelativeLayout
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:orientation="horizontal"/>
-
-
-                                </LinearLayout>
-
-                            </com.google.android.material.card.MaterialCardView>
 
                             <Button
                                 android:id="@+id/btnUpdate"
@@ -407,7 +334,7 @@
                                 android:background="@drawable/btn_round_green_selector"
                                 android:layout_gravity="center_horizontal"
                                 android:textAllCaps="false"
-                                android:text="Update profile" />
+                                android:text="Cập nhật hồ sơ" />
 
                         </LinearLayout>
 

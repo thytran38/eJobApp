@@ -1,0 +1,135 @@
+package com.example.ejob.data.model;
+
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class EmployerModel implements Parcelable {
+    String employerEmail;
+    String employerWebsite;
+    String employerFullname;
+    String yearofFoundation;
+    String employerIndustry;
+    String employerPhone;
+    String employerAddress;
+    String dateCreationEmployer;
+
+    public EmployerModel(){
+
+    }
+
+    public EmployerModel(String employerEmail, String employerWebsite, String employerFullname, String yearofFoundation, String employerIndustry, String employerPhone, String employerAddress, String dateCreationEmployer) {
+        this.employerEmail = employerEmail;
+        this.employerWebsite = employerWebsite;
+        this.employerFullname = employerFullname;
+        this.yearofFoundation = yearofFoundation;
+        this.employerIndustry = employerIndustry;
+        this.employerPhone = employerPhone;
+        this.employerAddress = employerAddress;
+        this.dateCreationEmployer = dateCreationEmployer;
+    }
+
+
+    protected EmployerModel(Parcel in) {
+        employerEmail = in.readString();
+        employerWebsite = in.readString();
+        employerFullname = in.readString();
+        yearofFoundation = in.readString();
+        employerIndustry = in.readString();
+        employerPhone = in.readString();
+        employerAddress = in.readString();
+        dateCreationEmployer = in.readString();
+    }
+
+    public static final Creator<EmployerModel> CREATOR = new Creator<EmployerModel>() {
+        @Override
+        public EmployerModel createFromParcel(Parcel in) {
+            return new EmployerModel(in);
+        }
+
+        @Override
+        public EmployerModel[] newArray(int size) {
+            return new EmployerModel[size];
+        }
+    };
+
+    public String getEmployerEmail() {
+        return employerEmail;
+    }
+
+    public void setEmployerEmail(String employerEmail) {
+        this.employerEmail = employerEmail;
+    }
+
+    public String getEmployerWebsite() {
+        return employerWebsite;
+    }
+
+    public void setEmployerWebsite(String employerWebsite) {
+        this.employerWebsite = employerWebsite;
+    }
+
+    public String getEmployerFullname() {
+        return employerFullname;
+    }
+
+    public void setEmployerFullname(String employerFullname) {
+        this.employerFullname = employerFullname;
+    }
+
+    public String getYearofFoundation() {
+        return yearofFoundation;
+    }
+
+    public void setYearofFoundation(String yearofFoundation) {
+        this.yearofFoundation = yearofFoundation;
+    }
+
+    public String getEmployerIndustry() {
+        return employerIndustry;
+    }
+
+    public void setEmployerIndustry(String employerIndustry) {
+        this.employerIndustry = employerIndustry;
+    }
+
+    public String getEmployerPhone() {
+        return employerPhone;
+    }
+
+    public void setEmployerPhone(String employerPhone) {
+        this.employerPhone = employerPhone;
+    }
+
+    public String getEmployerAddress() {
+        return employerAddress;
+    }
+
+    public void setEmployerAddress(String employerAddress) {
+        this.employerAddress = employerAddress;
+    }
+
+    public String getDateCreationEmployer() {
+        return dateCreationEmployer;
+    }
+
+    public void setDateCreationEmployer(String dateCreationEmployer) {
+        this.dateCreationEmployer = dateCreationEmployer;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(employerEmail);
+        dest.writeString(employerWebsite);
+        dest.writeString(employerFullname);
+        dest.writeString(yearofFoundation);
+        dest.writeString(employerIndustry);
+        dest.writeString(employerPhone);
+        dest.writeString(employerAddress);
+        dest.writeString(dateCreationEmployer);
+    }
+}

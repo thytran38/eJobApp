@@ -37,6 +37,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.SignInMethodQueryResult;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentReference;
@@ -72,6 +73,9 @@ public class RegisterUsr extends AppCompatActivity {
     private Uri imgUri;
     private Context context;
     boolean uploaded;
+    boolean newUser;
+    Date date;
+
 
     ActivityResultLauncher<String> getContent = registerForActivityResult(new ActivityResultContracts.GetContent(),
             new ActivityResultCallback<Uri>() {
@@ -94,7 +98,18 @@ public class RegisterUsr extends AppCompatActivity {
 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
-
+            if(valEmail()){
+                firebaseAuth.fetchSignInMethodsForEmail(email.getText().toString())
+                        .addOnCompleteListener(new OnCompleteListener<SignInMethodQueryResult>() {
+                            @Override
+                            public void onComplete(@NonNull Task<SignInMethodQueryResult> task) {
+                                boolean newUser = task.getResult().getSignInMethods().isEmpty();
+                                if(!newUser){
+                                    email.setError("Email đã tồn tại");
+                                }
+                            }
+                        });
+            }
             if (valEmail() && valInputPass()) {
                 emCheck.setVisibility(View.VISIBLE);
                 emCheck.setImageResource(R.drawable.ic_baseline_check_ok_24);
@@ -305,18 +320,19 @@ public class RegisterUsr extends AppCompatActivity {
             @Override
             public void onSuccess(AuthResult authResult) {
                 FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
-                Toast.makeText(RegisterUsr.this, "User Created", Toast.LENGTH_SHORT).show();
+                Toast.makeText(RegisterUsr.this, "Tạo tài khoản thành công", Toast.LENGTH_SHORT).show();
                 DocumentReference df = firebaseFirestore.collection("Users").document(firebaseUser.getUid());
                 Map<String, Object> userInfo = new HashMap<>();
                 userInfo.put("FullName", fullName.getText().toString());
                 userInfo.put("UserEmail", email.getText().toString());
                 userInfo.put("PhoneNumber", phone.getText().toString());
+                userInfo.put("isAvailable", true);
                 userInfo.put("isUser", "1");
                 df.set(userInfo);
 
-                DocumentReference df2 = firebaseFirestore.collection("UserAvailabilityInfo").document(firebaseUser.getUid());
+                DocumentReference df2 = firebaseFirestore.collection("Availability").document(firebaseUser.getUid());
                 Map<String, Object> userAvailablilityInfo = new HashMap<>();
-                userAvailablilityInfo.put("isAvailable", "1");
+                userAvailablilityInfo.put("isAvailable", true);
                 df2.set(userAvailablilityInfo);
                 availRef.child(firebaseAuth.getCurrentUser().getUid()).setValue(userAvailablilityInfo);
 
@@ -327,7 +343,10 @@ public class RegisterUsr extends AppCompatActivity {
                 userProfile.put("DoB", usDob);
                 userProfile.put("PhoneNumber", usPhone);
                 userProfile.put("Address", usAddress);
-                userProfile.put("AccountDateCreated", usDatecreated);
+                userProfile.put("isAvailable", true);
+                if(usDatecreated != null){
+                    userProfile.put("AccountDateCreated", usDatecreated);
+                }
                 profileRef.child(firebaseAuth.getCurrentUser().getUid()).setValue(userProfile);
 
                 startActivity(new Intent(getApplicationContext(), LoginActivity.class));
@@ -335,7 +354,7 @@ public class RegisterUsr extends AppCompatActivity {
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Toast.makeText(RegisterUsr.this, "Register failed", Toast.LENGTH_SHORT).show();
+                Toast.makeText(RegisterUsr.this, "Đăng ký thất bại", Toast.LENGTH_SHORT).show();
 
             }
         });
@@ -362,7 +381,12 @@ public class RegisterUsr extends AppCompatActivity {
         profileRef = fDb.getReference("Profiles");
         authenRef = fDb.getReference("Authentications");
         availRef = fDb.getReference("Availability");
+        date = new Date();
+        Long date2 = date.getEpochSecond();
+        usDatecreated = String.valueOf(date2);
     }
+
+
 
     private void mapping() {
         fullName = findViewById(R.id.etUsrFullname);
@@ -382,7 +406,7 @@ public class RegisterUsr extends AppCompatActivity {
     private boolean valFullName() {
         String name = fullName.getText().toString();
         if (name.isEmpty()) {
-            fullName.setError("Please enter your name");
+            fullName.setError("Vui lòng nhập Họ và tên");
             return false;
         } else {
             fullName.setError(null);
@@ -394,10 +418,10 @@ public class RegisterUsr extends AppCompatActivity {
         String em = email.getText().toString().trim();
         String emailCond = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
         if (em.isEmpty()) {
-            email.setError("Please enter your Email");
+            email.setError("Vui lòng nhập Email");
             return false;
         } else if (!em.matches(emailCond)) {
-            email.setError("Invalid Email");
+            email.setError("Email không hợp lệ");
             return false;
         } else {
             email.setError(null);
@@ -408,13 +432,13 @@ public class RegisterUsr extends AppCompatActivity {
     private boolean valInputPass() {
         String pass = password.getText().toString().trim();
         if (pass.isEmpty()) {
-            password.setError("Please enter password");
+            password.setError("Vui lòng nhập mật khẩu");
             return false;
         } else if (pass.length() < 6) {
-            password.setError("Password is too short!");
+            password.setError("Mật khẩu quá ngắn!");
             return false;
         } else if (!containLowerCase(pass) || !containUpperCase(pass) || !containSpecialChar(pass) || toStream(pass).anyMatch(c -> c.equals(" "))) {
-            password.setError("Password must contain at least 1 upper case, lower case, special character and don't contain \" \"");
+            password.setError("Mật khẩu phải bao gồm ít nhất 1 ký tự viết hoa, viết thường, ký tự đặc biệt và không bao gồm \" \"");
             return false;
         }
         password.setError(null);
@@ -424,7 +448,7 @@ public class RegisterUsr extends AppCompatActivity {
     private boolean valAddress() {
         String valAddress = address.getText().toString();
         if (valAddress.isEmpty()) {
-            address.setError("Please enter your address");
+            address.setError("Vui lòng nhập địa chỉ");
             return false;
         } else {
             address.setError(null);
@@ -435,7 +459,7 @@ public class RegisterUsr extends AppCompatActivity {
     private boolean valDateOfBirth() {
         String dateOfBirth = etDob.getText().toString();
         if (dateOfBirth.isEmpty()) {
-            etDob.setError("Please enter your birth day");
+            etDob.setError("Vui lòng nhập ngày tháng năm sinh");
             return false;
         } else {
             etDob.setError(null);
@@ -446,7 +470,7 @@ public class RegisterUsr extends AppCompatActivity {
     private boolean valPhoneNum() {
         String phoneNum = phone.getText().toString();
         if (phoneNum.isEmpty()) {
-            phone.setError("Please enter your phone number");
+            phone.setError("Vui lòng nhập năm thành lập");
             return false;
         } else {
             phone.setError(null);

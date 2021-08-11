@@ -23,7 +23,7 @@
             <ImageView
                 android:layout_width="60dp"
                 android:layout_height="60dp"
-                android:src="@drawable/common_google_signin_btn_icon_dark_normal"
+                android:src="@mipmap/logo_1"
                 android:layout_margin="24dp"
                 android:layout_gravity="center_horizontal"
                 android:id="@+id/userAvatar"/>
@@ -185,6 +185,72 @@
                                         android:textColor="@color/navy_100"
                                         android:layout_marginTop="2dp"/>
 
+                                    <RelativeLayout
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="10dp">
+
+                                        <ImageView
+                                            android:id="@+id/dob"
+                                            android:layout_width="17dp"
+                                            android:layout_height="17dp"
+                                            android:src="@drawable/ic_baseline_date_range_24"
+                                            app:tint="@color/text_gray"/>
+
+                                        <TextView
+                                            android:layout_toEndOf="@id/dob"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_marginStart="5dp"
+                                            android:text="Năm thành lập"/>
+
+                                    </RelativeLayout>
+
+                                    <EditText
+                                        android:id="@+id/etYOF"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:hint="1990"
+                                        android:clickable="true"
+                                        android:inputType="date"
+                                        android:textColorHint="@color/light_gray"
+                                        android:textSize="12sp"
+                                        android:textStyle="bold"
+                                        android:textColor="@color/navy_100" />
+
+                                    <RelativeLayout
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="10dp">
+
+                                        <ImageView
+                                            android:id="@+id/qm"
+                                            android:layout_width="17dp"
+                                            android:layout_height="17dp"
+                                            android:src="@drawable/ic_baseline_supervisor_account_24"
+                                            app:tint="@color/text_gray"/>
+
+                                        <TextView
+                                            android:layout_toEndOf="@id/qm"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_marginStart="5dp"
+                                            android:text="Quy mô công ty"/>
+
+                                    </RelativeLayout>
+
+                                    <EditText
+                                        android:id="@+id/etQuymo1"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:hint="1990"
+                                        android:clickable="true"
+                                        android:inputType="date"
+                                        android:textStyle="bold"
+                                        android:textColor="@color/navy_100"
+                                        android:textColorHint="@color/light_gray"
+                                        android:textSize="12sp"/>
+
 
                                     <RelativeLayout
                                         android:layout_width="match_parent"
@@ -195,7 +261,7 @@
                                             android:id="@+id/iconCompanyUP"
                                             android:layout_width="17dp"
                                             android:layout_height="17dp"
-                                            android:src="@drawable/ic_baseline_school_24"
+                                            android:src="@drawable/ic_baseline_maps_home_work_24"
                                             app:tint="@color/text_gray"/>
 
                                         <TextView
@@ -207,8 +273,10 @@
 
                                     </RelativeLayout>
 
+
+
                                     <EditText
-                                        android:id="@+id/etSchoolUP1"
+                                        android:id="@+id/etIndustry"
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
                                         android:hint="Ngân hàng, IT, công nghệ, kinh doanh.."
@@ -217,6 +285,8 @@
                                         android:textStyle="bold"
                                         android:textColor="@color/navy_100"
                                         android:layout_marginTop="2dp"/>
+
+
 
                                     <RelativeLayout
                                         android:layout_marginTop="10dp"
@@ -241,7 +311,7 @@
                                     </RelativeLayout>
 
                                     <EditText
-                                        android:id="@+id/etPersonalPhoneUP1"
+                                        android:id="@+id/etCompanyPhone"
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
                                         android:hint="+849999985"
@@ -274,7 +344,7 @@
                                     </RelativeLayout>
 
                                     <EditText
-                                        android:id="@+id/etPersonalAddressUP1"
+                                        android:id="@+id/etCompanyAddress"
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
                                         android:hint="Nhập Địa chỉ công ty"
@@ -326,7 +396,7 @@
 
 
                             <Button
-                                android:id="@+id/btnUpdate"
+                                android:id="@+id/btnUpdate1"
                                 android:layout_marginTop="30dp"
                                 android:layout_marginBottom="20dp"
                                 android:layout_width="wrap_content"

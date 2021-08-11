@@ -19,6 +19,30 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/avatarCard"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="14dp"
+                android:layout_marginBottom="5dp"
+                android:src="@mipmap/ic_launcher_round"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="0dp"
+                app:strokeColor="#f1f1f1"
+                app:strokeWidth="0.5dp">
+
+                <ImageView
+                    android:id="@+id/avatarEmployer"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:layout_gravity="center"
+                    android:background="@color/white"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/ic_baseline_person_100" />
+
+            </com.google.android.material.card.MaterialCardView>
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/accPanel"
                 android:layout_width="match_parent"
@@ -222,18 +246,51 @@
                             android:textColor="@color/grey_effective"/>
 
                         <RelativeLayout
+                            android:layout_marginTop="3dp"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content">
 
                             <ImageView
-                                android:id="@+id/dob"
+                                android:id="@+id/iconWebsite3"
+                                android:layout_width="17dp"
+                                android:layout_height="17dp"
+                                android:layout_marginTop="2dp"
+                                android:src="@drawable/ic_baseline_link_24"
+                                app:tint="@color/text_gray"/>
+
+                            <TextView
+                                android:layout_toEndOf="@id/iconWebsite3"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="5dp"
+                                android:text="Website công ty "
+                                android:textIsSelectable="true"/>
+                        </RelativeLayout>
+
+                        <EditText
+                            android:id="@+id/etWebcongty"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="www.acb.com.vn"
+                            android:textColorHint="@color/light_gray"
+                            android:textSize="12sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/navy_100"
+                            android:layout_marginTop="2dp"/>
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <ImageView
+                                android:id="@+id/fjfjf"
                                 android:layout_width="17dp"
                                 android:layout_height="17dp"
                                 android:src="@drawable/ic_baseline_date_range_24"
                                 app:tint="@color/text_gray"/>
 
                             <TextView
-                                android:layout_toEndOf="@id/dob"
+                                android:layout_toEndOf="@id/fjfjf"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="5dp"
@@ -242,7 +299,7 @@
                         </RelativeLayout>
 
                         <EditText
-                            android:id="@+id/etDateofBirth"
+                            android:id="@+id/etNamthanhlap"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:hint="1990"
@@ -251,7 +308,6 @@
                             android:textColorHint="@color/light_gray"
                             android:textSize="12sp"
                             android:textColor="@color/grey_effective"/>
-
 
 
                         <RelativeLayout
@@ -275,10 +331,40 @@
                         </RelativeLayout>
 
                         <EditText
-                            android:id="@+id/etSchool"
+                            android:id="@+id/etLinhvuc"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:hint="IT, Sales, Engineering.."
+                            android:textColorHint="@color/light_gray"
+                            android:textSize="12sp"
+                            android:textColor="@color/grey_effective"/>
+
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <ImageView
+                                android:id="@+id/iconQuymo"
+                                android:layout_width="17dp"
+                                android:layout_height="17dp"
+                                android:src="@drawable/ic_baseline_business_24"
+                                app:tint="@color/text_gray"/>
+
+                            <TextView
+                                android:layout_toEndOf="@id/iconQuymo"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="5dp"
+                                android:text="Quy mô công ty"/>
+
+                        </RelativeLayout>
+
+                        <EditText
+                            android:id="@+id/etQuymo"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="500"
                             android:textColorHint="@color/light_gray"
                             android:textSize="12sp"
                             android:textColor="@color/grey_effective"/>
@@ -360,7 +446,7 @@
 
                 <Button
                     android:gravity="center_horizontal"
-                    android:id="@+id/btRegister"
+                    android:id="@+id/btRegisterEm"
                     android:layout_width="wrap_content"
                     android:layout_height="38dp"
                     android:textAllCaps="false"

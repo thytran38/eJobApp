@@ -19,6 +19,10 @@ import com.example.ejob.R;
 import com.example.ejob.data.ProfileAdapter;
 import com.example.ejob.data.ProfileViewModel;
 import com.example.ejob.data.model.ApplicantModel;
+import com.example.ejob.data.model.EmployerModel;
+import com.example.ejob.utils.Date;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -28,6 +32,8 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+
+import java.util.HashMap;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -48,8 +54,7 @@ public class EmployerProfileFragment extends Fragment {
     FirebaseFirestore firestore;
     FirebaseDatabase firebaseDatabase;
     FirebaseAuth firebaseAuth;
-    ApplicantModel applicantModel, applicantModel2;
-    ApplicantModel model;
+    EmployerModel model;
     ImageView userAvatar, upload, change;
     boolean cvExist = false;
     // TODO: Rename and change types of parameters
@@ -58,10 +63,11 @@ public class EmployerProfileFragment extends Fragment {
     private View v;
     private Button pdfBrowse, uploadButton, updateProfile;
     private TextView filepath, cvTitle, cv;
-    private EditText email, dob, school, phone, address, fullname;
+    private EditText email, dob, phone, address, fullname, quymo, website, industry, accountcreated;
     Pair<ApplicantModel, String> pair;
     ProfileViewModel profileViewModel;
     ProfileAdapter profileAdapter;
+    Date date;
 
 
     public EmployerProfileFragment() {
@@ -90,6 +96,7 @@ public class EmployerProfileFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        date = new Date();
 
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
@@ -115,14 +122,100 @@ public class EmployerProfileFragment extends Fragment {
         fetchData();
 
 
+
+
         updateProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                if( !(valFullName() && valAddress() && valEmail() && valWebsite() && valDob())){
+                    return;
+                }else{
+                    gatherData();
+                }
 
             }
         });
 
+    }
+
+    private void gatherData() {
+        EmployerModel profile = new EmployerModel();
+        profile.setEmployerEmail(email.getText().toString());
+        profile.setEmployerAddress(address.getText().toString());
+        profile.setEmployerFullname(fullname.getText().toString());
+        profile.setEmployerIndustry(industry.getText().toString());
+        profile.setEmployerWebsite(website.getText().toString());
+        profile.setEmployerPhone(phone.getText().toString());
+        profile.setYearofFoundation(dob.getText().toString());
+        profile.setDateCreationEmployer(accountcreated.getText().toString());
+        HashMap<String, Object> hashMap = new HashMap<>();
+        hashMap.put("Email", email.getText().toString());
+        hashMap.put("Address", address.getText().toString());
+        hashMap.put("Tencongty", fullname.getText().toString());
+        hashMap.put("Quymo", quymo.getText().toString());
+        hashMap.put("PhoneNumber", phone.getText().toString());
+        hashMap.put("Industry", industry.getText().toString());
+        hashMap.put("Account", fullname.getText().toString());
+        hashMap.put("Quymo", quymo.getText().toString());
+
+
+        DatabaseReference profileRef = firebaseDatabase.getReference("Profiles")
+                .child(firebaseAuth.getCurrentUser().getUid());
+        profileRef.updateChildren(hashMap);
+    }
+
+    private boolean valFullName() {
+        String name = fullname.getText().toString();
+        if (name.isEmpty()) {
+            fullname.setError("Vui lòng nhập Họ và tên");
+            return false;
+        } else {
+            fullname.setError(null);
+            return true;
+        }
+    }
+
+    private boolean valEmail() {
+        String name = email.getText().toString();
+        if (name.isEmpty()) {
+            email.setError("Vui lòng nhập Email");
+            return false;
+        } else {
+            email.setError(null);
+            return true;
+        }
+    }
+
+    private boolean valAddress() {
+        String name = address.getText().toString();
+        if (name.isEmpty()) {
+            address.setError("Vui lòng nhập Địa chỉ");
+            return false;
+        } else {
+            address.setError(null);
+            return true;
+        }
+    }
+    private boolean valDob() {
+        String name = dob.getText().toString();
+        if (name.isEmpty()) {
+            dob.setError("Vui lòng nhập Năm thành lập");
+            return false;
+        } else {
+            dob.setError(null);
+            return true;
+        }
+    }
+
+    private boolean valWebsite() {
+        String name = website.getText().toString();
+        if (name.isEmpty()) {
+            website.setError("Vui lòng nhập Họ và tên");
+            return false;
+        } else {
+            website.setError(null);
+            return true;
+        }
     }
 
     private void init() {
@@ -132,7 +225,7 @@ public class EmployerProfileFragment extends Fragment {
         firestore = FirebaseFirestore.getInstance();
         firebaseDatabase = firebaseDatabase.getInstance();
         firebaseAuth = FirebaseAuth.getInstance();
-        applicantModel = new ApplicantModel();
+        model = new EmployerModel();
 //        swipeRefreshLayout = v.findViewById(R.id.swipeProfile);
 
     }
@@ -141,23 +234,21 @@ public class EmployerProfileFragment extends Fragment {
 
         fullname = v.findViewById(R.id.etFullnameUP1);
         email = v.findViewById(R.id.etEmailUP1);
-        school = v.findViewById(R.id.etSchoolUP1);
-        phone = v.findViewById(R.id.etPersonalPhoneUP1);
-        address = v.findViewById(R.id.etPersonalAddressUP1);
-        cv = v.findViewById(R.id.pdfLinks);
-        dob  = v.findViewById(R.id.etDateofBirthUP1);
-
-        cvTitle = v.findViewById(R.id.tvFileTitle);
-        upload = v.findViewById(R.id.cvUpload);
-        filepath = v.findViewById(R.id.pdfLinks);
-        updateProfile = v.findViewById(R.id.btnUpdate);
+        phone = v.findViewById(R.id.etCompanyPhone);
+        address = v.findViewById(R.id.etCompanyAddress);
+        dob  = v.findViewById(R.id.etYOF);
+        website = v.findViewById(R.id.etWebcongty);
+        industry = v.findViewById(R.id.etIndustry);
+        accountcreated =v.findViewById(R.id.etNgaydangkyCty);
+        quymo = v.findViewById(R.id.etQuymo1);
+        updateProfile = v.findViewById(R.id.btnUpdate1);
 
     }
 
-    private ApplicantModel fetchData() {
+    private EmployerModel fetchData() {
 
         DatabaseReference cvRef = firebaseDatabase.getReference("cvUploads");
-        DatabaseReference profileRef = firebaseDatabase.getReference("Applicants");
+        DatabaseReference profileRef = firebaseDatabase.getReference("Profiles");
 
 
         profileRef.addValueEventListener(new ValueEventListener() {
@@ -165,8 +256,17 @@ public class EmployerProfileFragment extends Fragment {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if(snapshot.child(firebaseAuth.getCurrentUser().getUid()).exists()){
                     for(DataSnapshot children : snapshot.child(firebaseAuth.getCurrentUser().getUid()).getChildren()){
-                        fullname.setText(snapshot.child(firebaseAuth.getCurrentUser().getUid()).child("applicantFullname").getValue().toString());
-                        email.setText(snapshot.child(firebaseAuth.getCurrentUser().getUid()).child("applicantID").getValue().toString());
+                        fullname.setText(snapshot.child(firebaseAuth.getCurrentUser().getUid()).child("Tencongty").getValue().toString());
+                        email.setText(snapshot.child(firebaseAuth.getCurrentUser().getUid()).child("Email").getValue().toString());
+                        phone.setText(snapshot.child(firebaseAuth.getCurrentUser().getUid()).child("PhoneNumber").getValue().toString());
+                        dob.setText(snapshot.child(firebaseAuth.getCurrentUser().getUid()).child("Namthanhlap").getValue().toString());
+                        address.setText(snapshot.child(firebaseAuth.getCurrentUser().getUid()).child("Address").getValue().toString());
+//                        website.setText(snapshot.child(firebaseAuth.getCurrentUser().getUid()).child("Website").getValue().toString());
+                        industry.setText(snapshot.child(firebaseAuth.getCurrentUser().getUid()).child("Industry").getValue().toString());
+                        quymo.setText(snapshot.child(firebaseAuth.getCurrentUser().getUid()).child("Quymo").getValue().toString());
+                        Long dateCreated = Long.parseLong(snapshot.child(firebaseAuth.getCurrentUser().getUid()).child("AccountDateCreated").getValue().toString());
+                        accountcreated.setText(date.getInstance(dateCreated).toString());
+
                     }
                 }
             }
@@ -176,7 +276,7 @@ public class EmployerProfileFragment extends Fragment {
 
             }
         });
-        return applicantModel2;
+        return model;
     }
 
 }

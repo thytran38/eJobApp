@@ -32,6 +32,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.SignInMethodQueryResult;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -51,12 +52,15 @@ public class RegisterEmployer extends AppCompatActivity {
     FirebaseFirestore firebaseFirestore;
     FirebaseDatabase fDb;
     FirebaseStorage fStorage;
-    private EditText fullName, email, password, phone, school, address, etDob;
+    private EditText fullName, email, password, phone, address, etDob, quymo, linhvuc, web;
     private Button registerButton, loginButton;
     private ImageView emCheck, psCheck, avatar, dob;
     private TextView dobtv;
-    private String usEmail, usPassword, usDob, usDatecreated, usFullname, usPhone, usSchool, usAddress, imgLink;
+    private String usEmail, usPassword, usDatecreated, usAddress, imgLink;
     private Uri imgUri;
+    boolean newUser;
+    Date date = null;
+
 
     ActivityResultLauncher<String> getContent = registerForActivityResult(new ActivityResultContracts.GetContent(),
             new ActivityResultCallback<Uri>() {
@@ -79,22 +83,34 @@ public class RegisterEmployer extends AppCompatActivity {
 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
+            if(valEmail()){
+                firebaseAuth.fetchSignInMethodsForEmail(email.getText().toString())
+                        .addOnCompleteListener(new OnCompleteListener<SignInMethodQueryResult>() {
+                            @Override
+                            public void onComplete(@NonNull Task<SignInMethodQueryResult> task) {
+                                boolean newUser = task.getResult().getSignInMethods().isEmpty();
+                                if(!newUser){
+                                    email.setError("Email đã tồn tại");
+                                }
+                            }
+                        });
+            }
 
             if (valEmail() && valInputPass()) {
+
                 emCheck.setVisibility(View.VISIBLE);
                 emCheck.setImageResource(R.drawable.ic_baseline_check_ok_24);
             }
-            if (valAddress() && valFullName() && valPhoneNum() && valDateOfBirth() && !school.getText().toString().isEmpty()) {
+            if (valAddress() && valFullName() && valPhoneNum() && valDateOfBirth()) {
                 psCheck.setVisibility(View.VISIBLE);
                 psCheck.setImageResource(R.drawable.ic_baseline_check_ok_24);
             }
             registerButton.setEnabled(valEmail() && valAddress() && valFullName()
-                    && valPhoneNum() && !school.getText().toString().isEmpty() && valDateOfBirth());
+                    && valPhoneNum() && valDateOfBirth());
         }
 
         @Override
         public void afterTextChanged(Editable s) {
-
         }
     };
 
@@ -132,7 +148,7 @@ public class RegisterEmployer extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.register_layout);
+        setContentView(R.layout.register_layout_employer);
 
         mapping();
         buttonSet(0);
@@ -142,9 +158,11 @@ public class RegisterEmployer extends AppCompatActivity {
         email.addTextChangedListener(registerTextWatcher);
         password.addTextChangedListener(registerTextWatcher);
         phone.addTextChangedListener(registerTextWatcher);
-        school.addTextChangedListener(registerTextWatcher);
         address.addTextChangedListener(registerTextWatcher);
-
+        etDob.addTextChangedListener(registerTextWatcher);
+        linhvuc.addTextChangedListener(registerTextWatcher);
+        quymo.addTextChangedListener(registerTextWatcher);
+        web.addTextChangedListener(registerTextWatcher);
 
         etDob.setOnClickListener(v -> {
             DatePickerDialog dialog = new DatePickerDialog(new DatePickerDialog.OnDatePickedListener() {
@@ -157,7 +175,7 @@ public class RegisterEmployer extends AppCompatActivity {
                 @Override
                 public void onDateError(int date, int month, int year) {
                     v.requestFocus();
-                    ((EditText) v).setError("Age must be equal or greater than 18");
+                    ((EditText) v).setError("Số tuổi phải lớn hơn hoặc bằng 18.");
                 }
             }, (date, month, year) -> {
                 Date dateObj = Date.getInstance();
@@ -235,7 +253,8 @@ public class RegisterEmployer extends AppCompatActivity {
     }
 
     private void registerEvent() {
-        if (valEmail() && valFullName() && valAddress() && valPhoneNum()) {
+        if (valEmail() && valFullName() && valAddress()
+                && valPhoneNum() && valIndustry() && valQuymo() ) {
             emCheck.setVisibility(View.VISIBLE);
             emCheck.setColorFilter(R.color.green_effective);
         }
@@ -245,36 +264,51 @@ public class RegisterEmployer extends AppCompatActivity {
             @Override
             public void onSuccess(AuthResult authResult) {
                 FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
-                Toast.makeText(RegisterEmployer.this, "User Created", Toast.LENGTH_SHORT).show();
+                Toast.makeText(RegisterEmployer.this, "Tạo tài khoản thành công", Toast.LENGTH_SHORT).show();
                 DocumentReference df = firebaseFirestore.collection("Users").document(firebaseUser.getUid());
                 Map<String, Object> userInfo = new HashMap<>();
                 userInfo.put("FullName", fullName.getText().toString());
                 userInfo.put("UserEmail", email.getText().toString());
                 userInfo.put("PhoneNumber", phone.getText().toString());
-                userInfo.put("isUser", "1");
+                userInfo.put("isAvailable", true);
+                userInfo.put("isEmployer", "1");
                 df.set(userInfo);
 
-                DocumentReference df2 = firebaseFirestore.collection("UserAvailabilityInfo").document(firebaseUser.getUid());
                 Map<String, Object> userAvailablilityInfo = new HashMap<>();
-                userAvailablilityInfo.put("isAvailable", "1");
-                df2.set(userAvailablilityInfo);
-                DocumentReference df3 = firebaseFirestore.collection("UserProfiles").document(firebaseUser.getUid());
+                userAvailablilityInfo.put("isAvailable", true);
+
+                fDb.getReference("Availability")
+                        .child(firebaseAuth.getCurrentUser().getUid())
+                        .setValue(userAvailablilityInfo);
+
+
                 Map<String, Object> userProfile = new HashMap<>();
-                userProfile.put("PhotoName", imgLink);
-                userProfile.put("University", usSchool);
-                userProfile.put("FullName", usFullname);
-                userProfile.put("DoB", usDob);
-                userProfile.put("PhoneNumber", usPhone);
-                userProfile.put("Address", usAddress);
-                userProfile.put("AccountDateCreated", usDatecreated);
-                df3.set(userProfile);
+
+                userProfile.put("Photoname", imgLink);
+                userProfile.put("Industry", linhvuc.getText().toString());
+                userProfile.put("Quymo", quymo.getText().toString());
+                userProfile.put("Email", email.getText().toString());
+                userProfile.put("Tencongty", fullName.getText().toString());
+                userProfile.put("Namthanhlap", etDob.getText().toString());
+                userProfile.put("PhoneNumber", phone.getText().toString());
+                userProfile.put("Address", address.getText().toString());
+                userProfile.put("Website", web.getText().toString());
+                userProfile.put("isAvailable", true);
+                if(usDatecreated != null){
+                    userProfile.put("AccountDateCreated", usDatecreated);
+                }
+
+                fDb.getReference("Profiles")
+                        .child(firebaseAuth.getCurrentUser().getUid())
+                        .setValue(userProfile);
+
 
                 startActivity(new Intent(getApplicationContext(), LoginActivity.class));
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Toast.makeText(RegisterEmployer.this, "Register failed", Toast.LENGTH_SHORT).show();
+                Toast.makeText(RegisterEmployer.this, "Đăng ký thất bại", Toast.LENGTH_SHORT).show();
 
             }
         });
@@ -284,12 +318,10 @@ public class RegisterEmployer extends AppCompatActivity {
     private void getTextFromEditTexts() {
         usEmail = email.getText().toString();
         usPassword = password.getText().toString();
-        usFullname = fullName.getText().toString();
-        usPhone = phone.getText().toString();
-        usDob = etDob.getText().toString();
         usAddress = address.getText().toString();
-        usSchool = school.getText().toString();
-        usDatecreated = String.valueOf(Date.getEpochSecond());
+        date = new Date();
+        Long date2 = date.getEpochSecond();
+        usDatecreated = String.valueOf(date2);
 
     }
 
@@ -298,33 +330,29 @@ public class RegisterEmployer extends AppCompatActivity {
         firebaseFirestore = FirebaseFirestore.getInstance();
         fStorage = FirebaseStorage.getInstance();
         fDb = FirebaseDatabase.getInstance();
-//        StorageReference storageReference = fStorage.getInstance().getReference();
-//        storageReference.child("images").child("3598.jpeg").getDownloadUrl();
-//        Picasso.get().load(storageReference.child("images").child("3598.jpeg").getDownloadUrl().getResult().getPath()).into(avatar);
-
-
-//        Toast.makeText(this, storageReference.child("images").child("3598.jpeg").getDownloadUrl().getResult().getPath().toString(), Toast.LENGTH_SHORT).show();
-
     }
 
     private void mapping() {
         fullName = findViewById(R.id.etUsrFullname);
-        etDob = findViewById(R.id.etDateofBirth);
+        etDob = findViewById(R.id.etNamthanhlap);
         email = findViewById(R.id.etUsrEmail);
         password = findViewById(R.id.etPassword);
         phone = findViewById(R.id.etPersonalPhone);
-        school = findViewById(R.id.etSchool);
         address = findViewById(R.id.etPersonalAddress);
         emCheck = findViewById(R.id.emailCheck);
         psCheck = findViewById(R.id.personalCheck);
-        avatar = findViewById(R.id.avatarUser);
-        registerButton = findViewById(R.id.btRegister);
+        avatar = findViewById(R.id.avatarEmployer);
+        linhvuc = findViewById(R.id.etLinhvuc);
+        quymo = findViewById(R.id.etQuymo);
+        registerButton = findViewById(R.id.btRegisterEm);
+        web = findViewById(R.id.etWebcongty);
+
     }
 
     private boolean valFullName() {
         String name = fullName.getText().toString();
         if (name.isEmpty()) {
-            fullName.setError("Please enter your name");
+            fullName.setError("Vui lòng nhập Họ và tên");
             return false;
         } else {
             fullName.setError(null);
@@ -332,14 +360,25 @@ public class RegisterEmployer extends AppCompatActivity {
         }
     }
 
+    private void checkEmailexist(){
+        firebaseAuth.fetchSignInMethodsForEmail(email.getText().toString())
+                .addOnCompleteListener(new OnCompleteListener<SignInMethodQueryResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<SignInMethodQueryResult> task) {
+                        newUser = task.getResult().getSignInMethods().isEmpty();
+                        Toast.makeText(RegisterEmployer.this, "New user", Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
     private boolean valEmail() {
         String em = email.getText().toString().trim();
         String emailCond = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
         if (em.isEmpty()) {
-            email.setError("Please enter your Email");
+            email.setError("Vui lòng nhập Email");
             return false;
         } else if (!em.matches(emailCond)) {
-            email.setError("Invalid Email");
+            email.setError("Email không hợp lệ");
             return false;
         } else {
             email.setError(null);
@@ -350,13 +389,13 @@ public class RegisterEmployer extends AppCompatActivity {
     private boolean valInputPass() {
         String pass = password.getText().toString().trim();
         if (pass.isEmpty()) {
-            password.setError("Please enter password");
+            password.setError("Vui lòng nhập mật khẩu");
             return false;
         } else if (pass.length() < 6) {
-            password.setError("Password is too short!");
+            password.setError("Mật khẩu quá ngắn!");
             return false;
         } else if (!containLowerCase(pass) || !containUpperCase(pass) || !containSpecialChar(pass) || toStream(pass).anyMatch(c -> c.equals(" "))) {
-            password.setError("Password must contain at least 1 upper case, lower case, special character and don't contain \" \"");
+            password.setError("Mật khẩu phải bao gồm ít nhất 1 ký tự viết hoa, viết thường, ký tự đặc biệt và không bao gồm \" \"");
             return false;
         }
         password.setError(null);
@@ -366,7 +405,7 @@ public class RegisterEmployer extends AppCompatActivity {
     private boolean valAddress() {
         String valAddress = address.getText().toString();
         if (valAddress.isEmpty()) {
-            address.setError("Please enter your address");
+            address.setError("Vui lòng nhập địa chỉ");
             return false;
         } else {
             address.setError(null);
@@ -377,7 +416,7 @@ public class RegisterEmployer extends AppCompatActivity {
     private boolean valDateOfBirth() {
         String dateOfBirth = etDob.getText().toString();
         if (dateOfBirth.isEmpty()) {
-            etDob.setError("Please enter your birth day");
+            etDob.setError("Vui lòng nhập năm thành lập");
             return false;
         } else {
             etDob.setError(null);
@@ -388,11 +427,45 @@ public class RegisterEmployer extends AppCompatActivity {
     private boolean valPhoneNum() {
         String phoneNum = phone.getText().toString();
         if (phoneNum.isEmpty()) {
-            phone.setError("Please enter your phone number");
+            phone.setError("Vui lòng nhập năm thành lập");
             return false;
         } else {
             phone.setError(null);
             return true;
         }
     }
+
+    private boolean valIndustry() {
+        String phoneNum = linhvuc.getText().toString();
+        if (phoneNum.isEmpty()) {
+            linhvuc.setError("Vui lòng nhập lĩnh vực hoạt động");
+            return false;
+        } else {
+            linhvuc.setError(null);
+            return true;
+        }
+    }
+
+    private boolean valWeb() {
+        String name = web.getText().toString();
+        if (name.isEmpty()) {
+            web.setError("Vui lòng nhập website công ty");
+            return false;
+        } else {
+            web.setError(null);
+            return true;
+        }
+    }
+
+    private boolean valQuymo() {
+        String phoneNum = quymo.getText().toString();
+        if (phoneNum.isEmpty()) {
+            quymo.setError("Vui lòng nhập quy mô");
+            return false;
+        } else {
+            quymo.setError(null);
+            return true;
+        }
+    }
+
 }

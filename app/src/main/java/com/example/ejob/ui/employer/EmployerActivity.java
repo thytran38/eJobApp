@@ -55,7 +55,7 @@ public class EmployerActivity extends AppCompatActivity implements ChipNavigatio
         Boolean counter = sharedPreferences.getBoolean("logincounter", Boolean.valueOf(String.valueOf(MODE_PRIVATE)));
         String email = sharedPreferences.getString("useremail", String.valueOf(MODE_PRIVATE));
         if (counter) {
-            display.setText("Welcome back, " + email + "!");
+            display.setText("Chào mừng quay lại, " + email + "!");
         } else {
             startActivity(new Intent(EmployerActivity.this, LoginActivity.class));
             finish();
@@ -84,8 +84,9 @@ public class EmployerActivity extends AppCompatActivity implements ChipNavigatio
                 break;
 
             case R.id.nav_employer_profile:
-                selectedFragment = new EmployerProfile();
+                selectedFragment = new EmployerProfileFragment();
                 break;
+
 
 
         }

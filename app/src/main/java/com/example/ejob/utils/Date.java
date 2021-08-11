@@ -13,7 +13,7 @@ public class Date {
     private static GregorianCalendar calendar;
     private static java.util.Date date;
 
-    private Date() {
+    public Date() {
         calendar = (GregorianCalendar) GregorianCalendar.getInstance(TimeZone.getTimeZone("ICT"));
         date = new java.util.Date(calendar.getTimeInMillis());
     }

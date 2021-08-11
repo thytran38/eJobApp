@@ -23,7 +23,6 @@ import com.example.ejob.ui.register.TransitRegister;
 import com.example.ejob.ui.user.UserActivity;
 import com.example.ejob.ui.main.MainFragment;
 import com.example.ejob.ui.user.UserProfileFragment;
-import com.example.ejob.ui.user.application.ViewJobDetail;
 import com.example.ejob.utils.SessionManager;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -33,25 +32,33 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.MetadataChanges;
 
 import java.util.Arrays;
-import java.util.logging.Logger;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Stream;
 
 public class LoginActivity extends AppCompatActivity implements LoginNavigator {
+//    boolean locked = false;
     private final String TAG = "LoginActivity_Log";
     EditText emailText, passwordText;
     Button login, register, forget;
     FirebaseAuth fAuth;
     FirebaseFirestore fStore;
+    FirebaseDatabase firebaseDatabase;
     boolean valid = true;
-    boolean locked = false;
-    SharedPreferences sharedPreferences1, sharedPreferences2, sharedPreferences3;
+    SharedPreferences sharedPreferences1, sharedPreferences2;
     Role role;
+    Context context;
+//    AtomicBoolean atomicBoolean;
 
     private static boolean containUpperCase(String str) {
         for (char c : str.toCharArray())
@@ -91,6 +98,9 @@ public class LoginActivity extends AppCompatActivity implements LoginNavigator {
         FirebaseApp.initializeApp(this);
         fAuth = FirebaseAuth.getInstance();
         fStore = FirebaseFirestore.getInstance();
+        firebaseDatabase = FirebaseDatabase.getInstance();
+        context = this;
+
 
         emailText = findViewById(R.id.etEmail);
         passwordText = findViewById(R.id.etPassword);
@@ -115,29 +125,38 @@ public class LoginActivity extends AppCompatActivity implements LoginNavigator {
             @Override
             public void onClick(View v) {
                 if (!(valEmail() && valPass())) {
-                    Toast.makeText(LoginActivity.this, "Email & Pass can not be blank", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LoginActivity.this, "Email & Mật khẩu không thể để trống", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 if (valid) {
                     fAuth.signInWithEmailAndPassword(emailText.getText().toString().trim(), passwordText.getText().toString().trim()).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                         @Override
                         public void onSuccess(AuthResult authResult) {
-                            checkAccessAvailability(fAuth.getCurrentUser().getUid());
+                            DatabaseReference accessRef = firebaseDatabase.getReference("Blocked")
+                                    .child(fAuth.getCurrentUser().getUid());
+                            accessRef.addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    if(snapshot.exists()){
+                                        Toast.makeText(getApplicationContext(), "Tài khoản bị khoá", Toast.LENGTH_SHORT).show();
+                                        startActivity(new Intent(context, LockedActivity.class));
+                                    }else{
+                                        fetchData();
+                                        Toast.makeText(LoginActivity.this, "Đăng nhập thành công", Toast.LENGTH_SHORT).show();
+                                        saveData(emailText.getText().toString().trim(), fAuth.getCurrentUser());
+                                    }
+                                }
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
 
-                            if (locked == true) {
-                                startActivity(new Intent(getApplicationContext(), LockedActivity.class));
-                            } else {
-                                fetchData();
-
-                                Toast.makeText(LoginActivity.this, "Signed in successfully.", Toast.LENGTH_SHORT).show();
-                                saveData(emailText.getText().toString().trim(), fAuth.getCurrentUser());
-                            }
+                                }
+                            });
 
                         }
                     }).addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(LoginActivity.this, "Failed to sign in.", Toast.LENGTH_LONG).show();
+                            Toast.makeText(LoginActivity.this, "Đăng nhập thất bại", Toast.LENGTH_LONG).show();
                         }
                     });
                 }
@@ -153,8 +172,6 @@ public class LoginActivity extends AppCompatActivity implements LoginNavigator {
     }
 
     private void fetchData() {
-
-
         fStore.collection("Applicants")
                 .document(fAuth.getCurrentUser().getUid())
                 .addSnapshotListener(MetadataChanges.INCLUDE, (data, error) ->{
@@ -195,26 +212,50 @@ public class LoginActivity extends AppCompatActivity implements LoginNavigator {
     }
 
 
-    private void checkAccessAvailability(String uid) {
-        DocumentReference df = fStore.collection("Blocked").document(uid);
-        df.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot doc = task.getResult();
-                    if (doc.exists()) {
-                        locked = true;
-                        Log.d(TAG, "Document existed");
-                    } else {
-                        Log.d(TAG, "Document not existed");
-                    }
-                } else {
-                    Log.d(TAG, "Failed with: ", task.getException());
-                }
-            }
-        });
+//    boolean checkAccessAvailability(String uid) {
+//        DatabaseReference accessRef = firebaseDatabase.getReference("Blocked")
+//                .child(uid);
+//        accessRef.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                if(snapshot.exists()){
+//                    boolean result = (boolean) snapshot.child("isblocked").getValue();
+//                    atomicBoolean.set(result);
+//                    locked = result;
+//                    Log.d("atomic", String.valueOf(atomicBoolean.get() + "and " + String.valueOf(locked)));
+//                }
+//            }
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//
+//            }
+//        });
+//        Log.d("atomic_get", String.valueOf(atomicBoolean.get()));
+//        return atomicBoolean.get();
 
-    }
+//    }
+
+//    private void checkAccessAvailability(String uid){
+//        DocumentReference df = fStore.collection("Blocked").document(uid);
+//        df.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+//            @Override
+//            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+//                if(task.isSuccessful()){
+//                    DocumentSnapshot doc = task.getResult();
+//                    if(doc.exists()){
+//                        locked =true;
+//                        atomicBoolean.set(true);
+//                        Log.d(TAG, "Document existed");
+//                    }else{
+//                        Log.d(TAG, "Document not existed");
+//                    }
+//                }else{
+//                    Log.d(TAG, "Failed with: ", task.getException());
+//                }
+//            }
+//        });
+//
+//    }
 
     private void checkUserAccessLevel(String uid) {
         DocumentReference df = fStore.collection("Users").document(uid);

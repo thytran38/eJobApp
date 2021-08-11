@@ -52,7 +52,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true"
-                android:text="Continue as Employer"
+                android:text="Tài khoản Doanh nghiệp"
                 android:background="@drawable/btn_round_green_selector"
                 android:textSize="11sp" />
 
@@ -63,7 +63,7 @@
                 android:layout_alignBottom="@+id/employerChoice"
                 android:layout_centerHorizontal="true"
                 android:layout_marginBottom="63dp"
-                android:text="Continue as User"
+                android:text="Tài khoản Ứng viên"
                 android:background="@drawable/btn_round_green_selector"
                 android:textSize="11sp" />
 

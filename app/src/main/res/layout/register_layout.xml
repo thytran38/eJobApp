@@ -80,7 +80,7 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
                             android:layout_marginStart="5dp"
-                            android:text="Account Registration"
+                            android:text="Đăng ký tài khoản"
                             android:textColor="@color/navy_100"
                             android:textStyle="bold" />
 
@@ -122,7 +122,7 @@
                         android:id="@+id/etUsrEmail"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="User Email"
+                        android:hint="Email người dùng"
                         android:textColor="@color/grey_effective"
                         android:textColorHint="@color/light_gray"
                         android:textSize="12sp" />
@@ -145,7 +145,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="5dp"
                             android:layout_toEndOf="@id/iconPass"
-                            android:text="Password "
+                            android:text="Mật khẩu "
                             android:textIsSelectable="true" />
 
                     </RelativeLayout>
@@ -198,7 +198,7 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
                             android:layout_marginStart="5dp"
-                            android:text="Personal Information"
+                            android:text="Thông tin người dùng"
                             android:textColor="@color/navy_100"
                             android:textStyle="bold" />
 
@@ -234,7 +234,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="5dp"
                                 android:layout_toEndOf="@id/fullname"
-                                android:text="Full Name" />
+                                android:text="Họ và Tên" />
 
                         </RelativeLayout>
 
@@ -242,7 +242,7 @@
                             android:id="@+id/etUsrFullname"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="Enter Full Name"
+                            android:hint="Trần Thị B"
                             android:textColor="@color/grey_effective"
                             android:textColorHint="@color/light_gray"
                             android:textSize="12sp" />
@@ -264,7 +264,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="5dp"
                                 android:layout_toEndOf="@id/dob"
-                                android:text="Date of Birth" />
+                                android:text="Ngày tháng năm sinh" />
 
 <!--                            <ImageView-->
 <!--                                android:layout_width="16dp"-->
@@ -280,7 +280,7 @@
                             android:id="@+id/etDateofBirth"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="Click to choose date of birth"
+                            android:hint="30/01/2000"
                             android:clickable="false"
                             android:cursorVisible="false"
                             android:focusable="false"
@@ -306,7 +306,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="5dp"
                                 android:layout_toEndOf="@id/iconCompany"
-                                android:text="Education Institution" />
+                                android:text="Trường Đại học/ Cao đẳng" />
 
                         </RelativeLayout>
 
@@ -314,7 +314,7 @@
                             android:id="@+id/etSchool"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="Enter your institution name"
+                            android:hint="Trường ĐH Văn Lang"
                             android:textColor="@color/grey_effective"
                             android:textColorHint="@color/light_gray"
                             android:textSize="12sp" />
@@ -345,7 +345,7 @@
                             android:id="@+id/etPersonalPhone"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="Enter your phone number"
+                            android:hint="+8499539593"
                             android:textColor="@color/grey_effective"
                             android:textColorHint="@color/light_gray"
                             android:textSize="12sp" />
@@ -368,7 +368,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="5dp"
                                 android:layout_toEndOf="@id/iconLocation"
-                                android:text="Personal Address" />
+                                android:text="Địa chỉ" />
 
                         </RelativeLayout>
 
@@ -376,7 +376,7 @@
                             android:id="@+id/etPersonalAddress"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="Enter your address"
+                            android:hint="Nhập địa chỉ nhà"
                             android:textColor="@color/grey_effective"
                             android:textColorHint="@color/light_gray"
                             android:textSize="12sp" />
@@ -400,7 +400,7 @@
                                 android:layout_marginStart="5dp"
                                 android:layout_toEndOf="@id/iconAvatar"
                                 android:id="@+id/tvAvatar"
-                                android:text="Avatar URL" />
+                                android:text="Ảnh đại diện" />
 
                         </RelativeLayout>
 
@@ -433,7 +433,7 @@
                     android:layout_height="38dp"
                     android:background="@drawable/btn_round_green_selector"
                     android:gravity="center_horizontal"
-                    android:text="Create Account"
+                    android:text="Tạo tài khoản"
                     android:textAllCaps="false"
                     android:textStyle="bold" />
 

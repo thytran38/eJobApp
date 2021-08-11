@@ -26,8 +26,6 @@ public class TransitRegister extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(getApplicationContext(), RegisterEmployer.class));
-                Toast.makeText(TransitRegister.this, "Start register as employer....", Toast.LENGTH_SHORT).show();
-
             }
         });
 
@@ -35,9 +33,6 @@ public class TransitRegister extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(getApplicationContext(), RegisterUsr.class));
-                Toast.makeText(TransitRegister.this, "Start register as user....", Toast.LENGTH_SHORT).show();
-
-
             }
         });
 

@@ -13,7 +13,7 @@
         app:cnb_textColor="@color/green_effective" />
 
     <item
-        android:title="Applications"
+        android:title="Đơn của tôi"
         android:id="@+id/nav_applications"
         android:enabled="true"
         android:icon="@drawable/ic_baseline_work_outline_24"
@@ -24,7 +24,7 @@
         />
     <item
         android:id="@+id/nav_saved"
-        android:title="Saved Jobs"
+        android:title="Công việc đã lưu"
         android:enabled="true"
         android:icon="@drawable/ic_baseline_saved_search_24"
         app:cnb_backgroundColor="@color/white"
@@ -34,7 +34,7 @@
         />
 
     <item
-        android:title="Profile"
+        android:title="Hồ sơ cá nhân"
         android:id="@+id/nav_profile"
         android:enabled="true"
         android:icon="@drawable/ic_baseline_person_outline_24"

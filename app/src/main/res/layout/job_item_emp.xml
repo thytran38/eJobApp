@@ -46,22 +46,25 @@
                         android:layout_height="match_parent"
                         android:scaleType="centerInside"
                         android:layout_margin="5dp"
+                        android:scaleX="1.2"
+                        android:scaleY="1.2"
                         android:layout_gravity="center_vertical"
+                        android:src="@mipmap/logo_1"
                         tools:ignore="UnusedAttribute" />
 
-                    <com.facebook.shimmer.ShimmerFrameLayout
-                        android:id="@+id/progress"
-                        android:layout_width="60dp"
-                        android:layout_height="60dp"
-                        android:orientation="vertical">
+<!--                    <com.facebook.shimmer.ShimmerFrameLayout-->
+<!--                        android:id="@+id/progress"-->
+<!--                        android:layout_width="60dp"-->
+<!--                        android:layout_height="60dp"-->
+<!--                        android:orientation="vertical">-->
 
-                        <View
-                            android:layout_width="60dp"
-                            android:layout_height="60dp"
-                            android:layout_gravity="center"
-                            android:background="@color/text_gray"
-                            android:gravity="center" />
-                    </com.facebook.shimmer.ShimmerFrameLayout>
+<!--                        <View-->
+<!--                            android:layout_width="60dp"-->
+<!--                            android:layout_height="60dp"-->
+<!--                            android:layout_gravity="center"-->
+<!--                            android:background="@color/text_gray"-->
+<!--                            android:gravity="center" />-->
+<!--                    </com.facebook.shimmer.ShimmerFrameLayout>-->
 
                 </com.google.android.material.card.MaterialCardView>
 
@@ -70,6 +73,7 @@
                     android:layout_toEndOf="@id/photoPreviewLayout"
                     android:orientation="vertical"
                     android:layout_width="match_parent"
+                    android:layout_marginStart="5dp"
                     android:layout_height="wrap_content">
 
                     <RelativeLayout

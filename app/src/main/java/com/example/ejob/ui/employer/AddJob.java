@@ -79,7 +79,7 @@ public class AddJob extends AppCompatActivity {
                     && valNumberOfApplicant()
                     && valJd()
                     && valLoca()
-                    && valSalary() && valCvRequired();
+                    && valSalary();
 
             if (allval) {
                 addJobButton.setBackground(getDrawable(R.drawable.button_bg));
@@ -169,16 +169,16 @@ public class AddJob extends AppCompatActivity {
         }
     }
 
-    private boolean valCvRequired() {
-        String num = cvRequired.getText().toString();
-        if (num.isEmpty()) {
-            cvRequired.setError("Vui lòng điền Yêu cầu về CV");
-            return false;
-        } else {
-            cvRequired.setError(null);
-            return true;
-        }
-    }
+//    private boolean valCvRequired() {
+//        String num = cvRequired.getText().toString();
+//        if (num.isEmpty()) {
+//            cvRequired.setError("Vui lòng điền Yêu cầu về CV");
+//            return false;
+//        } else {
+//            cvRequired.setError(null);
+//            return true;
+//        }
+//    }
 
     private boolean valOodDate() {
         String deadlineDate = oodDate.getText().toString();
@@ -312,7 +312,6 @@ public class AddJob extends AppCompatActivity {
         jobInfo.put("cvRequired", cvType.getEditableText().toString());
         jobInfo.put("jobOod", timeDeadline);
         jobInfo.put("jobDateCreated", timeCreated);
-        jobInfo.put("cvRequired",cvRequired.getText().toString());
         df2.set(jobInfo);
 
 

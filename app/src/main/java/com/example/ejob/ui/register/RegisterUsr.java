@@ -98,18 +98,18 @@ public class RegisterUsr extends AppCompatActivity {
 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
-            if(valEmail()){
-                firebaseAuth.fetchSignInMethodsForEmail(email.getText().toString())
-                        .addOnCompleteListener(new OnCompleteListener<SignInMethodQueryResult>() {
-                            @Override
-                            public void onComplete(@NonNull Task<SignInMethodQueryResult> task) {
-                                boolean newUser = task.getResult().getSignInMethods().isEmpty();
-                                if(!newUser){
-                                    email.setError("Email đã tồn tại");
-                                }
-                            }
-                        });
-            }
+//            if(valEmail()){
+//                firebaseAuth.fetchSignInMethodsForEmail(email.getText().toString())
+//                        .addOnCompleteListener(new OnCompleteListener<SignInMethodQueryResult>() {
+//                            @Override
+//                            public void onComplete(@NonNull Task<SignInMethodQueryResult> task) {
+//                                boolean newUser = task.getResult().getSignInMethods().isEmpty();
+//                                if(!newUser){
+//                                    email.setError("Email đã tồn tại");
+//                                }
+//                            }
+//                        });
+//            }
             if (valEmail() && valInputPass()) {
                 emCheck.setVisibility(View.VISIBLE);
                 emCheck.setImageResource(R.drawable.ic_baseline_check_ok_24);

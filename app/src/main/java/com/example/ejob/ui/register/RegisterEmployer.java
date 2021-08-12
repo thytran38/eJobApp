@@ -83,19 +83,7 @@ public class RegisterEmployer extends AppCompatActivity {
 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
-            if(valEmail()){
-                firebaseAuth.fetchSignInMethodsForEmail(email.getText().toString())
-                        .addOnCompleteListener(new OnCompleteListener<SignInMethodQueryResult>() {
-                            @Override
-                            public void onComplete(@NonNull Task<SignInMethodQueryResult> task) {
-                                boolean newUser = task.getResult().getSignInMethods().isEmpty();
-                                if(!newUser){
-                                    email.setError("Email đã tồn tại");
-                                }
-                            }
-                        });
-            }
-
+//            k,21
             if (valEmail() && valInputPass()) {
 
                 emCheck.setVisibility(View.VISIBLE);

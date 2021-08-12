@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.ejob.R;
+import com.example.ejob.data.model.EmployerModel;
 import com.example.ejob.ui.admin.employer_accounts.Employer;
 import com.example.ejob.ui.admin.employer_accounts.EmployerAdapter;
 import com.example.ejob.ui.admin.employer_accounts.EmployerViewModel;
@@ -63,14 +64,13 @@ public class UserAccount extends Fragment {
 
         userRecyclerView = (RecyclerView) v.findViewById(R.id.rcvUserAccount1);
 
-
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(v.getContext());
         userRecyclerView.setLayoutManager(linearLayoutManager);
         allEmployerViewModel = new ViewModelProvider(this).get(EmployerViewModel.class);
 
-        allEmployerViewModel.getmListJobLivedata().observe(getViewLifecycleOwner(), new Observer<List<Employer>>() {
+        allEmployerViewModel.getmListJobLivedata().observe(getViewLifecycleOwner(), new Observer<List<EmployerModel>>() {
             @Override
-            public void onChanged(List<Employer> employers) {
+            public void onChanged(List<EmployerModel> employers) {
                 employerAdapter = new EmployerAdapter(employers, new EmployerAdapter.ItemClickListener() {
                     @Override
                     public void onItemClick(Employer employer) {

@@ -14,7 +14,9 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.ejob.R;
+import com.example.ejob.data.model.EmployerModel;
 import com.example.ejob.ui.user.application.ViewJobDetail;
+import com.example.ejob.ui.user.userjob.AllJobAdapter;
 import com.example.ejob.utils.Date;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.material.card.MaterialCardView;
@@ -24,19 +26,23 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.List;
 
 public class EmployerAdapter extends RecyclerView.Adapter<EmployerAdapter.EmployerViewHolder> {
 
-    public List<Employer> mEmployerList;
+    public List<EmployerModel> mEmployerList;
     public Context context;
     Boolean testClick = false;
     private ItemClickListener itemClickListener;
-    private DatabaseReference appliedReference;
+    private DatabaseReference lockRef;
+    private FirebaseAuth fAuth;
+    private FirebaseDatabase fDatabase;
+    private FirebaseFirestore fStore;
 
 
-    public EmployerAdapter(List<Employer> mEmployerList, ItemClickListener itemClickListener1) {
+    public EmployerAdapter(List<EmployerModel> mEmployerList, ItemClickListener itemClickListener1) {
         this.mEmployerList = mEmployerList;
         this.itemClickListener = itemClickListener1;
     }
@@ -50,12 +56,44 @@ public class EmployerAdapter extends RecyclerView.Adapter<EmployerAdapter.Employ
 
     @Override
     public void onBindViewHolder(@NonNull EmployerAdapter.EmployerViewHolder holder, int position) {
-        Employer employer = mEmployerList.get(position);
+        EmployerModel employer = mEmployerList.get(position);
         if (employer == null) {
             return;
         }
+
+        init();
 //        holder.employerAvatar.setImageResource(jobPosting.getImageUrl());
-        holder.employerName.setText(employer.getEmployerName());
+        holder.employerName.setText(employer.getEmployerFullname());
+        holder.empLocation.setText(employer.getEmployerAddress());
+        holder.industry.setText(employer.getEmployerIndustry());
+        Date datecurrent = Date.getInstance();
+        long dateCurrent = datecurrent.getEpochSecond();
+        Date datePosted = Date.getInstance(Long.parseLong(employer.getDateCreationEmployer()));
+        long daysDiffInEpoch;
+        Date dateDiff;
+        try{
+            Long dateCreated = Long.parseLong(employer.getDateCreationEmployer());
+            String dateShown = datePosted.toString();
+            Log.d("TAG1" , String.valueOf(dateCurrent));
+            Log.d("TAG2", dateShown);
+            daysDiffInEpoch = dateCurrent - dateCreated;
+            int daysTogo = (int) daysDiffInEpoch / 86400;
+            Log.d("TAG3", String.valueOf(daysDiffInEpoch));
+            if(daysTogo < 1){
+                holder.tvDaysago.setText("Today");
+            }
+            else if(daysTogo < 2 )
+            {
+                holder.tvDaysago.setText(daysTogo + " day ago");
+            }
+            else{
+                holder.tvDaysago.setText(daysTogo + " days ago");
+            }
+        }catch(NumberFormatException e){
+            Log.d("NBE", e.getMessage());
+        }
+        holder.getLockStatus(employer.getEmployerId());
+
 
         holder.unlock.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -64,47 +102,16 @@ public class EmployerAdapter extends RecyclerView.Adapter<EmployerAdapter.Employ
             }
         });
 
-        Date datecurrent = Date.getInstance();
-        long dateCurrent = datecurrent.getEpochSecond();
-//        Date datePosted = Date.getInstance(Long.parseLong(employer.getJobDateCreated()));
-        long daysDiffInEpoch;
-        Date dateDiff;
-
-//        try {
-////            Long dateCreated = Long.parseLong(employer.getJobDateCreated());
-//            String dateShown = datePosted.toString();
-//            Log.d("TAG1", String.valueOf(dateCurrent));
-//            Log.d("TAG2", dateShown);
-//            daysDiffInEpoch = dateCurrent - dateCreated;
-//            int daysTogo = (int) daysDiffInEpoch / 86400;
-//            Log.d("TAG3", String.valueOf(daysDiffInEpoch));
-//            if (daysTogo < 1) {
-//                holder.tvDaysago.setText("Today");
-//            } else if (daysTogo < 2) {
-//                holder.tvDaysago.setText(daysTogo + " day ago");
-//            } else {
-//                holder.tvDaysago.setText(daysTogo + " days ago");
-//            }
-//        } catch (NumberFormatException e) {
-//            Log.d("NBE", e.getMessage());
-//        }
-
-
-
-//        holder.itemView.setOnClickListener(new View.OnClickListener() {
-//
-//            @Override
-//            public void onClick(View v) {
-//                Intent intent = new Intent(v.getContext(), ViewAccountDetail.class);
-////            intent.putExtra("employerName", mJobList.get(position).getEmployerName());
-////            intent.putExtra("positionHiring", mJobList.get(position).getJobTitle());
-////            intent.putExtra("dateCreated", mJobList.get(position).getJobDateCreated());
-////            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//                v.getContext().startActivity(intent);
-//            }
-//        });
 
     }
+
+    private void init() {
+        fAuth = FirebaseAuth.getInstance();
+        fDatabase = FirebaseDatabase.getInstance();
+        fStore = FirebaseFirestore.getInstance();
+        lockRef = fDatabase.getReference("Blocked");
+    }
+
 
     @Override
     public int getItemCount() {
@@ -122,32 +129,26 @@ public class EmployerAdapter extends RecyclerView.Adapter<EmployerAdapter.Employ
     public class EmployerViewHolder extends RecyclerView.ViewHolder {
 
         private ImageView employerAvatar, unlock;
-        private TextView jobPosition, employerName, empLocation, tvDaysago, jobsNumber, accountStatus;
+        private TextView jobPosition, employerName, empLocation, tvDaysago, jobsNumber, accountStatus, industry;
 
         public EmployerViewHolder(@NonNull View itemView) {
             super(itemView);
 
             mapping();
-
         }
 
-        private void mapping() {
-            unlock = itemView.findViewById(R.id.lockIcon);
-            employerName = itemView.findViewById(R.id.tvEmpName);
-            empLocation = itemView.findViewById(R.id.address);
-            tvDaysago = itemView.findViewById(R.id.accountCreationDate);
-            jobsNumber = itemView.findViewById(R.id.tvJobsNumber);
-            accountStatus = itemView.findViewById(R.id.accStatus);
-        }
-
-        public void getAppliedNumber(String postId) {
-            appliedReference = FirebaseDatabase.getInstance().getReference("userapplications");
-            appliedReference.addValueEventListener(new ValueEventListener() {
+        private void getLockStatus(String uid) {
+            lockRef.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    if (snapshot.child(postId.replaceAll(".*/", "")).exists()) {
-                        int appCount = (int) snapshot.child(postId.replaceAll(".*/", "")).getChildrenCount();
-                        jobsNumber.setText(String.valueOf(appCount));
+                    if(snapshot.child(uid).exists()){
+                        unlock.setImageResource(R.drawable.ic_baseline_lock_24);
+                        accountStatus.setText("Locked");
+                        accountStatus.setBackgroundResource(R.drawable.bg_account_type_blocked);
+                    }else{
+                        unlock.setImageResource(R.drawable.ic_baseline_lock_open_24);
+                        accountStatus.setText("Available");
+                        accountStatus.setBackgroundResource(R.drawable.bg_account_type_available);
 
                     }
                 }
@@ -158,7 +159,17 @@ public class EmployerAdapter extends RecyclerView.Adapter<EmployerAdapter.Employ
                 }
             });
         }
-    }
 
+        private void mapping() {
+            unlock = itemView.findViewById(R.id.lockIcon);
+            employerName = itemView.findViewById(R.id.tvEmpName);
+            empLocation = itemView.findViewById(R.id.address);
+            tvDaysago = itemView.findViewById(R.id.accountCreationDate);
+            jobsNumber = itemView.findViewById(R.id.tvJobsNumber);
+            accountStatus = itemView.findViewById(R.id.accStatus);
+            industry = itemView.findViewById(R.id.tvIndustry);
+        }
+
+    }
 
 }

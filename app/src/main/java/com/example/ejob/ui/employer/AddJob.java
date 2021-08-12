@@ -48,7 +48,7 @@ public class AddJob extends AppCompatActivity {
     Button addJobButton;
     EditText jobTitle, jobDescription, jobLocation, jobSalary, employerName, oodDate, jobDateCreated, numberApplicant, cvRequired;
     TextInputLayout textInputLayout;
-    AutoCompleteTextView jobType;
+    AutoCompleteTextView jobType, cvType;
     FirebaseAuth fAuth;
     FirebaseFirestore firebaseFirestore;
     FirebaseFirestore firebaseFirestore2;
@@ -58,9 +58,12 @@ public class AddJob extends AppCompatActivity {
     String timeCreated, timeDeadline;
     private AutoCompleteTextView autoCompleteTextView;
     private RecruiteType[] option;
+    private CvRequiredType[] cv;
     private Context addJobContext;
     DocumentReference df;
     FirebaseUser firebaseUser;
+    Date date, date2;
+
 
 
     private TextWatcher addjobTextwatcher = new TextWatcher() {
@@ -94,7 +97,7 @@ public class AddJob extends AppCompatActivity {
             sYear = year;
             sMonth = month;
             sDay = dayOfMonth;
-            Date date2 = Date.getInstance(sDay, sMonth, sYear);
+            date2 = Date.getInstance(sDay, sMonth, sYear, 0,0,0);
 
             long des = Date.getEpochSecond(sDay, sMonth, sYear);
             timeDeadline = String.valueOf(date2.getEpochSecond());
@@ -107,7 +110,7 @@ public class AddJob extends AppCompatActivity {
     private boolean valSalary() {
         String text = jobSalary.getText().toString();
         if (text.isEmpty()) {
-            jobSalary.setError("Please enter salary");
+            jobSalary.setError("Vui lòng nhập Mức lương");
             return false;
         } else {
             jobSalary.setError(null);
@@ -118,7 +121,7 @@ public class AddJob extends AppCompatActivity {
     private boolean valLoca() {
         String text = jobLocation.getText().toString();
         if (text.isEmpty()) {
-            jobLocation.setError("Please enter location");
+            jobLocation.setError("Vui lòng nhập Nơi làm việc");
             return false;
         } else {
             jobLocation.setError(null);
@@ -131,7 +134,7 @@ public class AddJob extends AppCompatActivity {
     private boolean valJd() {
         String jd = jobDescription.getText().toString();
         if (jd.isEmpty()) {
-            jobDescription.setError("Please enter job description");
+            jobDescription.setError("Vui lòng nhập Mô tả công việc");
             return false;
         } else {
             jobDescription.setError(null);
@@ -142,7 +145,7 @@ public class AddJob extends AppCompatActivity {
     private boolean valTitle() {
         String title = jobTitle.getText().toString();
         if (title.isEmpty()) {
-            jobTitle.setError("Please enter title");
+            jobTitle.setError("Vui lòng nhập Vị trí công việc");
             return false;
         } else {
             jobTitle.setError(null);
@@ -153,7 +156,7 @@ public class AddJob extends AppCompatActivity {
     private boolean valNumberOfApplicant() {
         String num = numberApplicant.getText().toString();
         if (num.isEmpty()) {
-            numberApplicant.setError("Please enter number");
+            numberApplicant.setError("Vui lòng nhập Số lượng cần tuyển");
             return false;
         } else {
             numberApplicant.setError(null);
@@ -164,7 +167,7 @@ public class AddJob extends AppCompatActivity {
     private boolean valCvRequired() {
         String num = cvRequired.getText().toString();
         if (num.isEmpty()) {
-            cvRequired.setError("Please enter cv requirement");
+            cvRequired.setError("Vui lòng điền Yêu cầu về CV");
             return false;
         } else {
             cvRequired.setError(null);
@@ -175,7 +178,7 @@ public class AddJob extends AppCompatActivity {
     private boolean valOodDate() {
         String deadlineDate = oodDate.getText().toString();
         if (deadlineDate.isEmpty()) {
-            oodDate.setError("Please enter expire date for this Job");
+            oodDate.setError("Vui lòng nhập ngày hết hạn cho công việc");
             return false;
         } else {
             oodDate.setError(null);
@@ -201,13 +204,11 @@ public class AddJob extends AppCompatActivity {
         jobSalary.addTextChangedListener(addjobTextwatcher);
         numberApplicant.addTextChangedListener(addjobTextwatcher);
         oodDate.addTextChangedListener(addjobTextwatcher);
-        cvRequired.addTextChangedListener(addjobTextwatcher);
 
         oodDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                c = Calendar.getInstance();
-                Date date = Date.getInstance();
+//                c = Calendar.getInstance();
                 sYear = date.getYear();
                 sMonth = date.getMonth();
                 sDay = date.getDate();
@@ -235,6 +236,29 @@ public class AddJob extends AppCompatActivity {
             }
         });
 
+//        oodDate.setOnClickListener(v -> {
+//            com.example.ejob.utils.DatePickerDialog dialog = new com.example.ejob.utils.DatePickerDialog(new com.example.ejob.utils.DatePickerDialog.OnDatePickedListener() {
+//                @Override
+//                public void onDateOk(int date, int month, int year) {
+//                    ((EditText) v).setError(null);
+//                    ((EditText) v).setText(Date.getInstance(date, month - 1, year).toString());
+//                }
+//
+//                @Override
+//                public void onDateError(int date, int month, int year) {
+//                    v.requestFocus();
+//                    ((EditText) v).setError("Ngày hết bạn phải xa hơn ngày đăng tuyển");
+//                }
+//            }, (date, month, year) -> {
+//                Date dateObj = Date.getInstance();
+//                Date minValidDate = Date.getInstance(date, month, year);
+//                return minValidDate.getEpochSecond() <= dateObj.getEpochSecond();
+//            });
+//            dialog.show(getSupportFragmentManager(), null);
+//        });
+
+
+
         jobDateCreated.setText(Date.getInstance().toString());
         timeCreated = String.valueOf(Date.getEpochSecond());
 
@@ -246,15 +270,15 @@ public class AddJob extends AppCompatActivity {
                 validate();
                 Context context;
                 AlertDialog.Builder builder = new AlertDialog.Builder(addJobContext);
-                builder.setTitle("Job Posting alert");
-                builder.setMessage("You cannot edit the Job Description & Salary after posting. \nAre you sure you want to continue?");
+                builder.setTitle("Alert");
+                builder.setMessage("Bạn sẽ đăng tuyển công việc này. \nBạn chắc rằng mình muốn tiếp tục?");
                 DialogInterface.OnClickListener dialogListener = new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         switch (which) {
                             case DialogInterface.BUTTON_POSITIVE:
                                 postJob();
-                                Toast.makeText(AddJob.this, "Job Created", Toast.LENGTH_LONG).show();
+                                Toast.makeText(AddJob.this, "Công việc đã được tạo", Toast.LENGTH_LONG).show();
                                 startActivity(new Intent(addJobContext, EmployerActivity.class));
                                 break;
 
@@ -294,6 +318,7 @@ public class AddJob extends AppCompatActivity {
         jobInfo.put("jobSalary", jobSalary.getText().toString());
         jobInfo.put("jobEmployer", employerName.getText().toString());
         jobInfo.put("isAvailable", "1");
+        jobInfo.put("cvRequired", cvType.getEditableText().toString());
         jobInfo.put("jobOod", timeDeadline);
         jobInfo.put("jobDateCreated", timeCreated);
         jobInfo.put("cvRequired",cvRequired.getText().toString());
@@ -323,9 +348,15 @@ public class AddJob extends AppCompatActivity {
 
     private void setJobTypeAdapter() {
         option = new RecruiteType[]{RecruiteType.FULLTIME, RecruiteType.PARTTIME, RecruiteType.ONETIME};
-        ArrayAdapter arrayAdapter = new ArrayAdapter<RecruiteType>(this, R.layout.jobtype_option, option);
-        jobType.setText(arrayAdapter.getItem(0).toString(), false);
+        cv = new CvRequiredType[]{CvRequiredType.YES, CvRequiredType.NO};
 
+        ArrayAdapter arrayAdapter = new ArrayAdapter<RecruiteType>(this, R.layout.jobtype_option, option);
+        ArrayAdapter arrayAdapter2 = new ArrayAdapter<CvRequiredType>(this, R.layout.jobtype_option, cv);
+
+        cvType.setText(arrayAdapter2.getItem(0).toString(), false);
+        cvType.setAdapter(arrayAdapter2);
+
+        jobType.setText(arrayAdapter.getItem(0).toString(), false);
         jobType.setAdapter(arrayAdapter);
     }
 
@@ -334,7 +365,7 @@ public class AddJob extends AppCompatActivity {
         firebaseFirestore = FirebaseFirestore.getInstance();
         firebaseFirestore2 = FirebaseFirestore.getInstance();
         firebaseUser = fAuth.getCurrentUser();
-
+        date = Date.getInstance();
         df = firebaseFirestore.collection("Users").document(firebaseUser.getUid());
 
         addJobButton.setEnabled(false);
@@ -368,6 +399,7 @@ public class AddJob extends AppCompatActivity {
 
     private void mapping() {
         jobType = findViewById(R.id.autoComplete);
+        cvType = findViewById(R.id.autoComplete_cv);
         jobTitle = findViewById(R.id.etTitle);
         jobDescription = findViewById(R.id.etDescription);
         jobLocation = findViewById(R.id.etLocation);
@@ -377,7 +409,6 @@ public class AddJob extends AppCompatActivity {
         jobDateCreated = findViewById(R.id.etDatecreated);
         addJobButton = findViewById(R.id.btnAdd);
         numberApplicant = findViewById(R.id.etNumApplicant);
-        cvRequired = findViewById(R.id.etCvRequired);
     }
 
     @Override

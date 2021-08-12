@@ -89,7 +89,7 @@ public class JobApplying extends AppCompatActivity {
                 }
             });
 
-    private TextView employerName, positionHiring, jobtype, linkCv, tvCvAttach;
+    private TextView employerName, positionHiring, jobtype, linkCv, tvCvAttach, cvRequired;
     private EditText getEtFullname, getEtPhone, getEtAddress, getEtEmail, getEtSchool, getEtDescription, getEtSocialMedia;
     private RelativeLayout submit;
     private ImageView upCv, attachCv;
@@ -136,6 +136,7 @@ public class JobApplying extends AppCompatActivity {
         employerName.setText("To employer " + jobPosting.getEmployerName());
         jobtype.setText(jobPosting.getJobType());
         getEtEmail.setText(firebaseAuth.getCurrentUser().getEmail());
+        cvRequired.setText(jobPosting.getCvRequired());
         getEtEmail.setEnabled(false);
         timeCreated = String.valueOf(date);
 
@@ -167,7 +168,7 @@ public class JobApplying extends AppCompatActivity {
             public void onClick(View v) {
 
                 if (!(valFullName() && valAddress() && valPhone() && valSchool() && valSelfDescription())) {
-                    Toast.makeText(JobApplying.this, "Can not leave blank", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(JobApplying.this, "Không thể để trống các trường thông tin này", Toast.LENGTH_SHORT).show();
                 } else {
                     if (firebaseAuth.getCurrentUser().getUid() == null) {
                         return;
@@ -176,14 +177,14 @@ public class JobApplying extends AppCompatActivity {
 
                         AlertDialog.Builder builder = new AlertDialog.Builder(jobApplyingContext);
                         builder.setTitle("Job Applying alert");
-                        builder.setMessage("You cannot edit the application after this submission. \nAre you sure you want to continue?");
+                        builder.setMessage("Bạn không thể sửa đơn ứng tuyển sau khi nộp. \nBạn chắc rằng mình muốn tiếp tục?");
                         DialogInterface.OnClickListener dialogListener = new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 switch (which) {
                                     case DialogInterface.BUTTON_POSITIVE:
                                         submitEvent(gatherData());
-                                        Toast.makeText(JobApplying.this, "Application Submitted!", Toast.LENGTH_LONG).show();
+                                        Toast.makeText(JobApplying.this, "Ứng tuyển thành công!", Toast.LENGTH_LONG).show();
                                         startActivity(new Intent(jobApplyingContext, UserActivity.class));
                                         break;
 
@@ -207,12 +208,12 @@ public class JobApplying extends AppCompatActivity {
 
     private void attachEvent() throws NullPointerException {
         if (!(uploaded == true || cvExist == true)) {
-            Toast.makeText(jobApplyingContext, "You need to upload first", Toast.LENGTH_SHORT).show();
+            Toast.makeText(jobApplyingContext, "Bạn cần upload CV trước", Toast.LENGTH_SHORT).show();
         } else {
             agreeAttach = true;
             attachCv.setImageDrawable(getDrawable(R.drawable.ic_baseline_check_ok_24));
             attachCv.setEnabled(false);
-            tvCvAttach.setText("CV attached");
+            tvCvAttach.setText("CV đã được đính kèm");
         }
     }
 
@@ -285,7 +286,7 @@ public class JobApplying extends AppCompatActivity {
     private boolean valFullName() {
         String name = getEtFullname.getText().toString();
         if (name.isEmpty()) {
-            getEtFullname.setError("Please enter your name");
+            getEtFullname.setError("Vui lòng nhập Họ và Tên");
             return false;
         } else {
             getEtFullname.setError(null);
@@ -296,7 +297,7 @@ public class JobApplying extends AppCompatActivity {
     private boolean valPhone() {
         String name = getEtPhone.getText().toString();
         if (name.isEmpty()) {
-            getEtPhone.setError("Please enter your phone number");
+            getEtPhone.setError("Vui lòng nhập số điện thoại");
             return false;
         } else {
             getEtPhone.setError(null);
@@ -307,7 +308,7 @@ public class JobApplying extends AppCompatActivity {
     private boolean valAddress() {
         String name = getEtAddress.getText().toString();
         if (name.isEmpty()) {
-            getEtAddress.setError("Please enter your Address");
+            getEtAddress.setError("Vui lòng nhập Địa chỉ");
             return false;
         } else {
             getEtAddress.setError(null);
@@ -318,7 +319,7 @@ public class JobApplying extends AppCompatActivity {
     private boolean valSocialmedia() {
         String name = getEtSocialMedia.getText().toString();
         if (name.isEmpty()) {
-            getEtSocialMedia.setError("Please enter your Social media");
+            getEtSocialMedia.setError("Vui lòng nhập tài khoản Mạng xã hội");
             return false;
         } else {
             getEtSocialMedia.setError(null);
@@ -329,7 +330,7 @@ public class JobApplying extends AppCompatActivity {
     private boolean valSelfDescription() {
         String name = getEtDescription.getText().toString();
         if (name.isEmpty()) {
-            getEtDescription.setError("Please enter your description");
+            getEtDescription.setError("Vui lòng nhập Mô tả bản thân");
             return false;
         } else {
             getEtDescription.setError(null);
@@ -340,7 +341,7 @@ public class JobApplying extends AppCompatActivity {
     private boolean valSchool() {
         String name = getEtSchool.getText().toString();
         if (name.isEmpty()) {
-            getEtSchool.setError("Please enter your School");
+            getEtSchool.setError("Vui lòng nhập Trường học");
             return false;
         } else {
             getEtSchool.setError(null);
@@ -362,7 +363,7 @@ public class JobApplying extends AppCompatActivity {
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-                        Toast.makeText(JobApplying.this, "Applied successfully for this " + jobPosting.getJobTitle() + " job.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(JobApplying.this, "Ứng tuyển thành công cho vị trí " + jobPosting.getJobTitle() + "!", Toast.LENGTH_SHORT).show();
                         startActivity(new Intent(jobApplyingContext, ViewJobDetail.class));
 
                     }
@@ -370,7 +371,7 @@ public class JobApplying extends AppCompatActivity {
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(JobApplying.this, "Failed to apply. Please retry.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(JobApplying.this, "Ứng tuyển thất bại. Vui lòng thử lại", Toast.LENGTH_SHORT).show();
                     }
                 });
 
@@ -388,7 +389,6 @@ public class JobApplying extends AppCompatActivity {
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(JobApplying.this, "Failed to apply. Please retry.", Toast.LENGTH_SHORT).show();
                     }
                 });
 
@@ -454,7 +454,7 @@ public class JobApplying extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
                 switch (which) {
                     case DialogInterface.BUTTON_POSITIVE:
-                        Toast.makeText(JobApplying.this, "Application Cancelled!", Toast.LENGTH_LONG).show();
+                        Toast.makeText(JobApplying.this, "Đơn ứng tuyển bị huỷ!", Toast.LENGTH_LONG).show();
                         dialog.dismiss();
                         startActivity(new Intent(jobApplyingContext, ViewJobDetail.class));
                         break;
@@ -478,6 +478,7 @@ public class JobApplying extends AppCompatActivity {
         submit = findViewById(R.id.btnApply);
         upCv = findViewById(R.id.cvAttach);
         attachCv = findViewById(R.id.cvAttach2);
+        cvRequired = findViewById(R.id.cvRequirement);
 
         tvCvAttach = findViewById(R.id.tvAttachCV);
         linkCv = findViewById(R.id.pdfLinks);
@@ -603,7 +604,7 @@ public class JobApplying extends AppCompatActivity {
                             if (task1.isComplete()) {
                                 upCv.setImageResource(R.drawable.ic_baseline_check_ok_24);
                                 upCv.setEnabled(false);
-                                linkCv.setText("Uploaded Successfully file: " + possibleNameFile + ".pdf");
+                                linkCv.setText("Tên file: " + possibleNameFile + ".pdf");
                                 progressDialog.setCancelable(true);
                                 progressDialog.dismiss();
 
@@ -617,7 +618,7 @@ public class JobApplying extends AppCompatActivity {
                                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                                             @Override
                                             public void onSuccess(Void aVoid) {
-                                                Toast.makeText(jobApplyingContext, "Done uploading!", Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(jobApplyingContext, "Upload xong!", Toast.LENGTH_SHORT).show();
                                             }
                                         });
                             } else {

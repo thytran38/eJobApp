@@ -164,26 +164,26 @@ public class RegisterEmployer extends AppCompatActivity {
         quymo.addTextChangedListener(registerTextWatcher);
         web.addTextChangedListener(registerTextWatcher);
 
-        etDob.setOnClickListener(v -> {
-            DatePickerDialog dialog = new DatePickerDialog(new DatePickerDialog.OnDatePickedListener() {
-                @Override
-                public void onDateOk(int date, int month, int year) {
-                    ((EditText) v).setError(null);
-                    ((EditText) v).setText(Date.getInstance(date, month - 1, year).toString());
-                }
-
-                @Override
-                public void onDateError(int date, int month, int year) {
-                    v.requestFocus();
-                    ((EditText) v).setError("Số tuổi phải lớn hơn hoặc bằng 18.");
-                }
-            }, (date, month, year) -> {
-                Date dateObj = Date.getInstance();
-                Date minValidDate = Date.getInstance(date, month, year + 18);
-                return minValidDate.getEpochSecond() <= dateObj.getEpochSecond();
-            });
-            dialog.show(getSupportFragmentManager(), null);
-        });
+//        etDob.setOnClickListener(v -> {
+//            DatePickerDialog dialog = new DatePickerDialog(new DatePickerDialog.OnDatePickedListener() {
+//                @Override
+//                public void onDateOk(int date, int month, int year) {
+//                    ((EditText) v).setError(null);
+//                    ((EditText) v).setText(Date.getInstance(date, month - 1, year).toString());
+//                }
+//
+//                @Override
+//                public void onDateError(int date, int month, int year) {
+//                    v.requestFocus();
+//                    ((EditText) v).setError("Số tuổi phải lớn hơn hoặc bằng 18.");
+//                }
+//            }, (date, month, year) -> {
+//                Date dateObj = Date.getInstance();
+//                Date minValidDate = Date.getInstance(date, month, year + 18);
+//                return minValidDate.getEpochSecond() <= dateObj.getEpochSecond();
+//            });
+//            dialog.show(getSupportFragmentManager(), null);
+//        });
         avatar.setOnClickListener(v -> uploadImageEvent());
         registerButton.setOnClickListener(v -> registerEvent());
 
@@ -254,7 +254,7 @@ public class RegisterEmployer extends AppCompatActivity {
 
     private void registerEvent() {
         if (valEmail() && valFullName() && valAddress()
-                && valPhoneNum() && valIndustry() && valQuymo() ) {
+                && valPhoneNum() && valIndustry() && valQuymo() && valWeb() ) {
             emCheck.setVisibility(View.VISIBLE);
             emCheck.setColorFilter(R.color.green_effective);
         }
@@ -267,11 +267,18 @@ public class RegisterEmployer extends AppCompatActivity {
                 Toast.makeText(RegisterEmployer.this, "Tạo tài khoản thành công", Toast.LENGTH_SHORT).show();
                 DocumentReference df = firebaseFirestore.collection("Users").document(firebaseUser.getUid());
                 Map<String, Object> userInfo = new HashMap<>();
+                userInfo.put("id", firebaseAuth.getCurrentUser().getUid());
+                userInfo.put("Photoname", imgLink);
                 userInfo.put("FullName", fullName.getText().toString());
                 userInfo.put("UserEmail", email.getText().toString());
                 userInfo.put("PhoneNumber", phone.getText().toString());
+                userInfo.put("Industry", linhvuc.getText().toString());
                 userInfo.put("isAvailable", true);
+                userInfo.put("Address", address.getText().toString());
                 userInfo.put("isEmployer", "1");
+                if(usDatecreated != null){
+                    userInfo.put("AccountDateCreated", usDatecreated);
+                }
                 df.set(userInfo);
 
                 Map<String, Object> userAvailablilityInfo = new HashMap<>();
@@ -283,7 +290,8 @@ public class RegisterEmployer extends AppCompatActivity {
 
 
                 Map<String, Object> userProfile = new HashMap<>();
-
+                userProfile.put("id", firebaseAuth.getCurrentUser().getUid());
+                userProfile.put("isEmployer", "1");
                 userProfile.put("Photoname", imgLink);
                 userProfile.put("Industry", linhvuc.getText().toString());
                 userProfile.put("Quymo", quymo.getText().toString());
@@ -319,9 +327,6 @@ public class RegisterEmployer extends AppCompatActivity {
         usEmail = email.getText().toString();
         usPassword = password.getText().toString();
         usAddress = address.getText().toString();
-        date = new Date();
-        Long date2 = date.getEpochSecond();
-        usDatecreated = String.valueOf(date2);
 
     }
 
@@ -330,6 +335,12 @@ public class RegisterEmployer extends AppCompatActivity {
         firebaseFirestore = FirebaseFirestore.getInstance();
         fStorage = FirebaseStorage.getInstance();
         fDb = FirebaseDatabase.getInstance();
+        date = new Date();
+        Long date2 = date.getEpochSecond();
+        usDatecreated = String.valueOf(date2);
+
+
+
     }
 
     private void mapping() {

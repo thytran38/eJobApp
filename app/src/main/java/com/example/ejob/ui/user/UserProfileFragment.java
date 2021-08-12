@@ -34,8 +34,11 @@ import com.example.ejob.R;
 import com.example.ejob.data.ProfileAdapter;
 import com.example.ejob.data.ProfileViewModel;
 import com.example.ejob.data.model.ApplicantModel;
+import com.example.ejob.data.model.EmployerModel;
 import com.example.ejob.ui.user.application.JobApplication;
 import com.example.ejob.ui.user.pdf.UploadPdf;
+import com.example.ejob.utils.Date;
+import com.example.ejob.utils.DatePickerDialog;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -55,6 +58,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -87,10 +91,12 @@ public class UserProfileFragment extends Fragment {
     private View v;
     private Button pdfBrowse, uploadButton, updateProfile;
     private TextView filepath, cvTitle, cv;
-    private EditText email, dob, school, phone, address, fullname;
+    private EditText email, dob, school, phone, address, fullname, dateCre;
     Pair<ApplicantModel, String> pair;
     ProfileViewModel profileViewModel;
     ProfileAdapter profileAdapter;
+    Long dateCreated;
+    Date date;
 
 
     public UserProfileFragment() {
@@ -143,24 +149,62 @@ public class UserProfileFragment extends Fragment {
         init();
         fetchData();
 
+        dob.setOnClickListener(v -> {
+            DatePickerDialog dialog = new DatePickerDialog(new DatePickerDialog.OnDatePickedListener() {
+                @Override
+                public void onDateOk(int date, int month, int year) {
+                    ((EditText) v).setError(null);
+                    ((EditText) v).setText(Date.getInstance(date, month - 1, year).toString());
+                }
+
+                @Override
+                public void onDateError(int date, int month, int year) {
+                    v.requestFocus();
+                    ((EditText) v).setError("Tuổi phải lớn hơn hoặc bằng 18");
+                }
+            }, (date, month, year) -> {
+                Date dateObj = Date.getInstance();
+                Date minValidDate = Date.getInstance(date, month, year + 18);
+                return minValidDate.getEpochSecond() <= dateObj.getEpochSecond();
+            });
+            dialog.show(getActivity().getSupportFragmentManager(), null);
+        });
 
         updateProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                if( !(valFullName() && valAddress() && valEmail() && valAddress()
+                        && valDob() && valPhone() & valUni())){
+                    return;
+                }else{
+                    updateEvent();
+                }
 
             }
         });
 
-//        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-//            @Override
-//            public void onRefresh() {
-//                profileAdapter.notifyDataSetChanged();
-//                swipeRefreshLayout.setRefreshing(false);
-//            }
-//        });
 
+    }
 
+    private ApplicantModel gatherData() {
+        ApplicantModel profile = new ApplicantModel();
+        profile.setApplicantEmail(email.getText().toString());
+        profile.setApplicantAddress(address.getText().toString());
+        profile.setApplicantFullname(fullname.getText().toString());
+        profile.setApplicantUniversity(school.getText().toString());
+        profile.setApplicantPhone(phone.getText().toString());
+        profile.setApplicantAddress(address.getText().toString());
+//        HashMap<String, Object> hashMap = new HashMap<>();
+//        hashMap.put("Email", email.getText().toString());
+//        hashMap.put("Address", address.getText().toString());
+//        hashMap.put("Tencongty", fullname.getText().toString());
+//        hashMap.put("Quymo", quymo.getText().toString());
+//        hashMap.put("PhoneNumber", phone.getText().toString());
+//        hashMap.put("Industry", industry.getText().toString());
+//        hashMap.put("Account", fullname.getText().toString());
+//        hashMap.put("Quymo", quymo.getText().toString());
+
+        return profile;
     }
 
     private void init() {
@@ -171,6 +215,9 @@ public class UserProfileFragment extends Fragment {
         firebaseDatabase = firebaseDatabase.getInstance();
         firebaseAuth = FirebaseAuth.getInstance();
         applicantModel = new ApplicantModel();
+        date = new Date();
+        email.setEnabled(false);
+        dateCre.setEnabled(false);
 //        swipeRefreshLayout = v.findViewById(R.id.swipeProfile);
 
     }
@@ -184,18 +231,36 @@ public class UserProfileFragment extends Fragment {
         address = v.findViewById(R.id.etPersonalAddressUP1);
         cv = v.findViewById(R.id.pdfLinks);
         dob  = v.findViewById(R.id.etDateofBirthUP1);
-
+        dateCre = v.findViewById(R.id.etNgaydangkyUser);
         cvTitle = v.findViewById(R.id.tvFileTitle);
         upload = v.findViewById(R.id.cvUpload);
         filepath = v.findViewById(R.id.pdfLinks);
         updateProfile = v.findViewById(R.id.btnUpdate);
+    }
 
+    private void updateEvent() {
+        HashMap<String, Object> hashMap = new HashMap<>();
+        hashMap.put("UserEmail", email.getText().toString());
+        hashMap.put("Address", address.getText().toString());
+        hashMap.put("DoB", dob.getText().toString());
+        hashMap.put("FullName", fullname.getText().toString());
+        hashMap.put("PhoneNumber", phone.getText().toString());
+        hashMap.put("University", school.getText().toString());
+        DatabaseReference profileRef = firebaseDatabase.getReference("Profiles")
+                .child(firebaseAuth.getCurrentUser().getUid());
+        profileRef.updateChildren(hashMap)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Toast.makeText(v.getContext(), "Cập nhật thành công", Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
     private ApplicantModel fetchData() {
 
         DatabaseReference cvRef = firebaseDatabase.getReference("cvUploads");
-        DatabaseReference profileRef = firebaseDatabase.getReference("Applicants");
+        DatabaseReference profileRef = firebaseDatabase.getReference("Profiles");
 
         cvRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -224,8 +289,16 @@ public class UserProfileFragment extends Fragment {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if(snapshot.child(firebaseAuth.getCurrentUser().getUid()).exists()){
                     for(DataSnapshot children : snapshot.child(firebaseAuth.getCurrentUser().getUid()).getChildren()){
-                        fullname.setText(snapshot.child(firebaseAuth.getCurrentUser().getUid()).child("applicantFullname").getValue().toString());
-                        email.setText(snapshot.child(firebaseAuth.getCurrentUser().getUid()).child("applicantID").getValue().toString());
+                        fullname.setText(snapshot.child(firebaseAuth.getCurrentUser().getUid()).child("FullName").getValue().toString());
+                        email.setText(snapshot.child(firebaseAuth.getCurrentUser().getUid()).child("UserEmail").getValue().toString());
+                        dob.setText(snapshot.child(firebaseAuth.getCurrentUser().getUid()).child("DoB").getValue().toString());
+                        phone.setText(snapshot.child(firebaseAuth.getCurrentUser().getUid()).child("PhoneNumber").getValue().toString());
+                        school.setText(snapshot.child(firebaseAuth.getCurrentUser().getUid()).child("University").getValue().toString());
+                        address.setText(snapshot.child(firebaseAuth.getCurrentUser().getUid()).child("Address").getValue().toString());
+
+                        dateCreated = Long.parseLong(snapshot.child(firebaseAuth.getCurrentUser().getUid()).child("AccountDateCreated").getValue().toString());
+                        dateCre.setText(date.getInstance(dateCreated).toString());
+
                     }
                 }
             }
@@ -237,5 +310,75 @@ public class UserProfileFragment extends Fragment {
         });
         return applicantModel2;
     }
+
+    private boolean valFullName() {
+        String name = fullname.getText().toString();
+        if (name.isEmpty()) {
+            fullname.setError("Vui lòng nhập Tên công ty");
+            return false;
+        } else {
+            fullname.setError(null);
+            return true;
+        }
+    }
+
+    private boolean valEmail() {
+        String name = email.getText().toString();
+        if (name.isEmpty()) {
+            email.setError("Vui lòng nhập Email");
+            return false;
+        } else {
+            email.setError(null);
+            return true;
+        }
+    }
+
+
+    private boolean valPhone() {
+        String name = phone.getText().toString();
+        if (name.isEmpty()) {
+            phone.setError("Vui lòng nhập số điện thoại");
+            return false;
+        } else {
+            phone.setError(null);
+            return true;
+        }
+    }
+
+    private boolean valUni() {
+        String name = school.getText().toString();
+        if (name.isEmpty()) {
+            school.setError("Vui lòng nhập trường học");
+            return false;
+        } else {
+            school.setError(null);
+            return true;
+        }
+    }
+
+
+
+
+    private boolean valAddress() {
+        String name = address.getText().toString();
+        if (name.isEmpty()) {
+            address.setError("Vui lòng nhập Địa chỉ");
+            return false;
+        } else {
+            address.setError(null);
+            return true;
+        }
+    }
+    private boolean valDob() {
+        String name = dob.getText().toString();
+        if (name.isEmpty()) {
+            dob.setError("Vui lòng nhập Năm thành lập");
+            return false;
+        } else {
+            dob.setError(null);
+            return true;
+        }
+    }
+
 
 }

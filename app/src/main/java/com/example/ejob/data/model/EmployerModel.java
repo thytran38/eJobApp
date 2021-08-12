@@ -4,12 +4,14 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class EmployerModel implements Parcelable {
+    String employerId;
     String employerEmail;
     String employerWebsite;
     String employerFullname;
     String yearofFoundation;
     String employerIndustry;
     String employerPhone;
+    String employerSize;
     String employerAddress;
     String dateCreationEmployer;
 
@@ -17,25 +19,28 @@ public class EmployerModel implements Parcelable {
 
     }
 
-    public EmployerModel(String employerEmail, String employerWebsite, String employerFullname, String yearofFoundation, String employerIndustry, String employerPhone, String employerAddress, String dateCreationEmployer) {
+    public EmployerModel(String employerId, String employerEmail, String employerWebsite, String employerFullname, String yearofFoundation, String employerIndustry, String employerPhone, String employerSize, String employerAddress, String dateCreationEmployer) {
+        this.employerId = employerId;
         this.employerEmail = employerEmail;
         this.employerWebsite = employerWebsite;
         this.employerFullname = employerFullname;
         this.yearofFoundation = yearofFoundation;
         this.employerIndustry = employerIndustry;
         this.employerPhone = employerPhone;
+        this.employerSize = employerSize;
         this.employerAddress = employerAddress;
         this.dateCreationEmployer = dateCreationEmployer;
     }
 
-
     protected EmployerModel(Parcel in) {
+        employerId = in.readString();
         employerEmail = in.readString();
         employerWebsite = in.readString();
         employerFullname = in.readString();
         yearofFoundation = in.readString();
         employerIndustry = in.readString();
         employerPhone = in.readString();
+        employerSize = in.readString();
         employerAddress = in.readString();
         dateCreationEmployer = in.readString();
     }
@@ -51,6 +56,14 @@ public class EmployerModel implements Parcelable {
             return new EmployerModel[size];
         }
     };
+
+    public String getEmployerId() {
+        return employerId;
+    }
+
+    public void setEmployerId(String employerId) {
+        this.employerId = employerId;
+    }
 
     public String getEmployerEmail() {
         return employerEmail;
@@ -100,6 +113,14 @@ public class EmployerModel implements Parcelable {
         this.employerPhone = employerPhone;
     }
 
+    public String getEmployerSize() {
+        return employerSize;
+    }
+
+    public void setEmployerSize(String employerSize) {
+        this.employerSize = employerSize;
+    }
+
     public String getEmployerAddress() {
         return employerAddress;
     }
@@ -123,12 +144,14 @@ public class EmployerModel implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(employerId);
         dest.writeString(employerEmail);
         dest.writeString(employerWebsite);
         dest.writeString(employerFullname);
         dest.writeString(yearofFoundation);
         dest.writeString(employerIndustry);
         dest.writeString(employerPhone);
+        dest.writeString(employerSize);
         dest.writeString(employerAddress);
         dest.writeString(dateCreationEmployer);
     }

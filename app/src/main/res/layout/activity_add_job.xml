@@ -31,7 +31,7 @@
                 android:textColor="@color/navy_100"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="ADD A NEW JOB" />
+                android:text="TẠO CÔNG VIỆC MỚI" />
 
 
             <com.google.android.material.card.MaterialCardView
@@ -72,7 +72,7 @@
                             android:id="@+id/tvSoluongcantuyen"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Number of Applicants"
+                            android:text="Số lượng ứng tuyển"
                             android:layout_marginStart="5dp"
                             android:textStyle=""/>
 
@@ -92,28 +92,6 @@
                         android:textColor="@color/navy_100"
                         android:hint="3" />
 
-<!--                    <RelativeLayout-->
-<!--                        android:layout_marginTop="13dp"-->
-<!--                        android:layout_marginStart="10dp"-->
-<!--                        android:layout_marginEnd="10dp"-->
-<!--                        android:layout_width="match_parent"-->
-<!--                        android:layout_height="wrap_content">-->
-
-<!--                        <ImageView-->
-<!--                            android:id="@+id/jobtype"-->
-<!--                            android:layout_width="17dp"-->
-<!--                            android:layout_height="17dp"-->
-<!--                            android:src="@drawable/ic_baseline_access_time_24"-->
-<!--                            app:tint="@color/text_gray"/>-->
-
-<!--                        <TextView-->
-<!--                            android:layout_toEndOf="@id/jobtype"-->
-<!--                            android:layout_width="match_parent"-->
-<!--                            android:layout_height="wrap_content"-->
-<!--                            android:text="Job Type"-->
-<!--                            android:layout_marginStart="5dp"/>-->
-
-<!--                    </RelativeLayout>-->
 
                     <com.google.android.material.textfield.TextInputLayout
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
@@ -127,7 +105,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         app:startIconDrawable="@drawable/ic_baseline_access_time_24"
-                        android:hint="Select Job Type">
+                        android:hint="Lựa chọn Loại hình công việc">
 
                         <AutoCompleteTextView
                             android:id="@+id/autoComplete"
@@ -162,7 +140,7 @@
                             android:layout_toEndOf="@id/jobtype1"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Job Title"
+                            android:text="Chức danh"
                             android:layout_marginStart="5dp"/>
 
                     </RelativeLayout>
@@ -199,7 +177,7 @@
                             android:layout_toEndOf="@id/jobtype2"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Job Description"
+                            android:text="Mô tả chi tiết công việc"
                             android:layout_marginStart="5dp"/>
 
                     </RelativeLayout>
@@ -217,47 +195,52 @@
                         android:layout_marginEnd="10dp"
                         android:inputType="textPersonName"
                         android:textStyle="bold"
-                        android:hint="This position requires coding." />
+                        android:hint="Công việc này yêu cầu lập trình..." />
 
-                    <RelativeLayout
-                        android:layout_marginTop="13dp"
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                         android:layout_marginStart="10dp"
                         android:layout_marginEnd="10dp"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        app:boxCornerRadiusBottomEnd="13dp"
+                        app:boxCornerRadiusBottomStart="13dp"
+                        app:boxCornerRadiusTopEnd="13dp"
+                        app:boxCornerRadiusTopStart="13dp"
 
-                        <ImageView
-                            android:id="@+id/jobtype3"
-                            android:layout_width="17dp"
-                            android:layout_height="17dp"
-                            android:src="@drawable/ic_baseline_picture_as_pdf_24"
-                            app:tint="@color/text_gray"/>
-
-                        <TextView
-                            android:layout_toEndOf="@id/jobtype3"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="CV Required?"
-                            android:layout_marginStart="5dp"/>
-
-                    </RelativeLayout>
-
-
-
-                    <EditText
-                        android:id="@+id/etCvRequired"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:ems="10"
-                        android:maxLines="10"
-                        android:padding="10dp"
-                        android:textSize="13sp"
-                        android:textColor="@color/navy_100"
-                        android:layout_marginStart="10dp"
-                        android:layout_marginEnd="10dp"
-                        android:inputType="textPersonName"
-                        android:textStyle="bold"
-                        android:hint="Yes, No, Optional." />
+                        app:startIconDrawable="@drawable/ic_baseline_access_time_24"
+                        android:hint="Lựa chọn yêu cầu về CV">
+
+                        <AutoCompleteTextView
+                            android:id="@+id/autoComplete_cv"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:enabled="false"
+                            android:inputType="none"
+                            android:layout_gravity="center_vertical"
+                            android:textColorHint="@color/text_gray"
+                            android:textSize="13sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/navy_100"
+                            android:background="@color/white" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+<!--                    <EditText-->
+<!--                        android:id="@+id/etCvRequired"-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:ems="10"-->
+<!--                        android:maxLines="10"-->
+<!--                        android:padding="10dp"-->
+<!--                        android:textSize="13sp"-->
+<!--                        android:textColor="@color/navy_100"-->
+<!--                        android:layout_marginStart="10dp"-->
+<!--                        android:layout_marginEnd="10dp"-->
+<!--                        android:inputType="textPersonName"-->
+<!--                        android:textStyle="bold"-->
+<!--                        android:hint="Yes, No, Optional." />-->
 
 
 
@@ -279,7 +262,7 @@
                             android:layout_toEndOf="@id/jobtype4"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Job Location"
+                            android:text="Nơi làm việc"
                             android:layout_marginStart="5dp"/>
 
                     </RelativeLayout>
@@ -316,7 +299,7 @@
                             android:layout_toEndOf="@id/jobtype5"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Salary"
+                            android:text="Mức lương"
                             android:layout_marginStart="5dp"/>
 
                     </RelativeLayout>
@@ -353,7 +336,7 @@
                             android:layout_toEndOf="@id/jobtype6"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Company Name"
+                            android:text="Tên doanh nghiệp"
                             android:layout_marginStart="5dp"/>
 
                     </RelativeLayout>
@@ -370,7 +353,7 @@
                         android:layout_marginEnd="10dp"
                         android:inputType="textPersonName"
                         android:textStyle="bold"
-                        android:hint="Company ABC" />
+                        android:hint="Công ty GUIDJJJ" />
 
                     <RelativeLayout
                         android:layout_marginTop="20dp"
@@ -390,7 +373,7 @@
                             android:layout_toEndOf="@id/jobtype7"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Deadline"
+                            android:text="Hạn chót ứng tuyển"
                             android:layout_marginStart="5dp"/>
 
                     </RelativeLayout>
@@ -411,7 +394,7 @@
                         android:layout_marginStart="10dp"
                         android:layout_marginEnd="10dp"
                         android:inputType="datetime"
-                        android:hint="Job Deadline"/>
+                        android:hint="Hạn chót ứng tuyển"/>
 
                     <RelativeLayout
                         android:layout_marginTop="13dp"
@@ -431,7 +414,7 @@
                             android:layout_toEndOf="@id/jobtype8"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Posted Date"
+                            android:text="Ngày đăng tuyển"
                             android:layout_marginStart="5dp"/>
 
                     </RelativeLayout>
@@ -466,7 +449,7 @@
                 android:background="@drawable/button_bg"
                 android:textAllCaps="false"
                 android:textStyle="bold"
-                android:text="Post this Job" />
+                android:text="Đăng Tuyển" />
 
         </LinearLayout>
 

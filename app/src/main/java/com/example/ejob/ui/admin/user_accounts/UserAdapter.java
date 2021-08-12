@@ -21,7 +21,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.List;
 
-public class EmployerAdapter extends RecyclerView.Adapter<EmployerAdapter.EmployerViewHolder> {
+public class UserAdapter extends RecyclerView.Adapter<UserAdapter.EmployerViewHolder> {
 
     public List<Employer> mEmployerList;
     public Context context;
@@ -30,7 +30,7 @@ public class EmployerAdapter extends RecyclerView.Adapter<EmployerAdapter.Employ
     private DatabaseReference appliedReference;
 
 
-    public EmployerAdapter(List<Employer> mEmployerList, ItemClickListener itemClickListener1) {
+    public UserAdapter(List<Employer> mEmployerList, ItemClickListener itemClickListener1) {
         this.mEmployerList = mEmployerList;
         this.itemClickListener = itemClickListener1;
     }

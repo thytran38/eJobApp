@@ -187,7 +187,7 @@ public class RegisterUsr extends AppCompatActivity {
                 @Override
                 public void onDateError(int date, int month, int year) {
                     v.requestFocus();
-                    ((EditText) v).setError("Age must be equal or greater than 18");
+                    ((EditText) v).setError("Tuổi phải lớn hơn hoặc bằng 18");
                 }
             }, (date, month, year) -> {
                 Date dateObj = Date.getInstance();
@@ -324,10 +324,14 @@ public class RegisterUsr extends AppCompatActivity {
                 DocumentReference df = firebaseFirestore.collection("Users").document(firebaseUser.getUid());
                 Map<String, Object> userInfo = new HashMap<>();
                 userInfo.put("FullName", fullName.getText().toString());
+                userInfo.put("imgUrl", imgLink);
                 userInfo.put("UserEmail", email.getText().toString());
                 userInfo.put("PhoneNumber", phone.getText().toString());
                 userInfo.put("isAvailable", true);
                 userInfo.put("isUser", "1");
+                if(usDatecreated != null){
+                    userInfo.put("AccountDateCreated", usDatecreated);
+                }
                 df.set(userInfo);
 
                 DocumentReference df2 = firebaseFirestore.collection("Availability").document(firebaseUser.getUid());
@@ -338,11 +342,12 @@ public class RegisterUsr extends AppCompatActivity {
 
                 Map<String, Object> userProfile = new HashMap<>();
                 userProfile.put("imgUrl", imgLink);
-                userProfile.put("University", usSchool);
-                userProfile.put("FullName", usFullname);
-                userProfile.put("DoB", usDob);
-                userProfile.put("PhoneNumber", usPhone);
-                userProfile.put("Address", usAddress);
+                userProfile.put("University", school.getText().toString());
+                userProfile.put("FullName", fullName.getText().toString());
+                userProfile.put("UserEmail", email.getText().toString());
+                userProfile.put("PhoneNumber", phone.getText().toString());
+                userProfile.put("DoB", etDob.getText().toString());
+                userProfile.put("Address", address.getText().toString());
                 userProfile.put("isAvailable", true);
                 if(usDatecreated != null){
                     userProfile.put("AccountDateCreated", usDatecreated);
@@ -369,7 +374,6 @@ public class RegisterUsr extends AppCompatActivity {
         usDob = etDob.getText().toString();
         usAddress = address.getText().toString();
         usSchool = school.getText().toString();
-        usDatecreated = String.valueOf(Date.getEpochSecond());
 
     }
 

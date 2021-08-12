@@ -44,7 +44,7 @@ public class ForgetPassActivity extends AppCompatActivity{
                 testTv.setText(EMAIL_TO_STRING);
 
                 if(emailEt.getText().equals("") || !valEmail(EMAIL_TO_STRING) ){
-                    testTv.setText("An email, please.");
+                    testTv.setText("Vui lòng nhập một email.");
                     return;
                 }
                     try{
@@ -55,7 +55,7 @@ public class ForgetPassActivity extends AppCompatActivity{
                                         SignInMethodQueryResult result = task.getResult();
                                         if (result.getSignInMethods().isEmpty()){
                                             Log.d("ForgetPassActivity","Email Not Exist");
-                                            testTv.setText("Email not found.");
+                                            testTv.setText("Email không tồn tại.");
                                         }
                                     }
                                 });
@@ -66,7 +66,7 @@ public class ForgetPassActivity extends AppCompatActivity{
                         }
                     }catch(IllegalArgumentException e){
                         testTv.setText(R.string.valid_email_pls);
-                        Log.d("ForgetPassActivity","Failed");
+                        Log.d("ForgetPassActivity","Thất bại");
                         e.printStackTrace();
                     }finally{
                         fbauth.sendPasswordResetEmail(EMAIL_TO_STRING)

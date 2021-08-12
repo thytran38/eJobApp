@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.example.ejob.data.model.ApplicantModel;
 import com.example.ejob.ui.admin.employer_accounts.Employer;
 import com.example.ejob.ui.employer.job.JobPosting;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -20,23 +21,24 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EmployerViewModel extends ViewModel {
+public class UserViewModel extends ViewModel {
 
     FirebaseAuth firebaseAuth;
     FirebaseFirestore db1, db2;
     FirebaseUser firebaseUser;
+    ApplicantModel user;
 
-    private MutableLiveData<List<Employer>> mListEmployerLivedata;
-    private List<Employer> mListEmployer;
+    private MutableLiveData<List<ApplicantModel>> mListEmployerLivedata;
+    private List<ApplicantModel> mListEmployer;
 
-    private ArrayList<JobPosting> jobPostingArrayList;
+    private ArrayList<ApplicantModel> jobPostingArrayList;
 
-    public EmployerViewModel() {
+    public UserViewModel() {
         mListEmployerLivedata = new MutableLiveData<>();
         initData();
     }
 
-    public MutableLiveData<List<Employer>> getmListJobLivedata() {
+    public MutableLiveData<List<ApplicantModel>> getmListJobLivedata() {
         return mListEmployerLivedata;
     }
 
@@ -50,34 +52,30 @@ public class EmployerViewModel extends ViewModel {
         mListEmployerLivedata.setValue(mListEmployer);
     }
 
-    private ArrayList<Employer> getUsersFromFirestor() {
-        ArrayList<Employer> employerArrayList = new ArrayList<>();
+    private ArrayList<ApplicantModel> getUsersFromFirestor() {
+        ArrayList<ApplicantModel> employerArrayList = new ArrayList<>();
         String employername;
         DocumentSnapshot snapshot;
 //        DocumentReference df = firebaseFirestore.collection("Users").document(uid);
 
         db1.collection("Users")
-                .whereEqualTo("isEmployer", "1")
+                .whereEqualTo("isUser", "1")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
-                                Log.d("TAG", document.getId() + " => " + document.getData());
-                                Employer emp = new Employer();
-                                emp.setEmployerName(document.getString("FullName").toString());
+                                user = new ApplicantModel();
+                                user.setApplicantEmail(document.get("Email").toString());
 
                                 try {
-                                    emp.setPhoneNumber(document.getString("PhoneNumber"));
                                 } catch (NullPointerException npe) {
                                     npe.getMessage();
                                 }
 
-                                emp.setEmployerEmail(document.get("UserEmail").toString());
-                                employerArrayList.add(emp);
+                                employerArrayList.add(user);
 
-                                Log.d("TAG", document.getId() + " => " + emp.getEmployerName());
                             }
                         }
                     }

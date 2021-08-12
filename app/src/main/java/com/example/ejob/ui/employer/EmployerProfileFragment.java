@@ -1,6 +1,8 @@
 package com.example.ejob.ui.employer;
 
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +11,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -22,8 +25,10 @@ import com.example.ejob.data.model.ApplicantModel;
 import com.example.ejob.data.model.EmployerModel;
 import com.example.ejob.utils.Date;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.SignInMethodQueryResult;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -68,6 +73,7 @@ public class EmployerProfileFragment extends Fragment {
     ProfileViewModel profileViewModel;
     ProfileAdapter profileAdapter;
     Date date;
+    Long dateCreated;
 
 
     public EmployerProfileFragment() {
@@ -123,14 +129,13 @@ public class EmployerProfileFragment extends Fragment {
 
 
 
-
         updateProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if( !(valFullName() && valAddress() && valEmail() && valWebsite() && valDob())){
                     return;
                 }else{
-                    gatherData();
+                    updateEvent();
                 }
 
             }
@@ -138,7 +143,51 @@ public class EmployerProfileFragment extends Fragment {
 
     }
 
-    private void gatherData() {
+    private void updateEvent() {
+        HashMap<String, Object> hashMap = new HashMap<>();
+        hashMap.put("Email", email.getText().toString());
+        hashMap.put("Address", address.getText().toString());
+        hashMap.put("Tencongty", fullname.getText().toString());
+        hashMap.put("Quymo", quymo.getText().toString());
+        hashMap.put("PhoneNumber", phone.getText().toString());
+        hashMap.put("Industry", industry.getText().toString());
+        hashMap.put("Account", fullname.getText().toString());
+        hashMap.put("Website", website.getText().toString());
+        DatabaseReference profileRef = firebaseDatabase.getReference("Profiles")
+                .child(firebaseAuth.getCurrentUser().getUid());
+        profileRef.updateChildren(hashMap)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Toast.makeText(v.getContext(), "Cập nhật thành công", Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+    private TextWatcher updateTextWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            if (valAddress() && valFullName() && valWebsite() && valDob() && valEmail()
+                        && valIndustry() && valIndustry() && valSize() && valYof()) {
+                gatherData();
+                updateProfile.setEnabled(true);
+
+            }
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+        }
+    };
+
+
+    private EmployerModel gatherData() {
         EmployerModel profile = new EmployerModel();
         profile.setEmployerEmail(email.getText().toString());
         profile.setEmployerAddress(address.getText().toString());
@@ -148,26 +197,23 @@ public class EmployerProfileFragment extends Fragment {
         profile.setEmployerPhone(phone.getText().toString());
         profile.setYearofFoundation(dob.getText().toString());
         profile.setDateCreationEmployer(accountcreated.getText().toString());
-        HashMap<String, Object> hashMap = new HashMap<>();
-        hashMap.put("Email", email.getText().toString());
-        hashMap.put("Address", address.getText().toString());
-        hashMap.put("Tencongty", fullname.getText().toString());
-        hashMap.put("Quymo", quymo.getText().toString());
-        hashMap.put("PhoneNumber", phone.getText().toString());
-        hashMap.put("Industry", industry.getText().toString());
-        hashMap.put("Account", fullname.getText().toString());
-        hashMap.put("Quymo", quymo.getText().toString());
+//        HashMap<String, Object> hashMap = new HashMap<>();
+//        hashMap.put("Email", email.getText().toString());
+//        hashMap.put("Address", address.getText().toString());
+//        hashMap.put("Tencongty", fullname.getText().toString());
+//        hashMap.put("Quymo", quymo.getText().toString());
+//        hashMap.put("PhoneNumber", phone.getText().toString());
+//        hashMap.put("Industry", industry.getText().toString());
+//        hashMap.put("Account", fullname.getText().toString());
+//        hashMap.put("Quymo", quymo.getText().toString());
 
-
-        DatabaseReference profileRef = firebaseDatabase.getReference("Profiles")
-                .child(firebaseAuth.getCurrentUser().getUid());
-        profileRef.updateChildren(hashMap);
+        return profile;
     }
 
     private boolean valFullName() {
         String name = fullname.getText().toString();
         if (name.isEmpty()) {
-            fullname.setError("Vui lòng nhập Họ và tên");
+            fullname.setError("Vui lòng nhập Tên công ty");
             return false;
         } else {
             fullname.setError(null);
@@ -185,6 +231,52 @@ public class EmployerProfileFragment extends Fragment {
             return true;
         }
     }
+
+    private boolean valYof() {
+        String name = dob.getText().toString();
+        if (name.isEmpty()) {
+            dob.setError("Vui lòng nhập năm thành lập");
+            return false;
+        } else {
+            dob.setError(null);
+            return true;
+        }
+    }
+
+    private boolean valSize() {
+        String name = quymo.getText().toString();
+        if (name.isEmpty()) {
+            quymo.setError("Vui lòng nhập quy mô ");
+            return false;
+        } else {
+            quymo.setError(null);
+            return true;
+        }
+    }
+
+    private boolean valIndustry() {
+        String name = industry.getText().toString();
+        if (name.isEmpty()) {
+            industry.setError("Vui lòng nhập ngành nghề");
+            return false;
+        } else {
+            industry.setError(null);
+            return true;
+        }
+    }
+
+    private boolean valPhone() {
+        String name = phone.getText().toString();
+        if (name.isEmpty()) {
+            phone.setError("Vui lòng nhập số điện thoại");
+            return false;
+        } else {
+            phone.setError(null);
+            return true;
+        }
+    }
+
+
 
     private boolean valAddress() {
         String name = address.getText().toString();
@@ -226,6 +318,8 @@ public class EmployerProfileFragment extends Fragment {
         firebaseDatabase = firebaseDatabase.getInstance();
         firebaseAuth = FirebaseAuth.getInstance();
         model = new EmployerModel();
+        email.setEnabled(false);
+        accountcreated.setEnabled(false);
 //        swipeRefreshLayout = v.findViewById(R.id.swipeProfile);
 
     }
@@ -247,7 +341,6 @@ public class EmployerProfileFragment extends Fragment {
 
     private EmployerModel fetchData() {
 
-        DatabaseReference cvRef = firebaseDatabase.getReference("cvUploads");
         DatabaseReference profileRef = firebaseDatabase.getReference("Profiles");
 
 
@@ -261,10 +354,10 @@ public class EmployerProfileFragment extends Fragment {
                         phone.setText(snapshot.child(firebaseAuth.getCurrentUser().getUid()).child("PhoneNumber").getValue().toString());
                         dob.setText(snapshot.child(firebaseAuth.getCurrentUser().getUid()).child("Namthanhlap").getValue().toString());
                         address.setText(snapshot.child(firebaseAuth.getCurrentUser().getUid()).child("Address").getValue().toString());
-//                        website.setText(snapshot.child(firebaseAuth.getCurrentUser().getUid()).child("Website").getValue().toString());
+                        website.setText(snapshot.child(firebaseAuth.getCurrentUser().getUid()).child("Website").getValue().toString());
                         industry.setText(snapshot.child(firebaseAuth.getCurrentUser().getUid()).child("Industry").getValue().toString());
                         quymo.setText(snapshot.child(firebaseAuth.getCurrentUser().getUid()).child("Quymo").getValue().toString());
-                        Long dateCreated = Long.parseLong(snapshot.child(firebaseAuth.getCurrentUser().getUid()).child("AccountDateCreated").getValue().toString());
+                        dateCreated = Long.parseLong(snapshot.child(firebaseAuth.getCurrentUser().getUid()).child("AccountDateCreated").getValue().toString());
                         accountcreated.setText(date.getInstance(dateCreated).toString());
 
                     }

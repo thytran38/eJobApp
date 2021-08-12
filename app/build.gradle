@@ -92,6 +92,8 @@ dependencies {
 
     implementation 'com.github.barteksc:android-pdf-viewer:2.8.2'
     implementation 'com.google.android.gms:play-services-auth:16.0.1'
+    compile 'com.github.drawers:SpinnerDatePicker:2.0.1'
+
 // https://mvnrepository.com/artifact/com.sendgrid/sendgrid-java
     implementation group: 'com.sendgrid', name: 'sendgrid-java', version: '4.4.1'
 

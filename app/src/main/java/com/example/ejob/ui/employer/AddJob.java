@@ -37,6 +37,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.tsongkha.spinnerdatepicker.SpinnerDatePickerDialogBuilder;
 
 import java.util.Calendar;
 import java.util.HashMap;
@@ -63,7 +64,7 @@ public class AddJob extends AppCompatActivity {
     DocumentReference df;
     FirebaseUser firebaseUser;
     Date date, date2;
-
+    SpinnerDatePickerDialogBuilder builder;
 
 
     private TextWatcher addjobTextwatcher = new TextWatcher() {
@@ -97,12 +98,16 @@ public class AddJob extends AppCompatActivity {
             sYear = year;
             sMonth = month;
             sDay = dayOfMonth;
-            date2 = Date.getInstance(sDay, sMonth, sYear, 0,0,0);
 
-            long des = Date.getEpochSecond(sDay, sMonth, sYear);
-            timeDeadline = String.valueOf(date2.getEpochSecond());
-            Log.d("TAG", timeDeadline);
-            oodDate.setText(Date.getInstance(sDay, sMonth, sYear).toString());
+            try{
+                date2 = Date.getInstance(sDay, sMonth, sYear, 0,0,0);
+                long des = Date.getEpochSecond(sDay, sMonth, sYear);
+                timeDeadline = String.valueOf(date2.getEpochSecond());
+                oodDate.setText(Date.getInstance(sDay, sMonth, sYear).toString());
+
+            }catch (IllegalArgumentException arg){
+                Log.d("date_illegal", arg.getMessage());
+            }
 
         }
     };
@@ -208,10 +213,14 @@ public class AddJob extends AppCompatActivity {
         oodDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                c = Calendar.getInstance();
-                sYear = date.getYear();
-                sMonth = date.getMonth();
-                sDay = date.getDate();
+                c = Calendar.getInstance();
+                sYear = c.get(Calendar.YEAR);
+                sMonth = c.get(Calendar.MONTH);
+                sDay = c.get(Calendar.DAY_OF_MONTH);
+
+//                sYear = date.getYear();
+//                sMonth = date.getMonth();
+//                sDay = date.getDate();
 
                 DatePickerDialog _date = new DatePickerDialog(AddJob.this, dateSetListener, sYear, sMonth, sDay) {
 
@@ -233,29 +242,11 @@ public class AddJob extends AppCompatActivity {
                 };
 
                 _date.show();
+
+
+
             }
         });
-
-//        oodDate.setOnClickListener(v -> {
-//            com.example.ejob.utils.DatePickerDialog dialog = new com.example.ejob.utils.DatePickerDialog(new com.example.ejob.utils.DatePickerDialog.OnDatePickedListener() {
-//                @Override
-//                public void onDateOk(int date, int month, int year) {
-//                    ((EditText) v).setError(null);
-//                    ((EditText) v).setText(Date.getInstance(date, month - 1, year).toString());
-//                }
-//
-//                @Override
-//                public void onDateError(int date, int month, int year) {
-//                    v.requestFocus();
-//                    ((EditText) v).setError("Ngày hết bạn phải xa hơn ngày đăng tuyển");
-//                }
-//            }, (date, month, year) -> {
-//                Date dateObj = Date.getInstance();
-//                Date minValidDate = Date.getInstance(date, month, year);
-//                return minValidDate.getEpochSecond() <= dateObj.getEpochSecond();
-//            });
-//            dialog.show(getSupportFragmentManager(), null);
-//        });
 
 
 
@@ -367,6 +358,8 @@ public class AddJob extends AppCompatActivity {
         firebaseUser = fAuth.getCurrentUser();
         date = Date.getInstance();
         df = firebaseFirestore.collection("Users").document(firebaseUser.getUid());
+
+        builder = new SpinnerDatePickerDialogBuilder();
 
         addJobButton.setEnabled(false);
         addJobButton.setBackground(getDrawable(R.drawable.button_grayout));

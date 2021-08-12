@@ -76,6 +76,7 @@ public class MyJobsViewModel extends ViewModel {
 //                                jobPosting.setEmployerFbID(document.get("empId").toString());
                                 jobPosting.setJobDescription(document.get("jobDescription").toString());
                                 jobPosting.setJobTitle(document.get("jobTitle").toString());
+                                jobPosting.setCvRequired(document.get("cvRequired").toString());
                                 jobPosting.setJobLocation(document.get("jobLocation").toString());
                                 jobPosting.setEmpEmail(document.get("employerEmail").toString());
                                 Log.d("TAG", document.get("employerEmail").toString());

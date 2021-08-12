@@ -62,18 +62,19 @@ public class JobAdapter extends RecyclerView.Adapter<JobAdapter.JobViewHolder>{
             int daysTogo = (int) daysDiffInEpoch / 86400;
             Log.d("TAG3", String.valueOf(daysDiffInEpoch));
             if(daysTogo < 1){
-                holder.tvDaysago.setText("Today");
+                holder.tvDaysago.setText("Mới vừa đăng");
             }
             else if(daysTogo < 2 )
             {
-                holder.tvDaysago.setText(daysTogo + " day ago");
+                holder.tvDaysago.setText("Đã đăng " + daysTogo + " ngày trước");
             }
             else{
-                holder.tvDaysago.setText(daysTogo + " days ago");
+                holder.tvDaysago.setText("Đã đăng " + daysTogo + " ngày trước");
             }
         }catch(NumberFormatException e){
             Log.d("NBE", e.getMessage());
         }
+
         holder.itemView.setOnClickListener(view -> {
             onItemClickListener.onItemClick(mJobList.get(position));
         });

@@ -55,6 +55,7 @@ public class JobViewModel extends ViewModel {
         DocumentReference df = firebaseFirestore.collection("Users").document(uid);
 
         firebaseFirestore.collection("Jobs")
+                .whereEqualTo("isAvailable","1")
                 .orderBy("jobTitle")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -70,6 +71,7 @@ public class JobViewModel extends ViewModel {
                                 jobPosting.setJobLocation(document.get("jobLocation").toString());
                                 jobPosting.setSalary(document.get("jobSalary").toString());
                                 jobPosting.setJobDateCreated(document.get("jobDateCreated").toString());
+
                                 try{
                                     jobPosting.setJobDeadline(document.get("jobOod").toString());
                                 }catch(NullPointerException npe){

@@ -6,6 +6,7 @@ import android.os.Parcelable;
 public class JobPostingforUser implements Parcelable {
 
     String jobId;
+    String jobRefpath;
     String jobTitle;
     String jobDescription;
     String jobLocation;
@@ -30,8 +31,9 @@ public class JobPostingforUser implements Parcelable {
 
     }
 
-    public JobPostingforUser(String jobId, String jobTitle, String jobDescription, String jobLocation, String salary, String employerName, String employerFbID, String jobDeadline, String jobDateCreated, String imageUrl, int jobSkills, int countView, int countLike, String jobStatus, int updateHistory, String jobType, String numberneed, int numberApplied, String empEmail, String cvRequired) {
+    public JobPostingforUser(String jobId, String jobRefpath, String jobTitle, String jobDescription, String jobLocation, String salary, String employerName, String employerFbID, String jobDeadline, String jobDateCreated, String imageUrl, int jobSkills, int countView, int countLike, String jobStatus, int updateHistory, String jobType, String numberneed, int numberApplied, String empEmail, String cvRequired) {
         this.jobId = jobId;
+        this.jobRefpath = jobRefpath;
         this.jobTitle = jobTitle;
         this.jobDescription = jobDescription;
         this.jobLocation = jobLocation;
@@ -56,6 +58,7 @@ public class JobPostingforUser implements Parcelable {
 
     protected JobPostingforUser(Parcel in) {
         jobId = in.readString();
+        jobRefpath = in.readString();
         jobTitle = in.readString();
         jobDescription = in.readString();
         jobLocation = in.readString();
@@ -80,6 +83,7 @@ public class JobPostingforUser implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(jobId);
+        dest.writeString(jobRefpath);
         dest.writeString(jobTitle);
         dest.writeString(jobDescription);
         dest.writeString(jobLocation);
@@ -124,6 +128,14 @@ public class JobPostingforUser implements Parcelable {
 
     public void setJobId(String jobId) {
         this.jobId = jobId;
+    }
+
+    public String getJobRefpath() {
+        return jobRefpath;
+    }
+
+    public void setJobRefpath(String jobRefpath) {
+        this.jobRefpath = jobRefpath;
     }
 
     public String getJobTitle() {

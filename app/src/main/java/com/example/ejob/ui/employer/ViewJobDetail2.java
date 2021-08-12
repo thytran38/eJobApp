@@ -39,6 +39,7 @@ import com.example.ejob.ui.employer.applications.ApplicationViewModelFactory2;
 import com.example.ejob.ui.employer.applications.ApplicationViewModel_2;
 import com.example.ejob.ui.employer.applications.MyJobsAdapter;
 import com.example.ejob.ui.employer.applications.MyJobsViewModel;
+import com.example.ejob.ui.employer.job.JobPosting;
 import com.example.ejob.ui.user.JobApplying;
 import com.example.ejob.ui.user.UserHomeFragment;
 import com.example.ejob.ui.user.application.JobApplication;
@@ -53,10 +54,13 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static android.view.View.VISIBLE;
 
@@ -73,25 +77,31 @@ public class ViewJobDetail2 extends AppCompatActivity implements LifecycleOwner 
 
     //UI
     private ShimmerFrameLayout container;
-    private EditText jobID, numberNeed, jobTitle, jobDescription, cvRequired, jobLocation, companyName, deadline, salary, dateUpdated;
+    private EditText jobID, numberNeed, jobTitle, jobDescription, jobLocation, companyName, deadline, salary, dateUpdated;
     private JobPostingforUser jobPosting;
     private RecyclerView applicationList;
     private ApplicationViewModel applicationViewModel;
     private ApplicationAdapter applicationAdapter;
     private RecruiteType[] option;
     private JobStatus[] option2;
-    AutoCompleteTextView jobType2, statusType;
+    private CvRequiredType[] option3;
+    AutoCompleteTextView jobType2, statusType, cvType;
     private Button update;
     private Boolean updated = false;
+    ArrayAdapter arrayAdapter1, arrayAdapter, arrayAdapter2;
+    JobPostingforUser job;
+    String newDeadline;
 
     // logic variables
     int sDay, sYear, sMonth;
+    Date date2;
 
     private FirebaseFirestore db1, db2;
     private DatabaseReference db3;
     private FirebaseAuth fAuth;
     private Context context;
     private LifecycleRegistry lifecycleRegistry;
+    Calendar c;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -103,13 +113,52 @@ public class ViewJobDetail2 extends AppCompatActivity implements LifecycleOwner 
         setData();
         addTextWatchers();
 
+        deadline.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                c = Calendar.getInstance();
+                sYear = c.get(Calendar.YEAR);
+                sMonth = c.get(Calendar.MONTH);
+                sDay = c.get(Calendar.DAY_OF_MONTH);
+
+//                sYear = date.getYear();
+//                sMonth = date.getMonth();
+//                sDay = date.getDate();
+
+                DatePickerDialog _date = new DatePickerDialog(ViewJobDetail2.this, dateSetListener2, sYear, sMonth, sDay) {
+
+                    @Override
+                    public void onDateChanged(@NonNull DatePicker view, int year, int month, int dayOfMonth) {
+                        super.onDateChanged(view, year, month, dayOfMonth);
+                        if (year < sYear)
+                            view.updateDate(sYear, sMonth, sDay);
+
+                        if (month < sMonth && year == sYear) {
+                            view.updateDate(sYear, sMonth, sDay);
+                        }
+
+                        if (dayOfMonth < sDay && year == sYear && month == sMonth) {
+                            view.updateDate(sYear, sMonth, sDay);
+                        }
+
+                    }
+                };
+
+                _date.show();
+            }
+        });
+
+        dateUpdated.setText(Date.getInstance().toString());
 
         update.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                    if(gatherData().second == true){
-                        update.setEnabled(true);
-                        updateJob(gatherData().first);
+
+                boolean allVal = valDeadline() && valJD()
+                        && valjobTitle() && valLocation() && valNumberneed()
+                        && valSalary();
+                    if(allVal){
+                        updateJob(gatherData(jobPosting), jobPosting);
                     }
             }
         });
@@ -120,7 +169,6 @@ public class ViewJobDetail2 extends AppCompatActivity implements LifecycleOwner 
         jobTitle.addTextChangedListener(updateTextwatcher);
         numberNeed.addTextChangedListener(updateTextwatcher);
         jobDescription.addTextChangedListener(updateTextwatcher);
-        cvRequired.addTextChangedListener(updateTextwatcher);
         jobLocation.addTextChangedListener(updateTextwatcher);
         companyName.addTextChangedListener(updateTextwatcher);
         deadline.addTextChangedListener(updateTextwatcher);
@@ -131,65 +179,128 @@ public class ViewJobDetail2 extends AppCompatActivity implements LifecycleOwner 
         update.setEnabled(false);
         jobPosting = getIntent().getExtras().getParcelable("myJobposting");
 
+        option = new RecruiteType[]{RecruiteType.FULLTIME, RecruiteType.PARTTIME, RecruiteType.ONETIME};
+        arrayAdapter = new ArrayAdapter<RecruiteType>(this, R.layout.jobtype_option, option);
+
+        option2 = new JobStatus[]{JobStatus.AVAILABLE, JobStatus.UNAVAILABLE};
+        arrayAdapter2 = new ArrayAdapter<JobStatus>(this, R.layout.jobtype_option, option2);
+
+        option3 = new CvRequiredType[]{CvRequiredType.YES, CvRequiredType.NO};
+        arrayAdapter1 = new ArrayAdapter<CvRequiredType>(this, R.layout.jobtype_option, option3);
+
+        if(jobPosting.getJobType().equals("AVAILABLE")){
+            jobType2.setText(arrayAdapter.getItem(0).toString(), false);
+            jobType2.setAdapter(arrayAdapter);
+        }else{
+            jobType2.setText(arrayAdapter.getItem(1).toString(), false);
+            jobType2.setAdapter(arrayAdapter);
+        }
+        if(jobPosting.getJobStatus().equals("1")){
+            statusType.setText(arrayAdapter2.getItem(0).toString(), false);
+            statusType.setAdapter(arrayAdapter2);
+        }else{
+            statusType.setText(arrayAdapter2.getItem(1).toString(), false);
+            statusType.setAdapter(arrayAdapter2);
+        }
+
+        if(jobPosting.getCvRequired().equals("YES")){
+            cvType.setText(arrayAdapter1.getItem(0).toString(), false);
+            cvType.setAdapter(arrayAdapter1);
+        }
+        else{
+            cvType.setText(arrayAdapter1.getItem(1).toString(), false);
+            cvType.setAdapter(arrayAdapter1);
+        }
         jobID.setText(jobPosting.getJobId());
         jobTitle.setText(jobPosting.getJobTitle());
         numberNeed.setText(jobPosting.getNumberneed());
         jobDescription.setText(jobPosting.getJobDescription());
-        cvRequired.setText(jobPosting.getCvRequired());
         jobLocation.setText(jobPosting.getJobLocation());
+
         companyName.setText(jobPosting.getEmployerName());
-        deadline.setText(jobPosting.getJobDeadline());
+        Long dateDeadline = Long.parseLong(jobPosting.getJobDeadline());
+
+        deadline.setText(String.valueOf(date2.getInstance(dateDeadline)));
         salary.setText(jobPosting.getSalary());
         dateUpdated.setText(Date.getInstance().toString());
     }
 
-    private Pair<JobPostingforUser, Boolean> gatherData() {
-        JobPostingforUser job = new JobPostingforUser();
-        job.setJobType(jobType2.getText().toString());
-        job.setJobTitle(jobTitle.getText().toString());
-        job.setJobId(jobID.getText().toString());
-        
-        job.setJobStatus(statusType.getText().toString());
+    private HashMap<String, Object> gatherData(JobPostingforUser jobPosting) {
 
+        //////
+        HashMap<String, Object> jobInfo = new HashMap<>();
+        jobInfo.put("empId", fAuth.getCurrentUser().getUid());
+        jobInfo.put("employerEmail", fAuth.getCurrentUser().getEmail());
+        jobInfo.put("jobId", String.valueOf(jobPosting.getJobId()));
+        jobInfo.put("jobType", jobType2.getEditableText().toString());
+        jobInfo.put("numberNeed", numberNeed.getText().toString());
+        jobInfo.put("jobTitle", jobTitle.getText().toString());
+        jobInfo.put("jobDescription", jobDescription.getText().toString());
+        jobInfo.put("jobLocation", jobLocation.getText().toString());
+        jobInfo.put("jobSalary", salary.getText().toString());
+        jobInfo.put("jobEmployer", companyName.getText().toString());
+        jobInfo.put("cvRequired", cvType.getEditableText().toString());
+        jobInfo.put("jobOod", newDeadline);
+        jobInfo.put("jobDateCreated", jobPosting.getJobDateCreated());
+        jobInfo.put("jobUpdatedDate", dateUpdated.getText().toString());
 
-        Boolean successUpdate = false;
-
-        return new Pair<JobPostingforUser,Boolean>(job, successUpdate);
+        ///
+        if(statusType.getEditableText().toString().equals("UNAVAILABLE")){
+            jobInfo.put("isAvailable", "0");
+        }else{
+            jobInfo.put("isAvailable", "1");
+        }
+        return jobInfo;
     }
 
-    private void updateJob(JobPostingforUser jobPosting) {
+    private void updateJob(HashMap<String, Object> map, JobPostingforUser jobPosting) {
+
 
         db2.collection("Jobs")
                 .document(jobPosting.getJobId())
-                .set(jobPosting)
+                .set(map)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-
                     }
                 });
 
-
+        db2.collection("JobsEmp")
+                .document(fAuth.getCurrentUser().getUid())
+                .collection("myjobs")
+                .document(jobPosting.getJobId())
+                .set(map)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        Toast.makeText(ViewJobDetail2.this, "Cập nhật thành công", Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
-
 
     private void initDb() {
         db1 = FirebaseFirestore.getInstance();
         db2 = FirebaseFirestore.getInstance();
         fAuth = FirebaseAuth.getInstance();
+        date2 = new Date();
 
     }
 
     private void setAdapters() {
         option = new RecruiteType[]{RecruiteType.FULLTIME, RecruiteType.PARTTIME, RecruiteType.ONETIME};
-        ArrayAdapter arrayAdapter = new ArrayAdapter<RecruiteType>(this, R.layout.jobtype_option, option);
+        arrayAdapter = new ArrayAdapter<RecruiteType>(this, R.layout.jobtype_option, option);
         jobType2.setText(arrayAdapter.getItem(0).toString(), false);
         jobType2.setAdapter(arrayAdapter);
 
         option2 = new JobStatus[]{JobStatus.AVAILABLE, JobStatus.UNAVAILABLE};
-        ArrayAdapter arrayAdapter2 = new ArrayAdapter<JobStatus>(this, R.layout.jobtype_option, option2);
+        arrayAdapter2 = new ArrayAdapter<JobStatus>(this, R.layout.jobtype_option, option2);
         statusType.setText(arrayAdapter2.getItem(0).toString(), false);
         statusType.setAdapter(arrayAdapter2);
+
+        option3 = new CvRequiredType[]{CvRequiredType.YES, CvRequiredType.NO};
+        arrayAdapter1 = new ArrayAdapter<CvRequiredType>(this, R.layout.jobtype_option, option3);
+        cvType.setText(arrayAdapter1.getItem(0).toString(), false);
+        cvType.setAdapter(arrayAdapter1);
 
     }
 
@@ -200,11 +311,10 @@ public class ViewJobDetail2 extends AppCompatActivity implements LifecycleOwner 
         numberNeed = findViewById(R.id.etNumApplicant);
         jobTitle = findViewById(R.id.etTitle);
         jobDescription = findViewById(R.id.etDescription);
-
-        cvRequired = findViewById(R.id.etCvRequired);
+        cvType = findViewById(R.id.autoComplete_cv);
         jobLocation = findViewById(R.id.etLocation);
         companyName = findViewById(R.id.etEmployername);
-        deadline = findViewById(R.id.etTime);
+        deadline = findViewById(R.id.etDeadlineJob);
         update = findViewById(R.id.btnEdit);
         salary = findViewById(R.id.etSalary);
         dateUpdated = findViewById(R.id.etDateUpdate);
@@ -219,15 +329,14 @@ public class ViewJobDetail2 extends AppCompatActivity implements LifecycleOwner 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
             boolean allval = valNumberneed() && valJD()
-                    && valCvRequired()
                     && valjobTitle()
                     && valLocation()
-                    && valSalary() && valDeadline();
+                    && valSalary();
 
             if (allval) {
                 update.setBackground(getDrawable(R.drawable.button_bg));
+                update.setEnabled(allval);
             }
-            update.setEnabled(allval);
         }
 
         @Override
@@ -236,18 +345,38 @@ public class ViewJobDetail2 extends AppCompatActivity implements LifecycleOwner 
         }
     };
 
-    private DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
+//    private DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
+//        @Override
+//        public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+//            sYear = year;
+//            sMonth = month;
+//            sDay = dayOfMonth;
+//            Date date2 = Date.getInstance(sDay, sMonth, sYear);
+//
+//            long des = Date.getEpochSecond(sDay, sMonth, sYear);
+//            String dateUpdate = String.valueOf(date2.getEpochSecond());
+//            Log.d("TAG", dateUpdate);
+//            dateUpdated.setText(Date.getInstance(sDay, sMonth, sYear).toString());
+//
+//        }
+//    };
+
+    private DatePickerDialog.OnDateSetListener dateSetListener2 = new DatePickerDialog.OnDateSetListener() {
         @Override
         public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
             sYear = year;
             sMonth = month;
             sDay = dayOfMonth;
-            Date date2 = Date.getInstance(sDay, sMonth, sYear);
 
-            long des = Date.getEpochSecond(sDay, sMonth, sYear);
-            String dateUpdate = String.valueOf(date2.getEpochSecond());
-            Log.d("TAG", dateUpdate);
-            dateUpdated.setText(Date.getInstance(sDay, sMonth, sYear).toString());
+            try{
+                Date date2 = Date.getInstance(sDay, sMonth, sYear);
+                long des = date2.getEpochSecond(sDay, sMonth, sYear);
+                newDeadline = String.valueOf(des);
+                deadline.setText(date2.getInstance(sDay, sMonth, sYear).toString());
+
+            }catch(IllegalArgumentException iae){
+                iae.printStackTrace();
+            }
 
         }
     };
@@ -298,16 +427,6 @@ public class ViewJobDetail2 extends AppCompatActivity implements LifecycleOwner 
         }
     }
 
-    private boolean valCvRequired() {
-        String name = cvRequired.getText().toString();
-        if (name.isEmpty()) {
-            cvRequired.setError("Please enter requirement of CV");
-            return false;
-        } else {
-            cvRequired.setError(null);
-            return true;
-        }
-    }
 
     private boolean valjobTitle() {
         String name = jobTitle.getText().toString();
@@ -343,7 +462,7 @@ public class ViewJobDetail2 extends AppCompatActivity implements LifecycleOwner 
     }
 
     private boolean valDeadline() {
-        String name = salary.getText().toString();
+        String name = deadline.getText().toString();
         if (name.isEmpty()) {
             deadline.setError("Please enter deadline of this job");
             return false;

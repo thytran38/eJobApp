@@ -296,7 +296,7 @@ public class AddJob extends AppCompatActivity {
         int employerPublicId = r.nextInt(high-low) + low;
         FirebaseUser firebaseUser = fAuth.getCurrentUser();
         DocumentReference df2 = firebaseFirestore2.collection("Jobs")
-                .document();
+                .document(String.valueOf(jobId));
         Map<String, Object> jobInfo = new HashMap<>();
         jobInfo.put("empId", firebaseUser.getUid());
         jobInfo.put("employerEmail", firebaseUser.getEmail());
@@ -312,6 +312,7 @@ public class AddJob extends AppCompatActivity {
         jobInfo.put("cvRequired", cvType.getEditableText().toString());
         jobInfo.put("jobOod", timeDeadline);
         jobInfo.put("jobDateCreated", timeCreated);
+        jobInfo.put("jobUpdatedDate", null);
         df2.set(jobInfo);
 
 
@@ -320,8 +321,9 @@ public class AddJob extends AppCompatActivity {
                 .collection("myjobs")
                 .document(String.valueOf(jobId));
         Map<String, Object> jobInfo2 = new HashMap<>();
-        jobInfo2.put("jobId", String.valueOf(jobId));
+        jobInfo2.put("empId", firebaseUser.getUid());
         jobInfo2.put("employerEmail", firebaseUser.getEmail());
+        jobInfo2.put("jobId", String.valueOf(jobId));
         jobInfo2.put("jobType", jobType.getEditableText().toString());
         jobInfo2.put("numberNeed", numberApplicant.getText().toString());
         jobInfo2.put("jobTitle", jobTitle.getText().toString());
@@ -330,6 +332,7 @@ public class AddJob extends AppCompatActivity {
         jobInfo2.put("jobSalary", jobSalary.getText().toString());
         jobInfo2.put("jobEmployer", employerName.getText().toString());
         jobInfo2.put("isAvailable", "1");
+        jobInfo2.put("cvRequired", cvType.getEditableText().toString());
         jobInfo2.put("jobOod", timeDeadline);
         jobInfo2.put("jobDateCreated", timeCreated);
         df3.set(jobInfo2);

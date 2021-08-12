@@ -87,7 +87,6 @@ public class EmployerHome extends androidx.fragment.app.Fragment implements IEmp
         jobRecyclerView.setLayoutManager(linearLayoutManager);
 
         jobViewModel = new ViewModelProvider(this).get(JobViewModel.class);
-        Log.d("TAG_employerHome", jobViewModel.getmListJobLivedata().getValue().toString());
         jobViewModel.getmListJobLivedata().observe(this.getViewLifecycleOwner(), new Observer<List<JobPosting>>() {
             @Override
             public void onChanged(List<JobPosting> jobPostings) {

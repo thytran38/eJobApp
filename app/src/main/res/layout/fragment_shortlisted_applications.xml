@@ -66,7 +66,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="center_vertical"
                                     android:layout_marginStart="5dp"
-                                    android:text="Shortlisted Applicants"
+                                    android:text="Danh sách ứng viên được chọn"
                                     android:textColor="@color/navy_100"
                                     android:textStyle="bold" />
                             </LinearLayout>

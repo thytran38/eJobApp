@@ -1,6 +1,7 @@
 package com.example.ejob.ui.user;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
@@ -59,6 +60,7 @@ import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Random;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -83,7 +85,7 @@ public class UserProfileFragment extends Fragment {
     FirebaseAuth firebaseAuth;
     ApplicantModel applicantModel, applicantModel2;
     ApplicantModel model;
-    ImageView userAvatar, upload, change;
+    ImageView userAvatar, upload, change, changePdf;
     boolean cvExist = false;
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -91,12 +93,18 @@ public class UserProfileFragment extends Fragment {
     private View v;
     private Button pdfBrowse, uploadButton, updateProfile;
     private TextView filepath, cvTitle, cv;
-    private EditText email, dob, school, phone, address, fullname, dateCre;
+    private EditText email, dob, school, phone, address, fullname, dateCre, etCvurl, etCvname;
     Pair<ApplicantModel, String> pair;
     ProfileViewModel profileViewModel;
     ProfileAdapter profileAdapter;
     Long dateCreated;
     Date date;
+    Context context;
+    Uri fileUri;
+    FirebaseStorage fStorage;
+    boolean uploaded = false;
+    String cvUploadedUrl;
+
 
 
     public UserProfileFragment() {
@@ -144,6 +152,7 @@ public class UserProfileFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         this.v = view;
+        this.context = getContext();
 
         mapping();
         init();
@@ -180,6 +189,13 @@ public class UserProfileFragment extends Fragment {
                     updateEvent();
                 }
 
+            }
+        });
+
+        changePdf.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                uploadPdfEvent();
             }
         });
 
@@ -235,7 +251,10 @@ public class UserProfileFragment extends Fragment {
         cvTitle = v.findViewById(R.id.tvFileTitle);
         upload = v.findViewById(R.id.cvUpload);
         filepath = v.findViewById(R.id.pdfLinks);
+        etCvurl = v.findViewById(R.id.etDuongDanCV);
+        etCvname = v.findViewById(R.id.etTenfileCV);
         updateProfile = v.findViewById(R.id.btnUpdate);
+        changePdf = v.findViewById(R.id.changePdf);
     }
 
     private void updateEvent() {
@@ -268,13 +287,13 @@ public class UserProfileFragment extends Fragment {
                 if (snapshot.child(firebaseAuth.getCurrentUser().getUid()).exists()) {
                     cvExist = true;
                     for (DataSnapshot child : snapshot.getChildren()) {
-                        cvTitle.setText(snapshot.child(firebaseAuth.getCurrentUser().getUid()).child("fileName").getValue().toString());
+                        etCvname.setText(snapshot.child(firebaseAuth.getCurrentUser().getUid()).child("fileName").getValue().toString());
 
                         String cvLink = snapshot.child(firebaseAuth.getCurrentUser().getUid()).child("cvURL").getValue().toString();
-                        filepath.setText(cvLink);
+                        etCvurl.setText(cvLink);
                     }
                 } else {
-                    filepath.setText("Click icon on the right to upload CV");
+                    filepath.setText("Click vào icon bên phải phía trên để upload CV");
                 }
             }
 
@@ -379,6 +398,88 @@ public class UserProfileFragment extends Fragment {
             return true;
         }
     }
+
+    ActivityResultLauncher<String> getContent = registerForActivityResult(new ActivityResultContracts.GetContent(),
+            new ActivityResultCallback<Uri>() {
+                @Override
+                public void onActivityResult(Uri result) {
+
+                    if (result != null) {
+//                        avatar.setImageURI(result);
+                        fileUri = result;
+                    }
+                }
+            });
+
+    private void uploadPdfEvent() throws IllegalStateException, NullPointerException {
+        ProgressDialog progressDialog = new ProgressDialog(context);
+        progressDialog.setTitle("Upload CV");
+        progressDialog.setMessage("Progress Bar");
+        progressDialog.setMax(100);
+        progressDialog.setProgressStyle(progressDialog.STYLE_HORIZONTAL);
+        progressDialog.setCancelable(false);
+
+        getContent.launch("application/pdf");
+        if (fileUri != null) {
+            int cvRandom = new Random().nextInt(5000);
+            double progress = 0;
+            StorageReference folder = fStorage.getInstance().getReference().child("CVFiles/");
+            String possibleNameFile = fileUri.getLastPathSegment().replaceAll(".*/", "");
+            HashMap<String, String> hashMap = new HashMap<>();
+
+            folder.putFile(fileUri)
+                    .addOnProgressListener(snapshot -> {
+                        double progress1 = (100 * snapshot.getBytesTransferred()) / snapshot.getTotalByteCount();
+                        progressDialog.show();
+                        progressDialog.setProgress(((int) progress1));
+                        if (progress1 == 100) {
+                            progressDialog.setMessage("Uploaded " + progress1 + " %");
+                        }
+                    })
+                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            Task<Uri> uriTask = taskSnapshot.getStorage().getDownloadUrl();
+                            while (!uriTask.isComplete()) ;
+                            uploaded = true;
+                            Uri uri = uriTask.getResult();
+                            hashMap.put("cvURL", uri.toString());
+                            cvUploadedUrl = uri.toString();
+                            etCvurl.setText(cvUploadedUrl);
+                        }
+                    })
+                    .addOnCompleteListener(task1 -> {
+                        if (task1.isSuccessful()) {
+                            if (task1.isComplete()) {
+//                                upCv.setImageResource(R.drawable.ic_baseline_check_ok_24);
+//                                upCv.setEnabled(false);
+                                etCvname.setText("Tên file: " + possibleNameFile + ".pdf");
+                                progressDialog.setCancelable(true);
+                                progressDialog.dismiss();
+
+                                hashMap.put("cvUri", String.valueOf(task1.getResult().getStorage().getDownloadUrl()));
+                                hashMap.put("fileName", possibleNameFile);
+//                                jobApplying.setCvitaeLink(String.valueOf(task1.getResult()));
+
+                                firebaseDatabase.getReference("cvUploads")
+                                        .child(firebaseAuth.getCurrentUser().getUid())
+                                        .setValue(hashMap)
+                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
+                                                Toast.makeText(context, "Upload xong!", Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
+                            } else {
+
+                            }
+                        }
+                    });
+
+        }
+
+    }
+
 
 
 }

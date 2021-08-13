@@ -3,6 +3,8 @@ package com.example.ejob.ui.employer.applications;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
+import android.os.StrictMode;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +23,7 @@ import com.example.ejob.ui.admin.employer_accounts.Employer;
 import com.example.ejob.ui.employer.EmployerActivity;
 import com.example.ejob.ui.user.UserActivity;
 import com.example.ejob.ui.user.application.JobApplication;
+import com.example.ejob.utils.MyCredentials;
 import com.google.android.gms.tasks.OnCompleteListener;
 
 import com.google.android.gms.tasks.Task;
@@ -34,7 +37,17 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.List;
+import java.util.Properties;
 import java.util.logging.Logger;
+
+import javax.mail.Address;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 
 public class ApplicationAdapter extends RecyclerView.Adapter<ApplicationAdapter.ApplicationItemViewHolder> {
 
@@ -105,6 +118,8 @@ public class ApplicationAdapter extends RecyclerView.Adapter<ApplicationAdapter.
                         switch (which) {
                             case DialogInterface.BUTTON_POSITIVE:
                                 shortList(jobApplication.getApplicationId());
+                                sendEmailNotification(jobApplication);
+                                sendEmailNotificationthroughIntent(jobApplication);
                                 Toast.makeText(v.getContext(), "Ứng viên được duyệt!", Toast.LENGTH_LONG).show();
                                 v.getContext().startActivity(new Intent(v.getContext(), EmployerActivity.class));
                                 break;
@@ -132,7 +147,70 @@ public class ApplicationAdapter extends RecyclerView.Adapter<ApplicationAdapter.
 
     }
 
-    private void shortList(String applicationID) {
+    private void sendEmailNotification(JobApplication application){
+
+        String title = "Một nhà tuyển dụng đã duyệt hồ sơ của bạn!";
+        String body = "Nhà tuyển dụng " + application.getApplicantFullname() + " đã chấp nhận đơn ứng tuyển của bạn cho công việc "
+                + application.getPosition() + ".";
+        Properties properties = new Properties();
+        properties.put("mail.smtp.auth","true");
+        properties.put("mail.smtp.starttls.enable","true");
+        properties.put("mail.smtp.host","smtp.gmail.com");
+        properties.put("mail.smtp.port","507");
+        Session session = Session.getInstance(properties,
+                new javax.mail.Authenticator(){
+                    protected PasswordAuthentication getPasswordAuthentication(){
+                        return new PasswordAuthentication(MyCredentials.usn, MyCredentials.pwd);
+                    }
+                });
+
+        try{
+            //)
+            Message message = new MimeMessage(session);
+            message.setFrom(new InternetAddress(MyCredentials.usn));
+            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(application.getApplicantEmail()));
+            message.setSubject(title);
+            message.setText(body);
+
+            Thread thread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        Transport.send(message);
+                    } catch (MessagingException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+
+            thread.start();
+            Log.d("email_status", thread.getState().toString());
+            Toast.makeText(v.getContext(), "Một email thông báo tới ứng viên đã được gửi thành công!", Toast.LENGTH_LONG).show();
+        }catch (MessagingException ms){
+            throw new RuntimeException(ms);
+        }
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+
+    }
+
+    private void sendEmailNotificationthroughIntent(JobApplication application){
+
+        String title = "Một nhà tuyển dụng đã duyệt hồ sơ của bạn!";
+        String body = "Nhà tuyển dụng " + application.getApplicantFullname() + " đã chấp nhận đơn ứng tuyển của bạn cho công việc "
+                + application.getPosition() + ".";
+
+        Intent intent = new Intent(Intent.ACTION_SENDTO);
+        intent.setData(Uri.parse("mailto:" + application.getApplicantEmail()));
+        intent.putExtra(Intent.EXTRA_SUBJECT, title);
+        intent.putExtra(Intent.EXTRA_TEXT, body);
+        v.getContext().startActivity(intent);
+        Log.d("email_intent", "here");
+
+    }
+
+
+        private void shortList(String applicationID) {
 
         firestore.collection("Applications")
                 .document(applicationID)

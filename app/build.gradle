@@ -108,6 +108,9 @@ dependencies {
     testCompile 'org.easytesting:fest:1.0.16'
     testCompile "org.robolectric:robolectric:3.1.4"
     testCompile 'org.khronos:opengl-api:gl1.1-android-2.1_r1'
+    implementation 'com.sun.mail:android-mail:1.6.0'
+    implementation 'com.sun.mail:android-activation:1.6.0'
+
 
 
 }

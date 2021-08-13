@@ -76,6 +76,10 @@ public class JobApplying extends AppCompatActivity {
     String cvUploadedUrl, cvExistedUrl;
     JobApplication jobApplication;
     String uid;
+    private long lastBackPressTime = 0;
+    private Toast toast;
+
+
 
 
     ActivityResultLauncher<String> getContent = registerForActivityResult(new ActivityResultContracts.GetContent(),
@@ -448,30 +452,16 @@ public class JobApplying extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-        AlertDialog.Builder builder = new AlertDialog.Builder(jobApplyingContext);
-        builder.setTitle("Job Applying alert");
-        builder.setMessage("Bạn đang rời khỏi trang nộp đơn ứng tuyển. \nBạn chắc rằng muốn tiếp tục?");
-        DialogInterface.OnClickListener dialogListener = new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                switch (which) {
-                    case DialogInterface.BUTTON_POSITIVE:
-                        Toast.makeText(JobApplying.this, "Đơn ứng tuyển bị huỷ!", Toast.LENGTH_LONG).show();
-                        dialog.dismiss();
-                        startActivity(new Intent(jobApplyingContext, ViewJobDetail.class));
-                        break;
 
-                    case DialogInterface.BUTTON_NEGATIVE:
-                        dialog.dismiss();
-                        break;
-                }
+        if (this.lastBackPressTime < System.currentTimeMillis() - 4000) {
+            Toast.makeText(this, "Nhấn Back thêm lần nữa để thoát", Toast.LENGTH_LONG).show();
+            this.lastBackPressTime = System.currentTimeMillis();
+        } else {
+            if (toast != null) {
+                toast.cancel();
             }
-        };
-        builder.setPositiveButton("Yes", dialogListener);
-        builder.setNegativeButton("No", dialogListener);
-        AlertDialog alert = builder.create();
-        alert.show();
+            super.onBackPressed();
+        }
     }
 
     public void mapping() {
@@ -522,17 +512,6 @@ public class JobApplying extends AppCompatActivity {
         }
     }
 
-    private String getCvUrl() {
-        return "";
-
-    }
-
-    private String getImgUrl() {
-        return "f";
-
-    }
-
-
     private String cvCheck(String UID) {
         cvRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -561,6 +540,10 @@ public class JobApplying extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
 
     private void uploadPdfEvent() throws IllegalStateException, NullPointerException {
         ProgressDialog progressDialog = new ProgressDialog(jobApplyingContext);
@@ -600,10 +583,6 @@ public class JobApplying extends AppCompatActivity {
                     })
                     .addOnCompleteListener(task1 -> {
                         if (task1.isSuccessful()) {
-//                            Uri downloadUri = task1.getResult();
-//
-//                            if (downloadUri == null) {
-//                                return;
                             if (task1.isComplete()) {
                                 upCv.setImageResource(R.drawable.ic_baseline_check_ok_24);
                                 upCv.setEnabled(false);

@@ -84,7 +84,13 @@ public class ApplicationViewModel_4 extends ViewModel {
                                 String statusStr = document.get("applicationStatus").toString();
                                 application.setApplicationStatus(statusStr);
                                 application.setApplicationDate(document.get("applicationDate").toString());
-                                application.setCvitaeLink(document.get("cvitaeLink").toString());
+
+                                try{
+                                    application.setCvitaeLink(document.get("cvitaeLink").toString());
+                                }catch(NullPointerException npe){
+                                    npe.printStackTrace();
+                                }
+
                                 application.setPosition(document.get("position").toString());
 
                                 applicationList.add(application);

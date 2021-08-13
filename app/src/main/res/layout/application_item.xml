@@ -25,12 +25,13 @@
             android:id="@+id/changeStatus"
             android:layout_marginHorizontal="2dp"
             android:layout_marginVertical="2dp"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="29dp"
+            android:layout_height="29dp"
             android:textSize="9sp"
             android:text="Cancel"
             android:layout_gravity="left"
             android:clickable="true"
+            app:tint="@color/navy_100"
             android:src="@drawable/ic_baseline_add_circle_24"/>
 
         <LinearLayout
@@ -174,7 +175,7 @@
                             android:layout_toEndOf="@id/lampIcon"
                             android:ellipsize="end"
                             android:singleLine="true"
-                            android:text="College/ University"
+                            android:text="Trường Đại học/ Cao đẳng"
                             android:textColor="@color/text_gray"
                             android:textSize="11sp" />
 
@@ -211,7 +212,7 @@
                             android:layout_toEndOf="@id/locIcon3"
                             android:ellipsize="end"
                             android:singleLine="true"
-                            android:text="Mobile phone"
+                            android:text="Số điện thoại"
                             android:textColor="@color/text_gray"
                             android:textSize="11sp" />
                     </RelativeLayout>
@@ -248,7 +249,7 @@
                             android:layout_toEndOf="@id/locIcon"
                             android:ellipsize="end"
                             android:singleLine="true"
-                            android:text="Address"
+                            android:text="Địa chỉ"
                             android:textColor="@color/text_gray"
                             android:textSize="11sp" />
                     </RelativeLayout>
@@ -321,7 +322,7 @@
                             android:layout_toEndOf="@id/locIcon2"
                             android:ellipsize="end"
                             android:singleLine="true"
-                            android:text="Social media"
+                            android:text="Tài khoản MXH"
                             android:textColor="@color/text_gray"
                             android:textSize="11sp" />
                     </RelativeLayout>
@@ -358,7 +359,7 @@
                             android:layout_toEndOf="@id/locIcon5"
                             android:ellipsize="end"
                             android:singleLine="true"
-                            android:text="Self description"
+                            android:text="Mô tả bản thân"
                             android:textColor="@color/text_gray"
                             android:textSize="11sp" />
                     </RelativeLayout>
@@ -395,7 +396,7 @@
                             android:layout_toEndOf="@id/locIcon4"
                             android:ellipsize="end"
                             android:singleLine="true"
-                            android:text="Applicant V"
+                            android:text="CV của ứng viên"
                             android:textColor="@color/text_gray"
                             android:textSize="11sp" />
                     </RelativeLayout>

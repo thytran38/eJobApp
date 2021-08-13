@@ -36,7 +36,7 @@ public class DatePickerDialog extends DialogFragment implements android.app.Date
 
         Calendar calendar = Calendar.getInstance();
         int year = calendar.get(Calendar.YEAR);
-        return new android.app.DatePickerDialog(getContext(), this, year, 1, 1);
+        return new android.app.DatePickerDialog(getContext(), this, year, 0, 1);
     }
 
     @Override

@@ -66,8 +66,6 @@ public class MyJobsViewModel extends ViewModel {
                         if(task.isSuccessful()){
                             for(QueryDocumentSnapshot document : task.getResult()){
                                 JobPostingforUser jobPosting = new JobPostingforUser();
-
-
                                 try{
                                     jobPosting.setJobId(document.getReference().getPath());
                                     jobPosting.setEmployerName(document.get("jobEmployer").toString());

@@ -181,7 +181,12 @@ public class RegisterUsr extends AppCompatActivity {
                 @Override
                 public void onDateOk(int date, int month, int year) {
                     ((EditText) v).setError(null);
-                    ((EditText) v).setText(Date.getInstance(date, month - 1, year).toString());
+                    try{
+                        ((EditText) v).setText(Date.getInstance(date, month-1, year).toString());
+
+                    }catch(IllegalArgumentException ae){
+                        ae.printStackTrace();
+                    }
                 }
 
                 @Override

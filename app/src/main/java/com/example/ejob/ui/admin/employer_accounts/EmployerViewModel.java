@@ -64,7 +64,6 @@ public class EmployerViewModel extends ViewModel {
         ArrayList<EmployerModel> employerArrayList = new ArrayList<>();
         String employername, empID;
         DocumentSnapshot snapshot;
-        EmployerModel emp1;
         HashMap<String, String> hashMap = new HashMap<>();
 
 //        DocumentReference df = firebaseFirestore.collection("Users").document(uid);
@@ -77,9 +76,28 @@ public class EmployerViewModel extends ViewModel {
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
+                                EmployerModel emp1;
                                 Log.d("TAG", document.getId() + " => " + document.getData());
                                 String empId = document.getId();
+                                String email = document.get("UserEmail").toString();
+                                String phone = document.get("PhoneNumber").toString();
+                                String fullname = document.get("FullName").toString();
+                                String accDateCreatd = document.get("AccountDateCreated").toString();
+                                String avail = document.get("isAvailable").toString();
+                                String industry = document.get("Industry").toString();
+                                String address = document.get("Address").toString();
 
+                                emp1 = new EmployerModel();
+                                emp1.setEmployerEmail(email);
+                                emp1.setEmployerIndustry(industry);
+                                emp1.setEmployerPhone(phone);
+                                emp1.setEmployerAddress(address);
+                                emp1.setEmployerFullname(fullname);
+                                emp1.setEmployerId(empId);
+                                emp1.setDateCreationEmployer(accDateCreatd);
+                                emp1.setStatus(avail);
+
+                                employerArrayList.add(emp1);
                             }
                         }
                     }

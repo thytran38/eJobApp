@@ -13,7 +13,7 @@ public class JobApplication implements Parcelable {
     String selfDescription;
     String applicationDate;
     String cvitaeLink;
-    ApplicationStatus applicationStatus;
+    String applicationStatus;
     String applicantFullname;
     String applicantEmail;
     String applicantPhone;
@@ -30,7 +30,7 @@ public class JobApplication implements Parcelable {
     public JobApplication() {
     }
 
-    public JobApplication(String applicantID, String applicationId, String position, String selfDescription, String applicationDate, String cvitaeLink, ApplicationStatus applicationStatus, String applicantFullname, String applicantEmail, String applicantPhone, String applicantSocialmedia, String applicantUniversity, String applicantAddress, String photoURL, String employerFbId, String employerFullname, String jobID, String jobType, String jobLocation) {
+    public JobApplication(String applicantID, String applicationId, String position, String selfDescription, String applicationDate, String cvitaeLink, String applicationStatus, String applicantFullname, String applicantEmail, String applicantPhone, String applicantSocialmedia, String applicantUniversity, String applicantAddress, String photoURL, String employerFbId, String employerFullname, String jobID, String jobType, String jobLocation) {
         this.applicantID = applicantID;
         this.applicationId = applicationId;
         this.position = position;
@@ -52,6 +52,7 @@ public class JobApplication implements Parcelable {
         this.jobLocation = jobLocation;
     }
 
+
     protected JobApplication(Parcel in) {
         applicantID = in.readString();
         applicationId = in.readString();
@@ -59,6 +60,7 @@ public class JobApplication implements Parcelable {
         selfDescription = in.readString();
         applicationDate = in.readString();
         cvitaeLink = in.readString();
+        applicationStatus = in.readString();
         applicantFullname = in.readString();
         applicantEmail = in.readString();
         applicantPhone = in.readString();
@@ -81,6 +83,7 @@ public class JobApplication implements Parcelable {
         dest.writeString(selfDescription);
         dest.writeString(applicationDate);
         dest.writeString(cvitaeLink);
+        dest.writeString(applicationStatus);
         dest.writeString(applicantFullname);
         dest.writeString(applicantEmail);
         dest.writeString(applicantPhone);
@@ -160,11 +163,11 @@ public class JobApplication implements Parcelable {
         this.cvitaeLink = cvitaeLink;
     }
 
-    public ApplicationStatus getApplicationStatus() {
+    public String getApplicationStatus() {
         return applicationStatus;
     }
 
-    public void setApplicationStatus(ApplicationStatus applicationStatus) {
+    public void setApplicationStatus(String applicationStatus) {
         this.applicationStatus = applicationStatus;
     }
 

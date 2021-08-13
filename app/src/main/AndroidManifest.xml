@@ -15,6 +15,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.EJob">
 
+        <activity android:name=".ui.user.applications.ViewApplicationDetail"></activity>
         <activity android:name=".ui.user.application.ViewJobDetail"></activity>
         <activity android:name=".ui.employer.applications.ViewPdf"/>
         <activity android:name=".ui.employer.ViewJobDetail2"/>

@@ -23,15 +23,15 @@ import java.util.List;
 
 public class UserAdapter extends RecyclerView.Adapter<UserAdapter.EmployerViewHolder> {
 
-    public List<Employer> mEmployerList;
+    public List<UserModel> mUserList;
     public Context context;
     Boolean testClick = false;
     private ItemClickListener itemClickListener;
     private DatabaseReference appliedReference;
 
 
-    public UserAdapter(List<Employer> mEmployerList, ItemClickListener itemClickListener1) {
-        this.mEmployerList = mEmployerList;
+    public UserAdapter(List<UserModel> mEmployerList, ItemClickListener itemClickListener1) {
+        this.mUserList = mEmployerList;
         this.itemClickListener = itemClickListener1;
     }
 
@@ -44,13 +44,23 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.EmployerViewHo
 
     @Override
     public void onBindViewHolder(@NonNull EmployerViewHolder holder, int position) {
-        Employer employer = mEmployerList.get(position);
-        if (employer == null) {
+        UserModel user = mUserList.get(position);
+        if (user == null) {
             return;
         }
 //        holder.employerAvatar.setImageResource(jobPosting.getImageUrl());
-        holder.employerName.setText(employer.getEmployerName());
+        holder.employerName.setText(user.getUserFullname());
+        holder.empLocation.setText(user.getUsrAddress());
+        if(user.getUserStatus().equals("INACTIVE")){
+            holder.unlock.setImageResource(R.drawable.ic_baseline_lock_24);
+            holder.accountStatus.setText("Bị khoá");
+            holder.accountStatus.setBackgroundResource(R.drawable.bg_account_type_available);
+        }else{
+            holder.unlock.setImageResource(R.drawable.ic_baseline_lock_open_24);
+            holder.accountStatus.setText("Đang hoạt động");
+            holder.accountStatus.setBackgroundResource(R.drawable.bg_account_type_blocked);
 
+        }
         holder.unlock.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -102,8 +112,8 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.EmployerViewHo
 
     @Override
     public int getItemCount() {
-        if (mEmployerList != null) {
-            return mEmployerList.size();
+        if (mUserList != null) {
+            return mUserList.size();
         }
         return 0;
     }

@@ -26,19 +26,19 @@ public class UserViewModel extends ViewModel {
     FirebaseAuth firebaseAuth;
     FirebaseFirestore db1, db2;
     FirebaseUser firebaseUser;
-    ApplicantModel user;
+    UserModel user;
 
-    private MutableLiveData<List<ApplicantModel>> mListEmployerLivedata;
-    private List<ApplicantModel> mListEmployer;
+    private MutableLiveData<List<UserModel>> mListEmployerLivedata;
+    private List<UserModel> mListEmployer;
 
-    private ArrayList<ApplicantModel> jobPostingArrayList;
+    private ArrayList<UserModel> jobPostingArrayList;
 
     public UserViewModel() {
         mListEmployerLivedata = new MutableLiveData<>();
         initData();
     }
 
-    public MutableLiveData<List<ApplicantModel>> getmListJobLivedata() {
+    public MutableLiveData<List<UserModel>> getmListJobLivedata() {
         return mListEmployerLivedata;
     }
 
@@ -52,11 +52,10 @@ public class UserViewModel extends ViewModel {
         mListEmployerLivedata.setValue(mListEmployer);
     }
 
-    private ArrayList<ApplicantModel> getUsersFromFirestor() {
-        ArrayList<ApplicantModel> employerArrayList = new ArrayList<>();
+    private ArrayList<UserModel> getUsersFromFirestor() {
+        ArrayList<UserModel> employerArrayList = new ArrayList<>();
         String employername;
         DocumentSnapshot snapshot;
-//        DocumentReference df = firebaseFirestore.collection("Users").document(uid);
 
         db1.collection("Users")
                 .whereEqualTo("isUser", "1")
@@ -66,8 +65,8 @@ public class UserViewModel extends ViewModel {
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
-                                user = new ApplicantModel();
-                                user.setApplicantEmail(document.get("Email").toString());
+                                user = new UserModel();
+                                ;
 
                                 try {
                                 } catch (NullPointerException npe) {

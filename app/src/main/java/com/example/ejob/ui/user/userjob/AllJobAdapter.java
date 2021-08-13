@@ -127,7 +127,7 @@ public class AllJobAdapter extends RecyclerView.Adapter<AllJobAdapter.JobViewHol
                                     testClick = false;
                                 }else{
                                     likeReference.child(jobPosting.getJobId()).child(userID).setValue(true);
-                                    Toast.makeText(holder.employerName.getContext(), "You liked this "+ holder.jobPosition.getText() +" job",Toast.LENGTH_LONG).show();
+                                    Toast.makeText(holder.employerName.getContext(), "Bạn vừa thích công việc "+ holder.jobPosition.getText() + " này",Toast.LENGTH_LONG).show();
                                     testClick=false;
                                 }
                             }

@@ -14,6 +14,8 @@ public class UserModel implements Parcelable {
     String userFullname;
     String usrSchool;
     String usrEmail;
+    String userPhone;
+    String userStatus;
     String usrAddress;
     Industry industry;
 
@@ -24,6 +26,65 @@ public class UserModel implements Parcelable {
     public UserModel() {
 
     }
+
+    public UserModel(String userId, String userFullname, String usrSchool, String usrEmail, String userPhone, String userStatus, String usrAddress, Industry industry, String photoUrl, String cvUploadLink, String letterLink) {
+        this.userId = userId;
+        this.userFullname = userFullname;
+        this.usrSchool = usrSchool;
+        this.usrEmail = usrEmail;
+        this.userPhone = userPhone;
+        this.userStatus = userStatus;
+        this.usrAddress = usrAddress;
+        this.industry = industry;
+        this.photoUrl = photoUrl;
+        this.cvUploadLink = cvUploadLink;
+        this.letterLink = letterLink;
+    }
+
+
+    protected UserModel(Parcel in) {
+        userId = in.readString();
+        userFullname = in.readString();
+        usrSchool = in.readString();
+        usrEmail = in.readString();
+        userPhone = in.readString();
+        userStatus = in.readString();
+        usrAddress = in.readString();
+        photoUrl = in.readString();
+        cvUploadLink = in.readString();
+        letterLink = in.readString();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(userId);
+        dest.writeString(userFullname);
+        dest.writeString(usrSchool);
+        dest.writeString(usrEmail);
+        dest.writeString(userPhone);
+        dest.writeString(userStatus);
+        dest.writeString(usrAddress);
+        dest.writeString(photoUrl);
+        dest.writeString(cvUploadLink);
+        dest.writeString(letterLink);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<UserModel> CREATOR = new Creator<UserModel>() {
+        @Override
+        public UserModel createFromParcel(Parcel in) {
+            return new UserModel(in);
+        }
+
+        @Override
+        public UserModel[] newArray(int size) {
+            return new UserModel[size];
+        }
+    };
 
     public String getUserId() {
         return userId;
@@ -55,6 +116,22 @@ public class UserModel implements Parcelable {
 
     public void setUsrEmail(String usrEmail) {
         this.usrEmail = usrEmail;
+    }
+
+    public String getUserPhone() {
+        return userPhone;
+    }
+
+    public void setUserPhone(String userPhone) {
+        this.userPhone = userPhone;
+    }
+
+    public String getUserStatus() {
+        return userStatus;
+    }
+
+    public void setUserStatus(String userStatus) {
+        this.userStatus = userStatus;
     }
 
     public String getUsrAddress() {
@@ -95,61 +172,5 @@ public class UserModel implements Parcelable {
 
     public void setLetterLink(String letterLink) {
         this.letterLink = letterLink;
-    }
-
-    public static Creator<UserModel> getCREATOR() {
-        return CREATOR;
-    }
-
-    public UserModel(String userId, String userFullname, String usrSchool, String usrEmail, String usrAddress, Industry industry, String photoUrl, String cvUploadLink, String letterLink) {
-        this.userId = userId;
-        this.userFullname = userFullname;
-        this.usrSchool = usrSchool;
-        this.usrEmail = usrEmail;
-        this.usrAddress = usrAddress;
-        this.industry = industry;
-        this.photoUrl = photoUrl;
-        this.cvUploadLink = cvUploadLink;
-        this.letterLink = letterLink;
-    }
-
-    protected UserModel(Parcel in) {
-        userId = in.readString();
-        userFullname = in.readString();
-        usrSchool = in.readString();
-        usrEmail = in.readString();
-        usrAddress = in.readString();
-        photoUrl = in.readString();
-        cvUploadLink = in.readString();
-        letterLink = in.readString();
-    }
-
-    public static final Creator<UserModel> CREATOR = new Creator<UserModel>() {
-        @Override
-        public UserModel createFromParcel(Parcel in) {
-            return new UserModel(in);
-        }
-
-        @Override
-        public UserModel[] newArray(int size) {
-            return new UserModel[size];
-        }
-    };
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(userId);
-        dest.writeString(userFullname);
-        dest.writeString(usrSchool);
-        dest.writeString(usrEmail);
-        dest.writeString(usrAddress);
-        dest.writeString(photoUrl);
-        dest.writeString(cvUploadLink);
-        dest.writeString(letterLink);
     }
 }

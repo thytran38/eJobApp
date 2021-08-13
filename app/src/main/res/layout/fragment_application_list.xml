@@ -22,15 +22,16 @@
         <ScrollView
             android:padding="5dp"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:paddingBottom="40dp">
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rcvJobUser"
+            android:id="@+id/rcvApplicationList"
             android:paddingVertical="20dp"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:paddingTop="2dp"
-            android:layout_marginBottom="20dp"
-            android:paddingBottom="20dp">
+            android:paddingBottom="60dp"
+            android:layout_marginBottom="50dp">
 
         </androidx.recyclerview.widget.RecyclerView>
         </ScrollView>

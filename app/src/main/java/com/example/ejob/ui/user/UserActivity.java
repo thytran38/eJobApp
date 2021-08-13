@@ -66,9 +66,9 @@ public class UserActivity extends AppCompatActivity implements ChipNavigationBar
             case R.id.nav_applications:
                 selectedFragment = new ApplicationFragment();
                 break;
-            case R.id.nav_saved:
-                selectedFragment = new UserFavoriteFragment();
-                break;
+//            case R.id.nav_saved:
+//                selectedFragment = new UserFavoriteFragment();
+//                break;
             case R.id.nav_profile:
                 selectedFragment = new UserProfileFragment();
                 break;

@@ -82,8 +82,7 @@ public class ApplicationViewModel_4 extends ViewModel {
                                 String selfDescript = document.get("selfDescription").toString();
                                 application.setSelfDescription(selfDescript);
                                 String statusStr = document.get("applicationStatus").toString();
-                                ApplicationStatus status = ApplicationStatus.valueOf(statusStr);
-                                application.setApplicationStatus(status);
+                                application.setApplicationStatus(statusStr);
                                 application.setApplicationDate(document.get("applicationDate").toString());
                                 application.setCvitaeLink(document.get("cvitaeLink").toString());
                                 application.setPosition(document.get("position").toString());

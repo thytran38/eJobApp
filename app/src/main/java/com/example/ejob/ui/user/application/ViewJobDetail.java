@@ -83,6 +83,7 @@ public class ViewJobDetail extends AppCompatActivity {
         jobType.setText(jobPosting.getJobType());
 
         getSavedStatus(jobPosting.getJobId(),fAuth.getCurrentUser().getUid());
+        getAppliedStatus(jobPosting.getJobId(), fAuth.getCurrentUser().getUid());
 
         save.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -129,6 +130,25 @@ public class ViewJobDetail extends AppCompatActivity {
         container.setAutoStart(true);
         container.setDuration(800);
 
+    }
+
+    public void getAppliedStatus(String postId, String uid){
+        db3 =  FirebaseDatabase.getInstance().getReference("userapplications");
+        db3.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(snapshot.child(postId.replaceAll(".*/", "")).hasChild(uid)){
+                    applyTv.setText("Đã nộp đơn ứng tuyển");
+                    buttonApply.setEnabled(false);
+                    appIcon.setImageResource(R.drawable.ic_baseline_check_circle_outline_24);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
 

@@ -55,7 +55,7 @@ public class ForgetPassActivity extends AppCompatActivity{
                                         SignInMethodQueryResult result = task.getResult();
                                         if (result.getSignInMethods().isEmpty()){
                                             Log.d("ForgetPassActivity","Email Not Exist");
-                                            testTv.setText("Email không tồn tại.");
+                                            testTv.setText("Email chưa từng tồn tại");
                                         }
                                     }
                                 });

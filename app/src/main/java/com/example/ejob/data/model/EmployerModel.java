@@ -14,12 +14,13 @@ public class EmployerModel implements Parcelable {
     String employerSize;
     String employerAddress;
     String dateCreationEmployer;
+    String status;
 
     public EmployerModel(){
 
     }
 
-    public EmployerModel(String employerId, String employerEmail, String employerWebsite, String employerFullname, String yearofFoundation, String employerIndustry, String employerPhone, String employerSize, String employerAddress, String dateCreationEmployer) {
+    public EmployerModel(String employerId, String employerEmail, String employerWebsite, String employerFullname, String yearofFoundation, String employerIndustry, String employerPhone, String employerSize, String employerAddress, String dateCreationEmployer, String status) {
         this.employerId = employerId;
         this.employerEmail = employerEmail;
         this.employerWebsite = employerWebsite;
@@ -30,7 +31,9 @@ public class EmployerModel implements Parcelable {
         this.employerSize = employerSize;
         this.employerAddress = employerAddress;
         this.dateCreationEmployer = dateCreationEmployer;
+        this.status = status;
     }
+
 
     protected EmployerModel(Parcel in) {
         employerId = in.readString();
@@ -43,6 +46,27 @@ public class EmployerModel implements Parcelable {
         employerSize = in.readString();
         employerAddress = in.readString();
         dateCreationEmployer = in.readString();
+        status = in.readString();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(employerId);
+        dest.writeString(employerEmail);
+        dest.writeString(employerWebsite);
+        dest.writeString(employerFullname);
+        dest.writeString(yearofFoundation);
+        dest.writeString(employerIndustry);
+        dest.writeString(employerPhone);
+        dest.writeString(employerSize);
+        dest.writeString(employerAddress);
+        dest.writeString(dateCreationEmployer);
+        dest.writeString(status);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
     public static final Creator<EmployerModel> CREATOR = new Creator<EmployerModel>() {
@@ -137,22 +161,11 @@ public class EmployerModel implements Parcelable {
         this.dateCreationEmployer = dateCreationEmployer;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
+    public String getStatus() {
+        return status;
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(employerId);
-        dest.writeString(employerEmail);
-        dest.writeString(employerWebsite);
-        dest.writeString(employerFullname);
-        dest.writeString(yearofFoundation);
-        dest.writeString(employerIndustry);
-        dest.writeString(employerPhone);
-        dest.writeString(employerSize);
-        dest.writeString(employerAddress);
-        dest.writeString(dateCreationEmployer);
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

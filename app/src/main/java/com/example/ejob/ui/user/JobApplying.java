@@ -24,6 +24,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
 
 import com.example.ejob.R;
 import com.example.ejob.data.model.ApplicantModel;
@@ -185,7 +186,9 @@ public class JobApplying extends AppCompatActivity {
                                     case DialogInterface.BUTTON_POSITIVE:
                                         submitEvent(gatherData());
                                         Toast.makeText(JobApplying.this, "Ứng tuyển thành công!", Toast.LENGTH_LONG).show();
-                                        startActivity(new Intent(jobApplyingContext, UserActivity.class));
+//                                        startActivity(new Intent(jobApplyingContext, ViewJobDetail.class));
+                                        finish();
+
                                         break;
 
                                     case DialogInterface.BUTTON_NEGATIVE:
@@ -226,7 +229,7 @@ public class JobApplying extends AppCompatActivity {
         jobApplying.setApplicationId(jobPosting.getJobId().replaceAll(".*/", "") + firebaseAuth.getCurrentUser().getUid());
         jobApplying.setPosition(positionHiring.getText().toString());
         jobApplying.setApplicationDate(String.valueOf(timeCreated));
-        jobApplying.setApplicationStatus(ApplicationStatus.SUBMITTED);
+        jobApplying.setApplicationStatus("SUBMITTED");
         jobApplying.setJobID(jobPosting.getJobId().replaceAll(".*/", ""));
         jobApplying.setJobType(jobPosting.getJobType());
 
@@ -364,7 +367,7 @@ public class JobApplying extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         Toast.makeText(JobApplying.this, "Ứng tuyển thành công cho vị trí " + jobPosting.getJobTitle() + "!", Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(jobApplyingContext, ViewJobDetail.class));
+//                        startActivity(new Intent(jobApplyingContext, ViewJobDetail.class));
 
                     }
                 })
@@ -448,7 +451,7 @@ public class JobApplying extends AppCompatActivity {
         super.onBackPressed();
         AlertDialog.Builder builder = new AlertDialog.Builder(jobApplyingContext);
         builder.setTitle("Job Applying alert");
-        builder.setMessage("You are about to quit this page. \nAre you sure you want to continue?");
+        builder.setMessage("Bạn đang rời khỏi trang nộp đơn ứng tuyển. \nBạn chắc rằng muốn tiếp tục?");
         DialogInterface.OnClickListener dialogListener = new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {

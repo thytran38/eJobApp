@@ -18,10 +18,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.ejob.R;
+import com.example.ejob.data.model.ApplicantModel;
 import com.example.ejob.data.model.EmployerModel;
 import com.example.ejob.ui.admin.employer_accounts.Employer;
 import com.example.ejob.ui.admin.employer_accounts.EmployerAdapter;
 import com.example.ejob.ui.admin.employer_accounts.EmployerViewModel;
+import com.example.ejob.ui.admin.user_accounts.UserAdapter;
+import com.example.ejob.ui.admin.user_accounts.UserModel;
+import com.example.ejob.ui.admin.user_accounts.UserViewModel;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -33,8 +37,8 @@ public class UserAccount extends Fragment {
 
 
     private RecyclerView userRecyclerView;
-    private EmployerViewModel allEmployerViewModel;
-    private EmployerAdapter employerAdapter;
+    private UserViewModel allUserViewModel;
+    private UserAdapter userAdapter;
 
 
     private ViewGroup viewgroupContainer;
@@ -66,12 +70,12 @@ public class UserAccount extends Fragment {
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(v.getContext());
         userRecyclerView.setLayoutManager(linearLayoutManager);
-        allEmployerViewModel = new ViewModelProvider(this).get(EmployerViewModel.class);
+        allUserViewModel = new ViewModelProvider(this).get(UserViewModel.class);
 
-        allEmployerViewModel.getmListJobLivedata().observe(getViewLifecycleOwner(), new Observer<List<EmployerModel>>() {
+        allUserViewModel.getmListJobLivedata().observe(getViewLifecycleOwner(), new Observer<List<UserModel>>() {
             @Override
-            public void onChanged(List<EmployerModel> employers) {
-                employerAdapter = new EmployerAdapter(employers, new EmployerAdapter.ItemClickListener() {
+            public void onChanged(List<UserModel> employers) {
+                userAdapter = new UserAdapter(employers, new UserAdapter.ItemClickListener() {
                     @Override
                     public void onItemClick(Employer employer) {
                         FragmentManager fragmentManager = getChildFragmentManager();
@@ -79,7 +83,7 @@ public class UserAccount extends Fragment {
                         Log.d("TAG_UHFragment", employer.getEmployerName());
                     }
                 });
-                userRecyclerView.setAdapter(employerAdapter);
+                userRecyclerView.setAdapter(userAdapter);
 
             }
         });
@@ -87,7 +91,7 @@ public class UserAccount extends Fragment {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                employerAdapter.notifyDataSetChanged();
+                userAdapter.notifyDataSetChanged();
                 swipeRefreshLayout.setRefreshing(false);
             }
         });

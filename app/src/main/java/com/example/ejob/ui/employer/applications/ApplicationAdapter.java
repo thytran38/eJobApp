@@ -98,14 +98,14 @@ public class ApplicationAdapter extends RecyclerView.Adapter<ApplicationAdapter.
             public void onClick(View v) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
                 builder.setTitle("Application Alert");
-                builder.setMessage("You will add this person to shortlist. This will notify the applicant and you cannot undo this. Are you going to continue?");
+                builder.setMessage("Bạn đang duyệt đơn ứng tuyển này và ứng viên sẽ nhận được một thông báo. Bạn có chắc mình muốn tiếp tục?");
                 DialogInterface.OnClickListener dialogListener = new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         switch (which) {
                             case DialogInterface.BUTTON_POSITIVE:
                                 shortList(jobApplication.getApplicationId());
-                                Toast.makeText(v.getContext(), "Application Shortlisted", Toast.LENGTH_LONG).show();
+                                Toast.makeText(v.getContext(), "Ứng viên được duyệt!", Toast.LENGTH_LONG).show();
                                 v.getContext().startActivity(new Intent(v.getContext(), EmployerActivity.class));
                                 break;
 
@@ -140,7 +140,7 @@ public class ApplicationAdapter extends RecyclerView.Adapter<ApplicationAdapter.
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-                        Toast.makeText(v.getContext(), "Added to shortlist successfully!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(v.getContext(), "Ứng viên được chọn thành công!", Toast.LENGTH_SHORT).show();
                     }
                 });
     }

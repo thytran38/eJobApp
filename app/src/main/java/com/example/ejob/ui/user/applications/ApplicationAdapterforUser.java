@@ -21,6 +21,7 @@ import com.example.ejob.R;
 import com.example.ejob.data.model.ApplicationStatus;
 import com.example.ejob.ui.employer.AddJob;
 import com.example.ejob.ui.employer.EmployerActivity;
+import com.example.ejob.ui.employer.ViewJobDetail2;
 import com.example.ejob.ui.user.UserActivity;
 import com.example.ejob.ui.user.application.JobApplication;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -40,7 +41,7 @@ public class ApplicationAdapterforUser extends RecyclerView.Adapter<ApplicationA
 
     public List<JobApplication> mApplicationList;
     private ApplicationAdapterforUser.ItemClickListener itemClickListener;
-    JobApplication jobApplication;
+    JobApplication jobApplication2;
     private FirebaseAuth firebaseAuth;
     private FirebaseFirestore firestore;
     private FirebaseDatabase firebaseDatabase;
@@ -48,10 +49,8 @@ public class ApplicationAdapterforUser extends RecyclerView.Adapter<ApplicationA
     private StorageReference storage;
     private FirebaseUser firebaseUser;
     View v;
-    JobApplication subItem;
     String jobId;
     boolean cancelled = false;
-    ApplicationAdapterforUser.ApplicationItemViewHolder holder1;
     Notification notificationManager;
 
 
@@ -63,7 +62,7 @@ public class ApplicationAdapterforUser extends RecyclerView.Adapter<ApplicationA
     @NonNull
     @Override
     public ApplicationAdapterforUser.ApplicationItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.application_item_user, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.application_item_2, parent, false);
         this.v = view;
         firestore = FirebaseFirestore.getInstance();
         firebaseDatabase = FirebaseDatabase.getInstance();
@@ -77,132 +76,59 @@ public class ApplicationAdapterforUser extends RecyclerView.Adapter<ApplicationA
     @Override
     public void onViewRecycled(@NonNull ApplicationItemViewHolder holder) {
         super.onViewRecycled(holder);
-        checkApplicationStatus(holder);
-
-        if(jobApplication.getApplicationStatus().equals("CANCELLED") || jobApplication.getApplicationStatus().equals("SHORTLISTED")){
-            holder.cancelBtn.setVisibility(View.INVISIBLE);
-            holder.cancelBtn.setEnabled(false);
-        }else{
-            holder.cancelBtn.setVisibility(View.VISIBLE);
-        }
 
     }
 
     @Override
     public void onBindViewHolder(@NonNull ApplicationAdapterforUser.ApplicationItemViewHolder holder, int position) {
-        this.holder1 = holder;
-        jobApplication = mApplicationList.get(position);
+        JobApplication jobApplication = mApplicationList.get(position);
+        jobApplication2 = mApplicationList.get(position);
 
-//        storage = firebaseDatabase.
         if(jobApplication == null){
             return;
         }
 
-        holder.applicantName.setText(jobApplication.getApplicantFullname());
-        holder.address.setText(jobApplication.getApplicantAddress());
-        holder.school.setText(jobApplication.getApplicantUniversity());
-        holder.applicant.setText(jobApplication.getApplicantFullname());
-        try{
-            holder.cv.setText(jobApplication.getCvitaeLink());
-        }catch(NullPointerException npe){
-            Log.d("TAG_npe", npe.getMessage());
-            holder.cv.setText("Applicant has no CV");
-        }
-        holder.email.setText(jobApplication.getApplicantEmail());
-        holder.phone.setText(jobApplication.getApplicantPhone());
-        holder.des.setText(jobApplication.getSelfDescription());
-        holder.socialmedia.setText(jobApplication.getApplicantSocialmedia());
-        holder.status.setText(jobApplication.getApplicationStatus().toString());
 
-        checkApplicationStatus(holder);
-
-        if(holder.status.getText().toString().equals("CANCELLED") || holder.status.getText().toString().equals("SHORTLISTED")){
-            holder.cancelBtn.setVisibility(View.INVISIBLE);
-            holder.cancelBtn.setEnabled(false);
+        if(jobApplication2.getApplicationStatus().equals("CANCELLED")){
+            holder.status.setText("Đã huỷ");
+            holder.status.setBackgroundResource(R.drawable.application_status_cancelled);
+        }else if(jobApplication2.getApplicationStatus().equals("SUBMITTED")){
+            holder.status.setText("Đã nộp đơn");
+            holder.status.setBackgroundResource(R.drawable.application_status_submitted);
         }else{
-            holder.cancelBtn.setVisibility(View.VISIBLE);
+            holder.status.setText("Đã được duyệt");
+            holder.status.setBackgroundResource(R.drawable.application_status_shortlisted);
         }
 
         holder.applicantName.setText(jobApplication.getPosition());
-
-        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                return onLongClick(v);
-            }
-        });
-
-        holder.cancelBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                 AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
-                    builder.setTitle("Application Alert");
-                    builder.setMessage("You can not re-open this application once it's cancelled. Are you sure you want to continue?");
-                    DialogInterface.OnClickListener dialogListener = new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            switch (which) {
-                                case DialogInterface.BUTTON_POSITIVE:
-                                    cancelApplication(jobApplication);
-//                                    try {
-//                                        Thread.sleep(500);
-//                                    } catch (InterruptedException e) {
-//                                        e.printStackTrace();
-//                                    }
-//                                    v.getContext().startActivity(new Intent(v.getContext(), UserActivity.class));
-                                    break;
-
-                                case DialogInterface.BUTTON_NEGATIVE:
-                                    // User clicked the No button
-                                    break;
-                            }
-                        }
-                    };
-
-                    builder.setPositiveButton("Yes", dialogListener);
-                    builder.setNegativeButton("No", dialogListener);
-                    AlertDialog alert = builder.create();
-                    alert.show();
-
-            }
-        });
+        holder.ngaytao.setText(jobApplication.getApplicationDate());
+        holder.madon.setText(jobApplication.getApplicationId());
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(v.getContext(), "Archived this application?", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(v.getContext(), ViewApplicationDetail.class);
+                intent.putExtra("myapplication",jobApplication);
+                v.getContext().startActivity(intent);
             }
         });
 
-
-        holder.cv.setOnClickListener(new View.OnClickListener() {
+        holder.photo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                viewPdf();
+                Intent intent = new Intent(v.getContext(), ViewApplicationDetail.class);
+                intent.putExtra("myapplication",jobApplication);
+                v.getContext().startActivity(intent);
             }
         });
-
     }
+
+
 
     private void doNothing() {
-        Toast.makeText(v.getContext(), "Cannot cancel", Toast.LENGTH_SHORT).show();
+        Toast.makeText(v.getContext(), "Không thể huỷ", Toast.LENGTH_SHORT).show();
     }
 
-    private ApplicationStatus checkApplicationStatus(@NonNull ApplicationAdapterforUser.ApplicationItemViewHolder holder) {
-        if(jobApplication.getApplicationStatus().equals("CANCELLED")){
-            holder.status.setBackgroundResource(R.drawable.application_status_cancelled);
-            holder.status.setText(jobApplication.getApplicationStatus().toString());
-            return ApplicationStatus.CANCELLED;
-        }else if(jobApplication.getApplicationStatus().equals("SUBMITTED")){
-            holder.status.setBackgroundResource(R.drawable.application_status_submitted);
-            holder.status.setText(jobApplication.getApplicationStatus().toString());
-            return ApplicationStatus.SUBMITTED;
-        }else{
-            holder.status.setBackgroundResource(R.drawable.application_status_shortlisted);
-            holder.status.setText(jobApplication.getApplicationStatus().toString());
-            return ApplicationStatus.SHORTLISTED;
-        }
-    }
 
     private void reduceAppliedNumber() {
 
@@ -213,14 +139,14 @@ public class ApplicationAdapterforUser extends RecyclerView.Adapter<ApplicationA
     private void cancelApplication(JobApplication jobApplication) {
 
         Runnable runnable = () -> {
-            jobApplication.setApplicationStatus(ApplicationStatus.CANCELLED);
+            jobApplication.setApplicationStatus("CANCELLED");
             firestore.collection("Applications")
                     .document(jobApplication.getApplicationId())
                     .update("applicationStatus", String.valueOf(ApplicationStatus.CANCELLED))
-                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            Toast.makeText(v.getContext(), "Cancelled successfully!", Toast.LENGTH_SHORT).show();
+                        public void onSuccess(Void aVoid) {
+                            Toast.makeText(v.getContext(), "Huỷ đơn thành công!", Toast.LENGTH_SHORT).show();
                             cancelled = true;
                         }
                     });
@@ -247,7 +173,7 @@ public class ApplicationAdapterforUser extends RecyclerView.Adapter<ApplicationA
 
     private void viewPdf() {
         Intent intent = new Intent(v.getContext(), ViewPdf.class);
-        intent.putExtra("cvUrl", jobApplication.getCvitaeLink());
+        intent.putExtra("cvUrl", jobApplication2.getCvitaeLink());
         v.getContext().startActivity(intent);
     }
 
@@ -264,31 +190,22 @@ public class ApplicationAdapterforUser extends RecyclerView.Adapter<ApplicationA
         void onItemClick(JobApplication application);
     }
 
-    public class ApplicationItemViewHolder extends RecyclerView.ViewHolder {
-        TextView applicantName, school, phone, address, email, cv, socialmedia, des, status, applicant;
+    public class ApplicationItemViewHolder extends RecyclerView.ViewHolder implements com.example.ejob.ui.user.applications.ApplicationItemViewHolder {
+        TextView applicantName, school, phone, address, email, cv, socialmedia, des, status, applicant, madon, ngaytao;
+        ImageView img;
         Button button;
         ImageView photo, cancelBtn;
 
 
         public ApplicationItemViewHolder(@NonNull View itemView) {
             super(itemView);
-            applicantName = itemView.findViewById(R.id.applicationName1);
-            applicant = itemView.findViewById(R.id.applicantName3);
-            school = itemView.findViewById(R.id.lamp);
-            phone = itemView.findViewById(R.id.apPhone);
-            address = itemView.findViewById(R.id.address);
-            email = itemView.findViewById(R.id.apEmail);
-            cv = itemView.findViewById(R.id.cvView);
-            socialmedia = itemView.findViewById(R.id.apSocial);
-            des = itemView.findViewById(R.id.apSelfdescription);
+            applicantName = itemView.findViewById(R.id.title);
+            madon = itemView.findViewById(R.id.lamp);
+            ngaytao = itemView.findViewById(R.id.address);
             photo = itemView.findViewById(R.id.photoPreview);
-            cancelBtn = itemView.findViewById(R.id.cancel);
-            status = itemView.findViewById(R.id.applicationStatus);
+            status = itemView.findViewById(R.id.tvJobType111);
 
         }
-
-
-
 
 
     }

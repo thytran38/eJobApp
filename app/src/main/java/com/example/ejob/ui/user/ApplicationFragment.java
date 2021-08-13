@@ -77,7 +77,7 @@ public class ApplicationFragment extends androidx.fragment.app.Fragment {
         swipeRefreshLayout = (SwipeRefreshLayout) v.findViewById(R.id.swipeUserJob);
 
 
-        jobRecyclerView = (RecyclerView) v.findViewById(R.id.rcvJobUser);
+        jobRecyclerView = (RecyclerView) v.findViewById(R.id.rcvApplicationList);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(v.getContext());
         jobRecyclerView.setLayoutManager(linearLayoutManager);
         userAllJobView = new ViewModelProvider(this).get(ApplicationViewModel_3.class);
@@ -114,5 +114,12 @@ public class ApplicationFragment extends androidx.fragment.app.Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         viewgroupContainer = container;
         layoutInflater = inflater;
-        return inflater.inflate(R.layout.fragment_job_detail, container, false);    }
+        return inflater.inflate(R.layout.fragment_application_list, container, false);    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        applicationAdapter.notifyDataSetChanged();
+
+    }
 }

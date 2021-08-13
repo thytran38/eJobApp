@@ -337,7 +337,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="5dp"
                                 android:layout_toEndOf="@id/iconPhone"
-                                android:text="Mobile Phone" />
+                                android:text="Số di động" />
 
                         </RelativeLayout>
 
@@ -346,6 +346,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:hint="+8499539593"
+                            android:inputType="phone"
                             android:textColor="@color/grey_effective"
                             android:textColorHint="@color/light_gray"
                             android:textSize="12sp" />

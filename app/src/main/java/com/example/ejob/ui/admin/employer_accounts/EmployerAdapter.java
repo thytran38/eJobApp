@@ -67,9 +67,22 @@ public class EmployerAdapter extends RecyclerView.Adapter<EmployerAdapter.Employ
         holder.empLocation.setText(employer.getEmployerAddress());
         holder.industry.setText(employer.getEmployerIndustry());
         Date datecurrent = Date.getInstance();
+
+        if(employer.getStatus().equals("false")){
+            holder.unlock.setImageResource(R.drawable.ic_baseline_lock_24);
+            holder.accountStatus.setText("Bị khoá");
+            holder.accountStatus.setBackgroundResource(R.drawable.bg_account_type_available);
+        }else{
+            holder.unlock.setImageResource(R.drawable.ic_baseline_lock_open_24);
+            holder.accountStatus.setText("Đang hoạt động");
+            holder.accountStatus.setBackgroundResource(R.drawable.bg_account_type_blocked);
+
+        }
         long dateCurrent = datecurrent.getEpochSecond();
         Date datePosted = Date.getInstance(Long.parseLong(employer.getDateCreationEmployer()));
         long daysDiffInEpoch;
+
+
         Date dateDiff;
         try{
             Long dateCreated = Long.parseLong(employer.getDateCreationEmployer());
@@ -80,24 +93,27 @@ public class EmployerAdapter extends RecyclerView.Adapter<EmployerAdapter.Employ
             int daysTogo = (int) daysDiffInEpoch / 86400;
             Log.d("TAG3", String.valueOf(daysDiffInEpoch));
             if(daysTogo < 1){
-                holder.tvDaysago.setText("Today");
+                holder.tvDaysago.setText("Mới tạo hôm nay");
             }
             else if(daysTogo < 2 )
             {
-                holder.tvDaysago.setText(daysTogo + " day ago");
+                holder.tvDaysago.setText("Được tạo " + daysTogo + " ngày trước");
             }
             else{
-                holder.tvDaysago.setText(daysTogo + " days ago");
+                holder.tvDaysago.setText("Được tạo " + daysTogo + " ngày trước");
             }
         }catch(NumberFormatException e){
             Log.d("NBE", e.getMessage());
         }
-        holder.getLockStatus(employer.getEmployerId());
+
+
+//        holder.getLockStatus(employer.getEmployerId());
 
 
         holder.unlock.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
 
             }
         });
@@ -143,11 +159,11 @@ public class EmployerAdapter extends RecyclerView.Adapter<EmployerAdapter.Employ
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     if(snapshot.child(uid).exists()){
                         unlock.setImageResource(R.drawable.ic_baseline_lock_24);
-                        accountStatus.setText("Locked");
+                        accountStatus.setText("Bị khoá");
                         accountStatus.setBackgroundResource(R.drawable.bg_account_type_blocked);
                     }else{
                         unlock.setImageResource(R.drawable.ic_baseline_lock_open_24);
-                        accountStatus.setText("Available");
+                        accountStatus.setText("Đang hoạt động");
                         accountStatus.setBackgroundResource(R.drawable.bg_account_type_available);
 
                     }

@@ -291,10 +291,10 @@ public class LoginActivity extends AppCompatActivity implements LoginNavigator {
         String em = emailText.getText().toString().trim();
         String emailCond = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
         if (em.isEmpty()) {
-            emailText.setError("Please enter your Email");
+            emailText.setError("Vui lòng nhập Email");
             return false;
         } else if (!em.matches(emailCond)) {
-            emailText.setError("Invalid Email");
+            emailText.setError("Email không hợp lệ");
             return false;
         } else {
             emailText.setError(null);
@@ -305,13 +305,13 @@ public class LoginActivity extends AppCompatActivity implements LoginNavigator {
     private boolean valPass() {
         String pass = passwordText.getText().toString().trim();
         if (pass.isEmpty()) {
-            passwordText.setError("Please enter password");
+            passwordText.setError("Vui lòng nhập mật khẩu");
             return false;
         } else if (pass.length() < 6) {
-            passwordText.setError("Password is too short!");
+            passwordText.setError("Mật khẩu quá ngắn!");
             return false;
         } else if (!containLowerCase(pass) || !containUpperCase(pass) || !containSpecialChar(pass) || toStream(pass).anyMatch(c -> c.equals(" "))) {
-            passwordText.setError("Password must contain at least 1 upper case, lower case, special character and don't contain \" \"");
+            passwordText.setError("Mật khẩu phải chứa ít nhật 1 kí tự hoa, 1 kí tự thường, kí tự đặc biệt và không bao gồm \" \"");
             return false;
         }
         passwordText.setError(null);

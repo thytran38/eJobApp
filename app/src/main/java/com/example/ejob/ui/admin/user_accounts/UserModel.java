@@ -18,16 +18,17 @@ public class UserModel implements Parcelable {
     String userStatus;
     String usrAddress;
     Industry industry;
-
+    String dateCreated;
     String photoUrl;
     String cvUploadLink;
     String letterLink;
+    String availability;
 
     public UserModel() {
 
     }
 
-    public UserModel(String userId, String userFullname, String usrSchool, String usrEmail, String userPhone, String userStatus, String usrAddress, Industry industry, String photoUrl, String cvUploadLink, String letterLink) {
+    public UserModel(String userId, String userFullname, String usrSchool, String usrEmail, String userPhone, String userStatus, String usrAddress, Industry industry, String dateCreated, String photoUrl, String cvUploadLink, String letterLink, String availability) {
         this.userId = userId;
         this.userFullname = userFullname;
         this.usrSchool = usrSchool;
@@ -36,11 +37,12 @@ public class UserModel implements Parcelable {
         this.userStatus = userStatus;
         this.usrAddress = usrAddress;
         this.industry = industry;
+        this.dateCreated = dateCreated;
         this.photoUrl = photoUrl;
         this.cvUploadLink = cvUploadLink;
         this.letterLink = letterLink;
+        this.availability = availability;
     }
-
 
     protected UserModel(Parcel in) {
         userId = in.readString();
@@ -50,9 +52,11 @@ public class UserModel implements Parcelable {
         userPhone = in.readString();
         userStatus = in.readString();
         usrAddress = in.readString();
+        dateCreated = in.readString();
         photoUrl = in.readString();
         cvUploadLink = in.readString();
         letterLink = in.readString();
+        availability = in.readString();
     }
 
     @Override
@@ -64,9 +68,11 @@ public class UserModel implements Parcelable {
         dest.writeString(userPhone);
         dest.writeString(userStatus);
         dest.writeString(usrAddress);
+        dest.writeString(dateCreated);
         dest.writeString(photoUrl);
         dest.writeString(cvUploadLink);
         dest.writeString(letterLink);
+        dest.writeString(availability);
     }
 
     @Override
@@ -150,6 +156,14 @@ public class UserModel implements Parcelable {
         this.industry = industry;
     }
 
+    public String getDateCreated() {
+        return dateCreated;
+    }
+
+    public void setDateCreated(String dateCreated) {
+        this.dateCreated = dateCreated;
+    }
+
     public String getPhotoUrl() {
         return photoUrl;
     }
@@ -172,5 +186,13 @@ public class UserModel implements Parcelable {
 
     public void setLetterLink(String letterLink) {
         this.letterLink = letterLink;
+    }
+
+    public String getAvailability() {
+        return availability;
+    }
+
+    public void setAvailability(String availability) {
+        this.availability = availability;
     }
 }

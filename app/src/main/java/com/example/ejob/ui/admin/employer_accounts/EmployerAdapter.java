@@ -1,7 +1,10 @@
 package com.example.ejob.ui.admin.employer_accounts;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.PorterDuff;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,10 +18,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.ejob.R;
 import com.example.ejob.data.model.EmployerModel;
+import com.example.ejob.ui.user.JobApplying;
 import com.example.ejob.ui.user.application.ViewJobDetail;
 import com.example.ejob.ui.user.userjob.AllJobAdapter;
 import com.example.ejob.utils.Date;
 import com.facebook.shimmer.ShimmerFrameLayout;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.card.MaterialCardView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -51,6 +58,7 @@ public class EmployerAdapter extends RecyclerView.Adapter<EmployerAdapter.Employ
     @Override
     public EmployerAdapter.EmployerViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.employer_account_item, parent, false);
+        context = parent.getContext();
         return new EmployerAdapter.EmployerViewHolder(view);
     }
 
@@ -69,13 +77,11 @@ public class EmployerAdapter extends RecyclerView.Adapter<EmployerAdapter.Employ
         Date datecurrent = Date.getInstance();
 
         if(employer.getStatus().equals("false")){
-            holder.unlock.setImageResource(R.drawable.ic_baseline_lock_24);
             holder.accountStatus.setText("Bị khoá");
-            holder.accountStatus.setBackgroundResource(R.drawable.bg_account_type_available);
-        }else{
-            holder.unlock.setImageResource(R.drawable.ic_baseline_lock_open_24);
-            holder.accountStatus.setText("Đang hoạt động");
             holder.accountStatus.setBackgroundResource(R.drawable.bg_account_type_blocked);
+        }else{
+            holder.accountStatus.setText("Đang hoạt động");
+            holder.accountStatus.setBackgroundResource(R.drawable.bg_account_type_available);
 
         }
         long dateCurrent = datecurrent.getEpochSecond();
@@ -110,13 +116,87 @@ public class EmployerAdapter extends RecyclerView.Adapter<EmployerAdapter.Employ
 //        holder.getLockStatus(employer.getEmployerId());
 
 
-        holder.unlock.setOnClickListener(new View.OnClickListener() {
+        holder.changeAccess.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
+                builder.setTitle("Block alert");
+                builder.setMessage("Bạn đang thay đổi quyền truy cập của tài khoản " + employer.getEmployerFullname() +" này. \nBạn chắc rằng mình muốn tiếp tục?");
+                DialogInterface.OnClickListener dialogListener = new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (which) {
+                            case DialogInterface.BUTTON_POSITIVE:
+                                if(employer.getStatus().equals("true")){
+                                    lockEvent(employer);
+                                }else{
+                                    unlockEvent(employer);
+                                }
 
+                                break;
+
+                            case DialogInterface.BUTTON_NEGATIVE:
+                                dialog.dismiss();
+                                break;
+                        }
+                    }
+                };
+                builder.setPositiveButton("Yes", dialogListener);
+                builder.setNegativeButton("No", dialogListener);
+                AlertDialog alert = builder.create();
+                alert.show();
 
             }
         });
+
+
+    }
+
+    private void unlockEvent(EmployerModel employerModel){
+        fStore.collection("Users")
+                .document(employerModel.getEmployerId())
+                .update("isAvailable", true)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+//                        Log.d("fstr_blocked", aVoid.toString());
+                        Toast.makeText(context, "Đã mở khoá!", Toast.LENGTH_LONG).show();
+                    }
+                });
+
+        fDatabase.getReference("Blocked")
+                .child(employerModel.getEmployerId())
+                .removeValue()
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+//                        Log.d("fb_blocked", task.getResult().toString());
+                    }
+                });
+    }
+
+    private void lockEvent(EmployerModel employerModel) {
+
+        fStore.collection("Users")
+                .document(employerModel.getEmployerId())
+                .update("isAvailable", false)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+//                        Log.d("fstr_blocked", aVoid.toString());
+                        Toast.makeText(context, "Đã khoá!", Toast.LENGTH_LONG).show();
+                    }
+                });
+
+        fDatabase.getReference("Blocked")
+                .child(employerModel.getEmployerId())
+                .setValue(true)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+//                        Log.d("fb_blocked", task.getResult().toString());
+                    }
+                });
 
 
     }
@@ -144,7 +224,7 @@ public class EmployerAdapter extends RecyclerView.Adapter<EmployerAdapter.Employ
 
     public class EmployerViewHolder extends RecyclerView.ViewHolder {
 
-        private ImageView employerAvatar, unlock;
+        private ImageView employerAvatar, changeAccess;
         private TextView jobPosition, employerName, empLocation, tvDaysago, jobsNumber, accountStatus, industry;
 
         public EmployerViewHolder(@NonNull View itemView) {
@@ -158,11 +238,11 @@ public class EmployerAdapter extends RecyclerView.Adapter<EmployerAdapter.Employ
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     if(snapshot.child(uid).exists()){
-                        unlock.setImageResource(R.drawable.ic_baseline_lock_24);
+                        changeAccess.setImageResource(R.drawable.ic_baseline_lock_24);
                         accountStatus.setText("Bị khoá");
                         accountStatus.setBackgroundResource(R.drawable.bg_account_type_blocked);
                     }else{
-                        unlock.setImageResource(R.drawable.ic_baseline_lock_open_24);
+                        changeAccess.setImageResource(R.drawable.ic_baseline_lock_open_24);
                         accountStatus.setText("Đang hoạt động");
                         accountStatus.setBackgroundResource(R.drawable.bg_account_type_available);
 
@@ -177,11 +257,10 @@ public class EmployerAdapter extends RecyclerView.Adapter<EmployerAdapter.Employ
         }
 
         private void mapping() {
-            unlock = itemView.findViewById(R.id.lockIcon);
+            changeAccess = itemView.findViewById(R.id.lockIcon);
             employerName = itemView.findViewById(R.id.tvEmpName);
             empLocation = itemView.findViewById(R.id.address);
             tvDaysago = itemView.findViewById(R.id.accountCreationDate);
-            jobsNumber = itemView.findViewById(R.id.tvJobsNumber);
             accountStatus = itemView.findViewById(R.id.accStatus);
             industry = itemView.findViewById(R.id.tvIndustry);
         }

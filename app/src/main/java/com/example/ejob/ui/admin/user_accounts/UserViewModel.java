@@ -66,7 +66,28 @@ public class UserViewModel extends ViewModel {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 user = new UserModel();
-                                ;
+                                String email = document.get("UserEmail").toString();
+                                String phone = document.get("PhoneNumber").toString();
+                                String fullname = document.get("FullName").toString();
+                                String accDateCreatd = document.get("AccountDateCreated").toString();
+
+                                try{
+                                    String avail = document.get("isAvailable").toString();
+                                    String id = document.get("id").toString();
+                                    String address = document.get("Address").toString();
+                                    user.setUserStatus(avail);
+                                    user.setUserId(id);
+                                    user.setUsrAddress(address);
+
+
+                                }catch (NullPointerException npe){
+                                    npe.getMessage();
+                                }
+                                user.setUsrEmail(email);
+                                user.setUserPhone(phone);
+                                user.setUserFullname(fullname);
+                                user.setDateCreated(accDateCreatd);
+
 
                                 try {
                                 } catch (NullPointerException npe) {

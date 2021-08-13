@@ -40,27 +40,27 @@ public class AdminActivity extends AppCompatActivity implements ChipNavigationBa
         chipNavigationBar = findViewById(R.id.menu3);
         chipNavigationBar.setMenuOrientation(ChipNavigationBar.MenuOrientation.HORIZONTAL);
         chipNavigationBar.setOnItemSelectedListener(this);
-        chipNavigationBar.setItemSelected(R.id.nav_main, true);
+        chipNavigationBar.setItemSelected(R.id.nav_employer_acc, true);
     }
 
     @Override
     public void onItemSelected(int i) {
         androidx.fragment.app.Fragment selectedFragment = null;
         switch (i) {
-            case R.id.nav_employer_main:
-                selectedFragment = new AdminHome();
-                break;
+//            case R.id.nav_admin_main:
+//                selectedFragment = new AdminHome();
+//                break;
 
-            case R.id.nav_employer_case:
+            case R.id.nav_employer_acc:
                 selectedFragment = new EmployerAccount();
                 break;
 
-            case R.id.nav_applications:
+            case R.id.nav_usr_acc:
                 selectedFragment = new UserAccount();
                 break;
 
             default:
-                chipNavigationBar.setItemSelected(R.id.nav_employer_main, true);
+                chipNavigationBar.setItemSelected(R.id.nav_employer_acc, true);
                 selectedFragment = new EmployerHome();
                 break;
 

@@ -41,6 +41,7 @@
             android:id="@+id/fragment_container_employer"
             android:layout_width="match_parent"
             android:layout_height="fill_parent"
+            android:paddingBottom="40dp"
             android:background="@drawable/gradient_bg"/>
 
         <com.ismaeldivita.chipnavigation.ChipNavigationBar

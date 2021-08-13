@@ -324,9 +324,11 @@ public class RegisterUsr extends AppCompatActivity {
                 DocumentReference df = firebaseFirestore.collection("Users").document(firebaseUser.getUid());
                 Map<String, Object> userInfo = new HashMap<>();
                 userInfo.put("FullName", fullName.getText().toString());
+                userInfo.put("id", firebaseAuth.getCurrentUser().getUid());
                 userInfo.put("imgUrl", imgLink);
                 userInfo.put("UserEmail", email.getText().toString());
                 userInfo.put("PhoneNumber", phone.getText().toString());
+                userInfo.put("Address", address.getText().toString());
                 userInfo.put("isAvailable", true);
                 userInfo.put("isUser", "1");
                 if(usDatecreated != null){
@@ -341,6 +343,7 @@ public class RegisterUsr extends AppCompatActivity {
                 availRef.child(firebaseAuth.getCurrentUser().getUid()).setValue(userAvailablilityInfo);
 
                 Map<String, Object> userProfile = new HashMap<>();
+                userProfile.put("id", firebaseAuth.getCurrentUser().getUid());
                 userProfile.put("imgUrl", imgLink);
                 userProfile.put("University", school.getText().toString());
                 userProfile.put("FullName", fullName.getText().toString());

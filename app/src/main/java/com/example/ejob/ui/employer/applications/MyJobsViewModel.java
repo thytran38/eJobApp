@@ -65,41 +65,38 @@ public class MyJobsViewModel extends ViewModel {
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if(task.isSuccessful()){
                             for(QueryDocumentSnapshot document : task.getResult()){
-                                Log.d("TAG", document.getId() + " => " + document.getData());
                                 JobPostingforUser jobPosting = new JobPostingforUser();
-                                jobPosting.setJobId(document.getReference().getPath());
-                                Log.d("TAG", document.getReference().getPath());
-                                jobPosting.setEmployerName(document.get("jobEmployer").toString());
-                                jobPosting.setJobId(document.get("jobId").toString());
-                                jobPosting.setJobStatus(document.get("isAvailable").toString());
-                                jobPosting.setNumberneed(document.get("numberNeed").toString());
-//                                jobPosting.setEmployerFbID(document.get("empId").toString());
-                                jobPosting.setJobDescription(document.get("jobDescription").toString());
-                                jobPosting.setJobTitle(document.get("jobTitle").toString());
-                                jobPosting.setCvRequired(document.get("cvRequired").toString());
-                                jobPosting.setJobLocation(document.get("jobLocation").toString());
-                                jobPosting.setEmpEmail(document.get("employerEmail").toString());
-                                Log.d("TAG", document.get("employerEmail").toString());
-                                jobPosting.setNumberneed(document.get("numberNeed").toString());
-                                Log.d("TAG", document.get("numberNeed").toString());
-                                jobPosting.setJobType(document.get("jobType").toString());
-                                jobPosting.setSalary(document.get("jobSalary").toString());
+
+
                                 try{
+                                    jobPosting.setJobId(document.getReference().getPath());
+                                    jobPosting.setEmployerName(document.get("jobEmployer").toString());
+                                    jobPosting.setJobId(document.get("jobId").toString());
+                                    jobPosting.setJobStatus(document.get("isAvailable").toString());
+                                    jobPosting.setNumberneed(document.get("numberNeed").toString());
+                                    jobPosting.setJobDescription(document.get("jobDescription").toString());
+                                    jobPosting.setJobTitle(document.get("jobTitle").toString());
+                                    jobPosting.setCvRequired(document.get("cvRequired").toString());
+                                    jobPosting.setJobLocation(document.get("jobLocation").toString());
+                                    jobPosting.setEmpEmail(document.get("employerEmail").toString());
+                                    jobPosting.setNumberneed(document.get("numberNeed").toString());
+                                    jobPosting.setJobType(document.get("jobType").toString());
+                                    jobPosting.setSalary(document.get("jobSalary").toString());
+                                }catch(NullPointerException npe){
+                                    npe.printStackTrace();
+                                }
+
+                                try{
+                                    jobPosting.setJobDateCreated(document.get("jobDateCreated").toString());
                                     jobPosting.setJobDeadline(document.get("jobOod").toString());
                                 }catch (NullPointerException npe){
                                     npe.getMessage();
                                 }
-                                jobPosting.setJobDateCreated(document.get("jobDateCreated").toString());
                                 jobPostingArrayList.add(jobPosting);
-                                Log.d("TAG", document.getId() + " => " + jobPosting.getJobLocation());
-                                Log.d("TAG", document.getId() + " => " + jobPosting.getJobDeadline());
-
                             }
                         }
                     }
                 });
-
-        Log.d("TAG_sizeMyJob", String.valueOf(jobPostingArrayList.size()));
         return jobPostingArrayList;
     }
 

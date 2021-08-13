@@ -67,33 +67,35 @@ public class ApplicationViewModel_2 extends ViewModel {
                         if(task.isSuccessful()){
                             for(QueryDocumentSnapshot document : task.getResult()){
                                 Log.d("TAG_getData", document.getId() + " => " + document.getData());
-
                                 application = new JobApplication();
-                                application.setApplicationId(document.get("applicationId").toString());
-                                application.setApplicantID(document.get("applicantID").toString());
-                                application.setApplicantFullname(document.get("applicantFullname").toString());
-                                application.setApplicantPhone(document.get("applicantPhone").toString());
-                                application.setApplicantAddress(document.get("applicantAddress").toString());
-                                application.setApplicantEmail(document.get("applicantEmail").toString());
-                                application.setApplicantUniversity(document.get("applicantUniversity").toString());
-                                application.setApplicationDate(document.get("applicationDate").toString());
-                                application.setPosition(document.get("position").toString());
-                                application.setEmployerFbId(document.get("employerFbId").toString());
-                                application.setPhotoURL(document.get("photoURL").toString());
-                                application.setApplicantSocialmedia(document.get("applicantSocialmedia").toString());
-                                String selfDescript = document.get("selfDescription").toString();
-                                application.setSelfDescription(selfDescript);
-                                String statusStr = document.get("applicationStatus").toString();
-                                application.setApplicationStatus(statusStr);
-                                application.setApplicationDate(document.get("applicationDate").toString());
+
+
                                 try{
+                                    application.setApplicationId(document.get("applicationId").toString());
+                                    application.setApplicantID(document.get("applicantID").toString());
+                                    application.setApplicantFullname(document.get("applicantFullname").toString());
+                                    application.setApplicantPhone(document.get("applicantPhone").toString());
+                                    application.setApplicantAddress(document.get("applicantAddress").toString());
+                                    application.setApplicantEmail(document.get("applicantEmail").toString());
+                                    application.setApplicantUniversity(document.get("applicantUniversity").toString());
+                                    application.setApplicationDate(document.get("applicationDate").toString());
+                                    application.setPosition(document.get("position").toString());
+                                    application.setEmployerFbId(document.get("employerFbId").toString());
+                                    application.setPhotoURL(document.get("photoURL").toString());
+                                    application.setApplicantSocialmedia(document.get("applicantSocialmedia").toString());
+                                    String selfDescript = document.get("selfDescription").toString();
+                                    application.setSelfDescription(selfDescript);
+                                    String statusStr = document.get("applicationStatus").toString();
+                                    application.setApplicationStatus(statusStr);
+                                    application.setApplicationDate(document.get("applicationDate").toString());
                                     application.setCvitaeLink(document.get("cvitaeLink").toString());
+                                    application.setPosition(document.get("position").toString());
+
                                 }catch(NullPointerException npe)
                                 {
                                     Log.d("TAG_Npe", npe.getMessage());
                                 }
 
-                                application.setPosition(document.get("position").toString());
 
                                 applicationList.add(application);
                             }

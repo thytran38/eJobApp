@@ -202,27 +202,43 @@ public class ViewJobDetail2 extends AppCompatActivity implements LifecycleOwner 
             statusType.setText(arrayAdapter2.getItem(1).toString(), false);
             statusType.setAdapter(arrayAdapter2);
         }
+        try{
 
-        if(jobPosting.getCvRequired().equals("YES")){
-            cvType.setText(arrayAdapter1.getItem(0).toString(), false);
-            cvType.setAdapter(arrayAdapter1);
+            if(jobPosting.getCvRequired().equals("YES")){
+                cvType.setText(arrayAdapter1.getItem(0).toString(), false);
+                cvType.setAdapter(arrayAdapter1);
+            }
+            else{
+                cvType.setText(arrayAdapter1.getItem(1).toString(), false);
+                cvType.setAdapter(arrayAdapter1);
+            }
+        }catch(NullPointerException npe){
+            npe.printStackTrace();
         }
-        else{
-            cvType.setText(arrayAdapter1.getItem(1).toString(), false);
-            cvType.setAdapter(arrayAdapter1);
+
+
+        try{
+            if(jobPosting.getJobDeadline()!=null){
+                Long dateDeadline = Long.parseLong(jobPosting.getJobDeadline());
+                deadline.setText(String.valueOf(date2.getInstance(dateDeadline)));
+            }else{
+                deadline.setText("Vô thời hạn");
+            }
+
+            jobID.setText(jobPosting.getJobId());
+            jobTitle.setText(jobPosting.getJobTitle());
+            numberNeed.setText(jobPosting.getNumberneed());
+            jobDescription.setText(jobPosting.getJobDescription());
+            jobLocation.setText(jobPosting.getJobLocation());
+            salary.setText(jobPosting.getSalary());
+            dateUpdated.setText(Date.getInstance().toString());
+            companyName.setText(jobPosting.getEmployerName());
+
+        }catch(NullPointerException npe){
+            npe.getMessage();
         }
-        jobID.setText(jobPosting.getJobId());
-        jobTitle.setText(jobPosting.getJobTitle());
-        numberNeed.setText(jobPosting.getNumberneed());
-        jobDescription.setText(jobPosting.getJobDescription());
-        jobLocation.setText(jobPosting.getJobLocation());
 
-        companyName.setText(jobPosting.getEmployerName());
-        Long dateDeadline = Long.parseLong(jobPosting.getJobDeadline());
 
-        deadline.setText(String.valueOf(date2.getInstance(dateDeadline)));
-        salary.setText(jobPosting.getSalary());
-        dateUpdated.setText(Date.getInstance().toString());
     }
 
     private HashMap<String, Object> gatherData(JobPostingforUser jobPosting) {

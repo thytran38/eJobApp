@@ -42,7 +42,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="145dp"
-                android:hint="Email address"
+                android:hint="Nhập một email"
                 android:inputType="textEmailAddress"
                 android:padding="16dp"
                 android:textSize="15sp"

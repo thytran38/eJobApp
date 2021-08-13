@@ -133,8 +133,8 @@ public class JobApplying extends AppCompatActivity {
         jobId = jobPosting.getJobId();
         employerId = jobPosting.getEmployerFbID();
         jobStatus = jobPosting.getJobStatus();
-        positionHiring.setText("Application for " + jobPosting.getJobTitle());
-        employerName.setText("To employer " + jobPosting.getEmployerName());
+        positionHiring.setText("Đơn ứng tuyển cho vị trí " + jobPosting.getJobTitle());
+        employerName.setText("Gửi đến " + jobPosting.getEmployerName());
         jobtype.setText(jobPosting.getJobType());
         getEtEmail.setText(firebaseAuth.getCurrentUser().getEmail());
         cvRequired.setText(jobPosting.getCvRequired());

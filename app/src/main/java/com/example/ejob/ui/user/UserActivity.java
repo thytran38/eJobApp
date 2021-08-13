@@ -85,7 +85,7 @@ public class UserActivity extends AppCompatActivity implements ChipNavigationBar
         Boolean counter = sharedPreferences.getBoolean("logincounter", Boolean.valueOf(String.valueOf(MODE_PRIVATE)));
         String email = sharedPreferences.getString("useremail", String.valueOf(MODE_PRIVATE));
         if (counter) {
-            display.setText("Welcome back, " + email + "!");
+            display.setText("Chào mừng quay lại, " + email + "!");
         } else {
             startActivity(new Intent(UserActivity.this, LoginActivity.class));
             finish();
